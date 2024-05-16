@@ -42,6 +42,23 @@ public class MemberController {
 		this.jwtUtil = jwtUtil;
 	}
 
+	public ResponseEntity<Map<String, Object>> signup(
+			@RequestBody @Parameter(description = "로그인 시 필요한 회원정보(아이디, 비밀번호).", required = true) MemberDto memberDto) {
+		log.debug("login user : {}", memberDto);
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		HttpStatus status = HttpStatus.ACCEPTED;
+		try {
+			memberService.signUp(memberDto);
+			resultMap.put("message", "success");
+		} catch (Exception e) {
+			log.debug("회원가입 에러 발생 : {}", e);
+			resultMap.put("message", e.getMessage());
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+
+	}
+
 	@Operation(summary = "로그인", description = "아이디와 비밀번호를 이용하여 로그인 처리.")
 	@PostMapping("/login")
 	public ResponseEntity<Map<String, Object>> login(
@@ -134,7 +151,7 @@ public class MemberController {
 		String token = request.getHeader("refreshToken");
 		log.debug("token : {}, memberDto : {}", token, memberDto);
 		if (jwtUtil.checkToken(token)) {
-			if (token.equals(memberService.getRefreshToken(memberDto.getId()))) { //db의 리프레시 토큰과 header에 있는 토큰이 같은지 확인
+			if (token.equals(memberService.getRefreshToken(memberDto.getId()))) { // db의 리프레시 토큰과 header에 있는 토큰이 같은지 확인
 				String accessToken = jwtUtil.createAccessToken(memberDto.getId());
 				log.debug("token : {}", accessToken);
 				log.debug("정상적으로 access token 재발급!!!");

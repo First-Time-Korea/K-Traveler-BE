@@ -52,4 +52,9 @@ public class MemberServiceImpl implements MemberService {
 		memberMapper.deleteRefreshToken(map);
 	}
 
+	@Override
+	public void signUp(MemberDto memberDto) {
+		memberMapper.signUp(memberDto);
+	}
+
 }
