@@ -14,4 +14,6 @@ public interface MemberService {
 	void deleRefreshToken(String id) throws Exception;
 
 	void signUp(MemberDto memberDto) throws Exception;
+
+    boolean idCheck(String id) throws Exception;
 }

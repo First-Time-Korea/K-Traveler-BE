@@ -1,4 +1,4 @@
-package com.ssafy.vue.exception;
+package com.ssafy.firskorea.exception;
 
 public class UnAuthorizedException extends RuntimeException {
 	

@@ -53,8 +53,15 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public void signUp(MemberDto memberDto) {
+	public void signUp(MemberDto memberDto) throws Exception {
 		memberMapper.signUp(memberDto);
 	}
 
+	@Override
+	public boolean idCheck(String id) throws Exception {
+		if(memberMapper.idCheck(id)>=1){
+			return false;
+		}
+		return true;
+	}
 }

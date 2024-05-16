@@ -48,4 +48,9 @@
 		(#{id}, #{name}, #{password}, #{emailId}, #{emailDomain}, 1 ,now()); 
 	</insert>
 
+	<select id="idCheck" parameterType="string" resultType="int">
+		select count(*) from member
+		where id=#{id}
+	</select>
+
 </mapper>
