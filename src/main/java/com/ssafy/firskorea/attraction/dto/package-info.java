@@ -1,1 +1,0 @@
-package com.ssafy.firskorea.attraction.dto;

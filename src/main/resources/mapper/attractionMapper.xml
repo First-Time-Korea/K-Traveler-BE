@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.ssafy.firskorea.attraction.mapper.AttractionMapper">
+	<select id="getThemeList" resultType="themeDto">
+		select * from theme;
+	</select>
+
+	<select id="getCategoryList" resultType="categoryDto"
+		parameterType="char">
+		select * from category
+		where theme_code = #{code};
+	</select>
+</mapper>
