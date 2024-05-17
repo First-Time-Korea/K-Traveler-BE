@@ -11,9 +11,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ssafy.firskorea.attraction.dto.request.SearchDto;
+import com.ssafy.firskorea.attraction.dto.response.AttractionDto;
 import com.ssafy.firskorea.attraction.dto.response.ThemeDto;
 import com.ssafy.firskorea.attraction.service.AttractionService;
 
@@ -62,4 +66,17 @@ public class AttractionController {
 		return new ResponseEntity<Map<String, Object>>(resultMap, status);
 	}
 
+	@Operation(summary = "여행지 검색", description = "검색한 키워드를 선택한 테마, 카테고리 내에서 찾아 반환한다.")
+	@PostMapping("/search")
+	public ResponseEntity<Map<String, Object>> getSearchAttraction(@RequestBody SearchDto searchDto)
+			throws SQLException {
+		System.out.println(searchDto);
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		HttpStatus status = HttpStatus.ACCEPTED;
+		List<AttractionDto> list = attractionService.search(searchDto);
+		System.out.println(list);
+		resultMap.put("status", "success");
+		resultMap.put("data", list);
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+	}
 }

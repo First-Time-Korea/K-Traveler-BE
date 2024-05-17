@@ -13,4 +13,18 @@
 		select * from category
 		where theme_code = #{code};
 	</select>
+
+	<select id="search" resultType="AttractionDto">
+		select info.title, info.latitude,
+		info.longitude
+		from attraction_detail detail
+		left join attraction_info
+		as info
+		on detail.content_id=info.content_id
+		where theme_code =
+		#{themeCode}
+		and category_code= #{categoryCode}
+		and info.title like
+		CONCAT('%',#{keyword},'%')
+	</select>
 </mapper>

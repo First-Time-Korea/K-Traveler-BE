@@ -10,7 +10,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class SearchDto {
-	private String themeCode;
+	private String keyword;
+	private Character themeCode;
 	private String categoryCode;
-	private String title; // 관광지명
 }
