@@ -45,10 +45,8 @@ public class MemberController {
         HttpStatus status = HttpStatus.ACCEPTED;
         try {
             memberService.signUp(memberDto);
-            resultMap.put("message", "success");
+            resultMap.put("status", "success");
         } catch (Exception e) {
-            log.debug("회원가입 에러 발생 : {}", e);
-            resultMap.put("message", e.getMessage());
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
         return new ResponseEntity<Map<String, Object>>(resultMap, status);
