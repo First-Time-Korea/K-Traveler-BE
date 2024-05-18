@@ -3,6 +3,7 @@ package com.ssafy.firskorea.attraction.service;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Locale.Category;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import com.ssafy.firskorea.attraction.dto.request.SearchDto;
 import com.ssafy.firskorea.attraction.dto.response.AttractionDto;
 import com.ssafy.firskorea.attraction.dto.response.ThemeDto;
 import com.ssafy.firskorea.attraction.mapper.AttractionMapper;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AttractionServiceImpl implements AttractionService {
@@ -30,7 +32,20 @@ public class AttractionServiceImpl implements AttractionService {
 
 	@Override
 	public List<AttractionDto> search(SearchDto searchDto) throws SQLException {
-		return attractionMapper.search(searchDto);
+		return attractionMapper.getAttractionByKeywordAndCode(searchDto);
+	}
+
+	@Override
+	@Transactional
+	public AttractionDto toggleBookmark(Map<String, String> map) throws SQLException {
+		AttractionDto dto = attractionMapper.getAttractionByContentId(map);
+		System.out.println(map);
+		if(dto.getBookmarkId()>0){
+			attractionMapper.deleteBookmark(map);
+		}else{
+			attractionMapper.createBookmark(map);
+		}
+		return attractionMapper.getAttractionByContentId(map);
 	}
 
 }

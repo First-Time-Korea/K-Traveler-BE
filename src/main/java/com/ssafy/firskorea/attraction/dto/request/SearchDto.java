@@ -10,7 +10,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class SearchDto {
-	private String keyword;
-	private Character themeCode;
-	private String categoryCode;
+    private String memberId;
+    private String keyword;
+    private Character themeCode;
+    private String categoryCode;
 }

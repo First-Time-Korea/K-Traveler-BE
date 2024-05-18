@@ -3,6 +3,7 @@ package com.ssafy.firskorea.attraction.mapper;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Locale.Category;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -17,6 +18,11 @@ public interface AttractionMapper {
 
 	List<Category> getCategoryList(Character code) throws SQLException;
 
-	List<AttractionDto> search(SearchDto searchDto) throws SQLException;
+	List<AttractionDto> getAttractionByKeywordAndCode(SearchDto searchDto) throws SQLException;
 
+	void createBookmark(Map<String, String> map) throws SQLException;
+
+	AttractionDto getAttractionByContentId(Map<String, String> map) throws SQLException;
+
+	void deleteBookmark(Map<String, String> map) throws SQLException;
 }

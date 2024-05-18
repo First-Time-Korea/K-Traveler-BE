@@ -14,17 +14,46 @@
 		where theme_code = #{code};
 	</select>
 
-	<select id="search" resultType="AttractionDto">
-		select info.title, info.latitude,
-		info.longitude
-		from attraction_detail detail
-		left join attraction_info
-		as info
-		on detail.content_id=info.content_id
-		where theme_code =
-		#{themeCode}
-		and category_code= #{categoryCode}
-		and info.title like
-		CONCAT('%',#{keyword},'%')
-	</select>
+	<select id="getAttractionByKeywordAndCode" resultType="AttractionDto" parameterType="searchDto">
+        select info.content_id, info.title, info.latitude,
+               info.longitude, info.addr1, info.first_image, description.overview, book.id bookmarkId
+        from attraction_detail detail
+                 left join attraction_info as info
+                           on detail.content_id=info.content_id
+                 left join attraction_description as description
+                           on detail.content_id=description.content_id
+                 left join bookmark as book
+                           on book.member_id=#{memberId} and detail.content_id = book.content_id
+        where detail.theme_code =#{themeCode}
+          and detail.category_code= #{categoryCode}
+          and info.title like CONCAT('%',#{keyword},'%');
+    </select>
+
+    <insert id="createBookmark" parameterType="map">
+        INSERT INTO bookmark (member_id, content_id)
+        SELECT #{memberId}, #{contentId}
+            WHERE NOT EXISTS (
+                SELECT 1
+                FROM bookmark
+                WHERE member_id = #{memberId} AND content_id = #{contentId}
+            );
+    </insert>
+
+    <select id="getAttractionByContentId" parameterType="map" resultType="AttractionDto">
+        select info.content_id, info.title, info.latitude,
+               info.longitude, info.addr1, info.first_image, description.overview, book.id bookmarkId
+        from attraction_detail detail
+                 left join attraction_info as info
+                           on detail.content_id=info.content_id
+                 left join attraction_description as description
+                           on detail.content_id=description.content_id
+                 left join bookmark as book
+                           on book.member_id=#{memberId} and detail.content_id = book.content_id
+        where info.content_id=#{contentId}
+    </select>
+
+    <delete id="deleteBookmark" parameterType="map">
+        delete from bookmark
+        where member_id=#{memberId} and content_id=#{contentId};
+    </delete>
 </mapper>

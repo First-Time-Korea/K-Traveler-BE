@@ -45,9 +45,7 @@ public class AttractionController {
 	public ResponseEntity<Map<String, Object>> getThemeList() throws SQLException {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		HttpStatus status = HttpStatus.ACCEPTED;
-		System.out.println("여행 테마 조회");
 		List<ThemeDto> list = attractionService.getThemeList();
-		System.out.println(list);
 		resultMap.put("status", "success");
 		resultMap.put("data", list);
 		return new ResponseEntity<Map<String, Object>>(resultMap, status);
@@ -58,9 +56,7 @@ public class AttractionController {
 	public ResponseEntity<Map<String, Object>> getCategoryList(@PathVariable Character themaCode) throws SQLException {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		HttpStatus status = HttpStatus.ACCEPTED;
-		System.out.println("여행 카테고리 조회");
 		List<Category> list = attractionService.getCategoryList(themaCode);
-		System.out.println(list);
 		resultMap.put("status", "success");
 		resultMap.put("data", list);
 		return new ResponseEntity<Map<String, Object>>(resultMap, status);
@@ -68,15 +64,26 @@ public class AttractionController {
 
 	@Operation(summary = "여행지 검색", description = "검색한 키워드를 선택한 테마, 카테고리 내에서 찾아 반환한다.")
 	@PostMapping("/search")
-	public ResponseEntity<Map<String, Object>> getSearchAttraction(@RequestBody SearchDto searchDto)
+	public ResponseEntity<Map<String, Object>> toggleBookmark(@RequestBody SearchDto searchDto)
 			throws SQLException {
 		System.out.println(searchDto);
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		HttpStatus status = HttpStatus.ACCEPTED;
 		List<AttractionDto> list = attractionService.search(searchDto);
-		System.out.println(list);
 		resultMap.put("status", "success");
 		resultMap.put("data", list);
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+	}
+
+	@Operation(summary = "북마크 토글", description = "회원 to 여행지 북마크")
+	@PostMapping("/bookmark")
+	public ResponseEntity<Map<String, Object>> toggleBookmark(@RequestBody Map<String, String> map)
+			throws SQLException {
+		Map<String, Object> resultMap = new HashMap<>();
+		HttpStatus status = HttpStatus.ACCEPTED;
+		AttractionDto dto = attractionService.toggleBookmark(map);
+		resultMap.put("status", "success");
+		resultMap.put("data", dto);
 		return new ResponseEntity<Map<String, Object>>(resultMap, status);
 	}
 }
