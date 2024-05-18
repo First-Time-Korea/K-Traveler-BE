@@ -1,4 +1,4 @@
-package com.ssafy.firskorea;
+package com.ssafy.firskorea.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
