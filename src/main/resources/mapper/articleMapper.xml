@@ -1,0 +1,66 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.ssafy.firskorea.board.mapper.ArticleMapper">
+
+	<resultMap type="articleDto" id="article">
+		<result column="id" property="id" />
+		<result column="member_id" property="memberId" />
+		<result column="content" property="cotent" />
+		<result column="hit" property="hit" />
+		<result column="created_time" property="createdTime" />
+		<result column="modified_time" property="modifiedTime" />
+		<association property="file" resultMap="file" />
+	</resultMap>
+	
+	<resultMap type="fileDto" id="file">
+		<result column="file_id" property="id" />
+		<result column="article_id" property="articleId" />
+		<result column="save_folder" property="saveFolder" />
+		<result column="origin_file" property="originFile" />
+		<result column="save_file" property="saveFile" />
+	</resultMap>
+	
+	<!-- 여행 후기 조회하기 -->
+	<sql id="search">
+		<if test="word != null and word != ''">
+			<if test="key == 'tag'">
+				and a.id in (
+					select article_id
+					from article_and_article_tag
+					where article_tag_id = (
+						select id
+						from article_tag
+						where name like concat('%', #{word}, '%')
+					)
+				)
+			</if>
+			<if test="key == 'username'">
+				and member_id = (
+					select id
+					from id
+					where name = #{word}
+				)
+			</if>
+		</if>
+	</sql>
+	
+	<select id="getArticles" parameterType="map" resultMap="article">
+		select a.id, f.id file_id, f.save_folder, f.origin_file, f.save_file
+		from article a, article_file f
+		where a.id = f.article_id
+		<include refid="search"></include>
+		order by a.id desc
+		limit #{start}, #{listsize}
+	</select>
+	
+	<!-- 여행 후기 총 개수 구하기 -->
+	<select id="getTotalArticleCount" parameterType="map" resultType="int">
+		select count(a.id)
+		from article a
+		<where>
+			<include refid="search"></include>
+		</where>
+	</select>
+
+</mapper>
