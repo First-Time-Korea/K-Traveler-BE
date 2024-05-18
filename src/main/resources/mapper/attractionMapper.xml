@@ -15,8 +15,8 @@
 	</select>
 
 	<select id="getAttractionByKeywordAndCode" resultType="AttractionDto" parameterType="searchDto">
-        select info.content_id, info.title, info.latitude,
-               info.longitude, info.addr1, info.first_image, description.overview, book.id bookmarkId
+        select info.content_id, info.latitude,
+               info.longitude, detail.theme_code
         from attraction_detail detail
                  left join attraction_info as info
                            on detail.content_id=info.content_id
