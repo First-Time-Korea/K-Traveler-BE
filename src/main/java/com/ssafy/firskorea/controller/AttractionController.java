@@ -64,12 +64,12 @@ public class AttractionController {
 
 	@Operation(summary = "여행지 검색", description = "검색한 키워드를 선택한 테마, 카테고리 내에서 찾아 반환한다.")
 	@PostMapping("/search")
-	public ResponseEntity<Map<String, Object>> toggleBookmark(@RequestBody SearchDto searchDto)
+	public ResponseEntity<Map<String, Object>> getAttractionList(@RequestBody SearchDto searchDto)
 			throws SQLException {
 		System.out.println(searchDto);
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		HttpStatus status = HttpStatus.ACCEPTED;
-		List<AttractionDto> list = attractionService.search(searchDto);
+		List<AttractionDto> list = attractionService.getAttractionByKeywordAndCode(searchDto);
 		resultMap.put("status", "success");
 		resultMap.put("data", list);
 		return new ResponseEntity<Map<String, Object>>(resultMap, status);
@@ -79,9 +79,22 @@ public class AttractionController {
 	@PostMapping("/bookmark")
 	public ResponseEntity<Map<String, Object>> toggleBookmark(@RequestBody Map<String, String> map)
 			throws SQLException {
+		System.out.println("북마크 요청"+map);
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = HttpStatus.ACCEPTED;
 		AttractionDto dto = attractionService.toggleBookmark(map);
+		resultMap.put("status", "success");
+		resultMap.put("data", dto);
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+	}
+
+	@Operation(summary = "여행지 단일 조회", description = "회원 아이디 및 콘텐트 아이디로 여행지 단일 조회")
+	@PostMapping()
+	public ResponseEntity<Map<String, Object>> getAttraction(@RequestBody Map<String, String> map)
+			throws SQLException {
+		Map<String, Object> resultMap = new HashMap<>();
+		HttpStatus status = HttpStatus.ACCEPTED;
+		AttractionDto dto = attractionService.getAttractionById(map);
 		resultMap.put("status", "success");
 		resultMap.put("data", dto);
 		return new ResponseEntity<Map<String, Object>>(resultMap, status);

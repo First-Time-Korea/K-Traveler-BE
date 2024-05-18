@@ -31,7 +31,7 @@ public class AttractionServiceImpl implements AttractionService {
 	}
 
 	@Override
-	public List<AttractionDto> search(SearchDto searchDto) throws SQLException {
+	public List<AttractionDto> getAttractionByKeywordAndCode(SearchDto searchDto) throws SQLException {
 		return attractionMapper.getAttractionByKeywordAndCode(searchDto);
 	}
 
@@ -39,7 +39,6 @@ public class AttractionServiceImpl implements AttractionService {
 	@Transactional
 	public AttractionDto toggleBookmark(Map<String, String> map) throws SQLException {
 		AttractionDto dto = attractionMapper.getAttractionByContentId(map);
-		System.out.println(map);
 		if(dto.getBookmarkId()>0){
 			attractionMapper.deleteBookmark(map);
 		}else{
@@ -48,4 +47,8 @@ public class AttractionServiceImpl implements AttractionService {
 		return attractionMapper.getAttractionByContentId(map);
 	}
 
+	@Override
+	public AttractionDto getAttractionById(Map<String, String> map) throws SQLException {
+		return attractionMapper.getAttractionByContentId(map);
+	}
 }

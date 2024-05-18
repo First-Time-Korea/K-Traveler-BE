@@ -14,7 +14,7 @@ public class AttractionDto {
     private String title;
     private String addr1;
     private String addr2;
-    private String firstImg;
+    private String firstImage;
     private String sidoCode;
     private String sidoName;
     private String gugunCode;

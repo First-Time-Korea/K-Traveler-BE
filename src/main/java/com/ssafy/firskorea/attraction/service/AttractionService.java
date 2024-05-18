@@ -15,8 +15,9 @@ public interface AttractionService {
 
 	List<Category> getCategoryList(Character code) throws SQLException;
 
-	List<AttractionDto> search(SearchDto searchDto) throws SQLException;
+	List<AttractionDto> getAttractionByKeywordAndCode(SearchDto searchDto) throws SQLException;
 
     AttractionDto toggleBookmark(Map<String, String> map) throws SQLException;
 
+	AttractionDto getAttractionById(Map<String, String> map)  throws SQLException;
 }
