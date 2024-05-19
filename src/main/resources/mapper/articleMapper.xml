@@ -38,7 +38,7 @@
 			<if test="key == 'username'">
 				and member_id = (
 					select id
-					from id
+					from member
 					where name = #{word}
 				)
 			</if>
