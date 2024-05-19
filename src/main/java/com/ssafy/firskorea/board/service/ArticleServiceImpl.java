@@ -163,4 +163,16 @@ public class ArticleServiceImpl implements ArticleService {
 		}
 	}
 
+	@Override
+	public ArticleDto getArticleForModification(int articleId) throws Exception {
+		// 여행 후기 조회하기
+		ArticleDto article = articleMapper.getArticleForModification(articleId);
+		
+		// 여행 후기의 태그 조회하기
+		List<TagDto> tags = articleMapper.getTagsOfArticle(articleId);
+		article.setTags(tags);
+		
+		return article;
+	}
+
 }

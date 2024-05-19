@@ -25,5 +25,9 @@ public interface ArticleMapper {
 	void connectArticleAndTag(Map<String, Object> map) throws Exception;
 	
 	void writeArticleFile(FileDto file) throws Exception;
+	
+	ArticleDto getArticleForModification(int articleId) throws Exception;
+	
+	List<TagDto> getTagsOfArticle(int articleId) throws Exception;
 
 }

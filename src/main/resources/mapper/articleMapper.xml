@@ -6,7 +6,7 @@
 	<resultMap type="articleDto" id="article">
 		<result column="id" property="id" />
 		<result column="member_id" property="memberId" />
-		<result column="content" property="cotent" />
+		<result column="content" property="content" />
 		<result column="hit" property="hit" />
 		<result column="created_time" property="createdTime" />
 		<result column="modified_time" property="modifiedTime" />
@@ -98,5 +98,24 @@
 		insert into article_file (article_id, save_folder, origin_file, save_file)
 		values (#{articleId}, #{saveFolder}, #{originFile}, #{saveFile})
 	</insert>
+	
+	<!-- 여행 후기 조회하기 for 수정 -->
+	<select id="getArticleForModification" parameterType="int" resultMap="article">
+		select a.id, a.member_id, a.content, af.save_folder, af.origin_file, af.save_file
+		from article a, article_file af
+		where a.id = af.article_id
+		and a.id = #{articleId}
+	</select>
+	
+	<!-- 여행 후기 관련 태그 조회하기 -->
+	<select id="getTagsOfArticle" parameterType="int" resultMap="tag">
+		select *
+		from article_tag
+		where id in (
+			select article_tag_id
+			from article_and_article_tag
+			where article_id = #{articleId}
+		)
+	</select>
 
 </mapper>
