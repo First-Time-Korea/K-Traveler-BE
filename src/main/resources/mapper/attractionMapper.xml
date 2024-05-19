@@ -56,4 +56,13 @@
         delete from bookmark
         where member_id=#{memberId} and content_id=#{contentId};
     </delete>
+
+    <select id="getRegionList" resultType="regionDto">
+        select g.sido_code, g.gugun_code, s.sido_name, g.gugun_name, s.sido_description, s.sido_image
+        from gugun g
+                 join sido s
+                      on s.sido_code = g.sido_code
+        order by g.sido_code, g.gugun_code;
+    </select>
+
 </mapper>

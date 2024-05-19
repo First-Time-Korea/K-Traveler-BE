@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Locale.Category;
 import java.util.Map;
 
-import com.ssafy.firskorea.attraction.dto.request.CompletionRequestDto;
+import com.ssafy.firskorea.plan.dto.RegionDto;
 import com.ssafy.firskorea.attraction.service.AttractionGptService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -114,4 +114,5 @@ public class AttractionController {
         resultMap.put("data", dto);
         return new ResponseEntity<>(resultMap, status);
     }
+
 }

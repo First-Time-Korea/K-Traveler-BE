@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.ssafy.firskorea.attraction.dto.request.SearchDto;
 import com.ssafy.firskorea.attraction.dto.response.AttractionDto;
+import com.ssafy.firskorea.plan.dto.RegionDto;
 import com.ssafy.firskorea.attraction.dto.response.ThemeDto;
 
 public interface AttractionService {

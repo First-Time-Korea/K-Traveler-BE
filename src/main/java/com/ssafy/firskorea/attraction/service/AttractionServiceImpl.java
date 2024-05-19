@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Locale.Category;
 import java.util.Map;
 
+import com.ssafy.firskorea.plan.dto.RegionDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
