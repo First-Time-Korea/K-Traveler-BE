@@ -21,6 +21,11 @@
 		<result column="save_file" property="saveFile" />
 	</resultMap>
 	
+	<resultMap type="tagDto" id="tag">
+		<result column="id" property="id" />
+		<result column="name" property="name" />
+	</resultMap>
+	
 	<!-- 여행 후기 조회하기 -->
 	<sql id="search">
 		<if test="word != null and word != ''">
@@ -62,5 +67,36 @@
 			<include refid="search"></include>
 		</where>
 	</select>
+	
+	<!-- 여행 태그 ID 조회하기 -->
+	<select id="getArticleTagId" parameterType="string" resultType="java.lang.Integer">
+		select id
+		from article_tag
+		where name like concat('%', #{tag}, '%')
+	</select>
+	
+	<!-- 여행 태그 생성하기 -->
+	<insert id="writeArticleTag" parameterType="tagDto" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		insert into article_tag (name)
+		values (#{name})
+	</insert>
+	
+	<!-- 여행 후기 생성하기 -->
+	<insert id="writeArticle" parameterType="articleDto" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		insert into article (member_id, content)
+		values (#{memberId}, #{content})
+	</insert>
+	
+	<!-- 여행 후기랑 태그 관계 생성하기 -->
+	<insert id="connectArticleAndTag" parameterType="map">
+		insert into article_and_article_tag (article_id, article_tag_id)
+		values (#{articleId}, #{tagId})
+	</insert>
+	
+	<!-- 여행 후기 사진 생성하기 -->
+	<insert id="writeArticleFile" parameterType="fileDto">
+		insert into article_file (article_id, save_folder, origin_file, save_file)
+		values (#{articleId}, #{saveFolder}, #{originFile}, #{saveFile})
+	</insert>
 
 </mapper>

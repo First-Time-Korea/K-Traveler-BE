@@ -1,19 +1,24 @@
 package com.ssafy.firskorea.board.service;
 
-import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.firskorea.board.dto.ArticleDto;
 import com.ssafy.firskorea.board.dto.FileDto;
+import com.ssafy.firskorea.board.dto.TagDto;
 import com.ssafy.firskorea.board.dto.response.ArticleFileDto;
 import com.ssafy.firskorea.board.mapper.ArticleMapper;
 import com.ssafy.firskorea.util.SizeConstant;
@@ -30,14 +35,76 @@ public class ArticleServiceImpl implements ArticleService {
 		super();
 		this.articleMapper = articleMapper;
 	}
-	
+
 	@Value("${articleFile.path.upload-images}")
 	private String uploadImagesPath;
 
 	@Override
-	public Map<String, Object> getArticles(Map<String, String> map) throws Exception {
-		log.debug(map.toString());
+	public void writeArticle(Map<String, Object> map) throws Exception {
+		// 여행 후기 태그 확인 및 생성하기
+		List<String> tags = (List<String>) map.get("tags");
+
+		List<Integer> tagIds = new ArrayList<>();
+		for (String tag : tags) {
+			// 여행 후기 태그 확인
+			log.debug(tag);
+			Integer id = articleMapper.getArticleTagId(tag);
+
+			if (id != null) {
+				tagIds.add(id);
+			} else {
+				TagDto t = new TagDto();
+				t.setName(tag);
+				articleMapper.writeArticleTag(t);
+
+				tagIds.add(t.getId());
+			}
+		}
+
+		// 여행 후기 생성하기
+		ArticleDto article = new ArticleDto();
+		article.setMemberId((String) map.get("userId"));
+		article.setContent((String) map.get("content"));
+
+		articleMapper.writeArticle(article);
+		int articleId = article.getId();
+
+		// 여행 후기랑 태그 관계 형성하기
+		for (Integer tagId : tagIds) {
+			Map<String, Object> m = new HashMap<>();
+			m.put("articleId", articleId);
+			m.put("tagId", tagId);
+
+			articleMapper.connectArticleAndTag(m);
+		}
+
+		// 여행 후기 사진 서버 저장 후 DB에 정보 저장하기
+		String today = new SimpleDateFormat("yyMMdd").format(new Date());
+		String saveFolder = uploadImagesPath + File.separator + today;
+
+		File folder = new File(saveFolder);
+		if (!folder.exists()) {
+			folder.mkdirs();
+		}
+
+		MultipartFile mfile = (MultipartFile) map.get("file");
+		FileDto file = new FileDto();
+		String originalFileName = mfile.getOriginalFilename();
+		if (!originalFileName.isEmpty()) {
+			String saveFileName = UUID.randomUUID().toString()
+					+ originalFileName.substring(originalFileName.lastIndexOf('.'));
+			file.setArticleId(articleId);
+			file.setSaveFolder(today);
+			file.setOriginFile(originalFileName);
+			file.setSaveFile(saveFileName);
+			mfile.transferTo(new File(folder, saveFileName));
+		}
 		
+		articleMapper.writeArticleFile(file);
+	}
+
+	@Override
+	public Map<String, Object> getArticles(Map<String, String> map) throws Exception {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		// 여행 후기 리스트 가져오기
@@ -50,13 +117,13 @@ public class ArticleServiceImpl implements ArticleService {
 		param.put("listsize", SizeConstant.LIST_SIZE);
 
 		List<ArticleDto> articles = articleMapper.getArticles(param);
-		
+
 		List<ArticleFileDto> articleFiles = new ArrayList<>();
 		for (ArticleDto article : articles) {
 			ArticleFileDto articleFile = new ArticleFileDto();
 			articleFile.setArticleId(article.getId());
 			articleFile.setMemberId(article.getMemberId());
-			
+
 			Map<String, String> img = new HashMap<>();
 			StringBuilder src = new StringBuilder();
 			FileDto file = article.getFile();
@@ -65,10 +132,10 @@ public class ArticleServiceImpl implements ArticleService {
 			img.put("src", src.toString());
 			img.put("fileName", file.getOriginFile());
 			articleFile.setImg(img);
-			
+
 			articleFiles.add(articleFile);
 		}
-		
+
 		result.put("articleFiles", articleFiles);
 
 		// 페이지네비게이션 계산하기
@@ -89,7 +156,7 @@ public class ArticleServiceImpl implements ArticleService {
 			InputStream imgStream = new FileInputStream(uploadImagesPath + "/" + src);
 			byte[] img = imgStream.readAllBytes();
 			imgStream.close();
-			
+
 			return img;
 		} catch (FileNotFoundException e) {
 			return null;
