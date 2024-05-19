@@ -7,7 +7,6 @@ import java.util.Map;
 
 import com.ssafy.firskorea.attraction.dto.request.SearchDto;
 import com.ssafy.firskorea.attraction.dto.response.AttractionDto;
-import com.ssafy.firskorea.plan.dto.RegionDto;
 import com.ssafy.firskorea.attraction.dto.response.ThemeDto;
 
 public interface AttractionService {
@@ -21,4 +20,8 @@ public interface AttractionService {
     AttractionDto toggleBookmark(Map<String, String> map) throws SQLException;
 
 	AttractionDto getAttractionById(Map<String, String> map)  throws SQLException;
+
+    List<AttractionDto> getAttractionListBySidoCode(String sidoCode) throws SQLException;
+
+	List<AttractionDto> getBookmarkedAttractionList(String memberId) throws SQLException;
 }

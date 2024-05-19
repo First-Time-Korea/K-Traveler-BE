@@ -27,5 +27,7 @@ public interface AttractionMapper {
 
 	void deleteBookmark(Map<String, String> map) throws SQLException;
 
+	List<AttractionDto> getBookmarkedAttractionList(String memberId) throws SQLException;
 
+	List<AttractionDto> getAttractionListBySidoCode(String sidoCode) throws SQLException;
 }

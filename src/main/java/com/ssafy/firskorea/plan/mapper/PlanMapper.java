@@ -8,4 +8,5 @@ import java.util.List;
 @Mapper
 public interface PlanMapper {
     List<RegionDto> getRegionList() throws SQLException;
+
 }

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Locale.Category;
 import java.util.Map;
 
-import com.ssafy.firskorea.plan.dto.RegionDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,5 +50,15 @@ public class AttractionServiceImpl implements AttractionService {
 	@Override
 	public AttractionDto getAttractionById(Map<String, String> map) throws SQLException {
 		return attractionMapper.getAttractionByContentId(map);
+	}
+
+	@Override
+	public List<AttractionDto> getAttractionListBySidoCode(String sidoCode) throws SQLException {
+		return attractionMapper.getAttractionListBySidoCode(sidoCode);
+	}
+
+	@Override
+	public List<AttractionDto> getBookmarkedAttractionList(String memberId) throws SQLException {
+		return attractionMapper.getBookmarkedAttractionList(memberId);
 	}
 }

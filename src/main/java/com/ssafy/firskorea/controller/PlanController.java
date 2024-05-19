@@ -9,10 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -33,7 +30,7 @@ public class PlanController {
         this.planService = planServiceImpl;
     }
 
-    @Operation(summary = "GPT를 사용, 여행지 단일 조회", description = "GPT를 사용해 한글을 영문으로 번역 후 반환")
+    @Operation(summary = "대한민국 행정 구역 전체 조회", description = "시도 코드, 이름, 이미지, 설명 전체 반환")
     @GetMapping("/regions")
     public ResponseEntity<Map<String, Object>> getRegionList() throws SQLException {
         Map<String, Object> resultMap = new HashMap<>();
@@ -41,7 +38,8 @@ public class PlanController {
         HttpStatus status = HttpStatus.ACCEPTED;
         resultMap.put("status", "success");
         resultMap.put("data", dto);
-        log.info("hello!!!!!!!!!!!!!");
         return new ResponseEntity<>(resultMap, status);
     }
+
+
 }
