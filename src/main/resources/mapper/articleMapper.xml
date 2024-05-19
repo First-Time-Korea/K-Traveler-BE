@@ -1,0 +1,141 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.ssafy.firskorea.board.mapper.ArticleMapper">
+
+	<resultMap type="articleDto" id="article">
+		<result column="id" property="id" />
+		<result column="member_id" property="memberId" />
+		<result column="content" property="content" />
+		<result column="hit" property="hit" />
+		<result column="created_time" property="createdTime" />
+		<result column="modified_time" property="modifiedTime" />
+		<association property="file" resultMap="file" />
+	</resultMap>
+	
+	<resultMap type="fileDto" id="file">
+		<result column="file_id" property="id" />
+		<result column="article_id" property="articleId" />
+		<result column="save_folder" property="saveFolder" />
+		<result column="origin_file" property="originFile" />
+		<result column="save_file" property="saveFile" />
+	</resultMap>
+	
+	<resultMap type="tagDto" id="tag">
+		<result column="id" property="id" />
+		<result column="name" property="name" />
+	</resultMap>
+	
+	<!-- 여행 후기 조회하기 -->
+	<sql id="search">
+		<if test="word != null and word != ''">
+			<if test="key == 'tag'">
+				and a.id in (
+					select article_id
+					from article_and_article_tag
+					where article_tag_id = (
+						select id
+						from article_tag
+						where name like concat('%', #{word}, '%')
+					)
+				)
+			</if>
+			<if test="key == 'username'">
+				and member_id = (
+					select id
+					from member
+					where name = #{word}
+				)
+			</if>
+		</if>
+	</sql>
+	
+	<select id="getArticles" parameterType="map" resultMap="article">
+		select a.id, f.id file_id, f.save_folder, f.origin_file, f.save_file
+		from article a, article_file f
+		where a.id = f.article_id
+		<include refid="search"></include>
+		order by a.id desc
+		limit #{start}, #{listsize}
+	</select>
+	
+	<!-- 여행 후기 총 개수 구하기 -->
+	<select id="getTotalArticleCount" parameterType="map" resultType="int">
+		select count(a.id)
+		from article a
+		<where>
+			<include refid="search"></include>
+		</where>
+	</select>
+	
+	<!-- 여행 태그 ID 조회하기 -->
+	<select id="getArticleTagId" parameterType="string" resultType="java.lang.Integer">
+		select id
+		from article_tag
+		where name like concat('%', #{tag}, '%')
+	</select>
+	
+	<!-- 여행 태그 생성하기 -->
+	<insert id="writeArticleTag" parameterType="tagDto" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		insert into article_tag (name)
+		values (#{name})
+	</insert>
+	
+	<!-- 여행 후기 생성하기 -->
+	<insert id="writeArticle" parameterType="articleDto" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		insert into article (member_id, content)
+		values (#{memberId}, #{content})
+	</insert>
+	
+	<!-- 여행 후기랑 태그 관계 생성하기 -->
+	<insert id="connectArticleAndTag" parameterType="map">
+		insert into article_and_article_tag (article_id, article_tag_id)
+		values 
+		<foreach item="item" collection="articleTagIds" separator=",">
+            (#{articleId}, #{item})
+        </foreach>
+	</insert>
+	
+	<!-- 여행 후기 사진 생성하기 -->
+	<insert id="writeArticleFile" parameterType="fileDto">
+		insert into article_file (article_id, save_folder, origin_file, save_file)
+		values (#{articleId}, #{saveFolder}, #{originFile}, #{saveFile})
+	</insert>
+	
+	<!-- 여행 후기 조회하기 for 수정 -->
+	<select id="getArticleForModification" parameterType="int" resultMap="article">
+		select a.id, a.member_id, a.content, af.save_folder, af.origin_file, af.save_file
+		from article a, article_file af
+		where a.id = af.article_id
+		and a.id = #{articleId}
+	</select>
+	
+	<!-- 여행 후기 관련 태그 조회하기 -->
+	<select id="getTagsOfArticle" parameterType="int" resultMap="tag">
+		select id, name
+		from article_tag
+		where id in (
+			select article_tag_id
+			from article_and_article_tag
+			where article_id = #{articleId}
+		)
+	</select>
+	
+	<!-- 여행 후기 수정하기 -->
+	<update id="modifyArticle" parameterType="map">
+		update article
+		set content = #{content}
+		where id = #{articleId}
+	</update>
+	
+	<!-- 여행 후기랑 태그 관계 삭제하기 -->
+	<delete id="disconnectArticleAndTag" parameterType="map">
+		delete from article_and_article_tag
+		where article_id = #{articleId}
+		and article_tag_id in 
+		<foreach item="item" collection="articleTagIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+	</delete>
+
+</mapper>
