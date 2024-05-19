@@ -90,7 +90,10 @@
 	<!-- 여행 후기랑 태그 관계 생성하기 -->
 	<insert id="connectArticleAndTag" parameterType="map">
 		insert into article_and_article_tag (article_id, article_tag_id)
-		values (#{articleId}, #{tagId})
+		values 
+		<foreach item="item" collection="articleTagIds" separator=",">
+            (#{articleId}, #{item})
+        </foreach>
 	</insert>
 	
 	<!-- 여행 후기 사진 생성하기 -->
@@ -109,7 +112,7 @@
 	
 	<!-- 여행 후기 관련 태그 조회하기 -->
 	<select id="getTagsOfArticle" parameterType="int" resultMap="tag">
-		select *
+		select id, name
 		from article_tag
 		where id in (
 			select article_tag_id
@@ -117,5 +120,22 @@
 			where article_id = #{articleId}
 		)
 	</select>
+	
+	<!-- 여행 후기 수정하기 -->
+	<update id="modifyArticle" parameterType="map">
+		update article
+		set content = #{content}
+		where id = #{articleId}
+	</update>
+	
+	<!-- 여행 후기랑 태그 관계 삭제하기 -->
+	<delete id="disconnectArticleAndTag" parameterType="map">
+		delete from article_and_article_tag
+		where article_id = #{articleId}
+		and article_tag_id in 
+		<foreach item="item" collection="articleTagIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+	</delete>
 
 </mapper>

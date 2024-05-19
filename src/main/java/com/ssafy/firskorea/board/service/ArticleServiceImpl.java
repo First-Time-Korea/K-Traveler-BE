@@ -47,7 +47,6 @@ public class ArticleServiceImpl implements ArticleService {
 		List<Integer> tagIds = new ArrayList<>();
 		for (String tag : tags) {
 			// 여행 후기 태그 확인
-			log.debug(tag);
 			Integer id = articleMapper.getArticleTagId(tag);
 
 			if (id != null) {
@@ -70,13 +69,10 @@ public class ArticleServiceImpl implements ArticleService {
 		int articleId = article.getId();
 
 		// 여행 후기랑 태그 관계 형성하기
-		for (Integer tagId : tagIds) {
-			Map<String, Object> m = new HashMap<>();
-			m.put("articleId", articleId);
-			m.put("tagId", tagId);
-
-			articleMapper.connectArticleAndTag(m);
-		}
+		Map<String, Object> m = new HashMap<>();
+		m.put("articleId", articleId);
+		m.put("articleTagIds", tagIds);
+		articleMapper.connectArticleAndTag(m);
 
 		// 여행 후기 사진 서버 저장 후 DB에 정보 저장하기
 		String today = new SimpleDateFormat("yyMMdd").format(new Date());
@@ -99,7 +95,7 @@ public class ArticleServiceImpl implements ArticleService {
 			file.setSaveFile(saveFileName);
 			mfile.transferTo(new File(folder, saveFileName));
 		}
-		
+
 		articleMapper.writeArticleFile(file);
 	}
 
@@ -167,12 +163,107 @@ public class ArticleServiceImpl implements ArticleService {
 	public ArticleDto getArticleForModification(int articleId) throws Exception {
 		// 여행 후기 조회하기
 		ArticleDto article = articleMapper.getArticleForModification(articleId);
-		
+
 		// 여행 후기의 태그 조회하기
 		List<TagDto> tags = articleMapper.getTagsOfArticle(articleId);
 		article.setTags(tags);
-		
+
 		return article;
+	}
+
+	@Override
+	public void modifyArticle(Map<String, Object> map) throws Exception {
+		// 여행 후기 태그 확인 및 생성하기
+		List<String> tags = (List<String>) map.get("tags");
+
+		List<Integer> tagIds = new ArrayList<>();
+		for (String tag : tags) {
+			// 여행 후기 태그 확인
+			Integer id = articleMapper.getArticleTagId(tag);
+
+			if (id != null) {
+				tagIds.add(id);
+			} else {
+				TagDto t = new TagDto();
+				t.setName(tag);
+				articleMapper.writeArticleTag(t);
+
+				tagIds.add(t.getId());
+			}
+		}
+
+		// 여행 후기 수정하기
+		int articleId = (Integer) map.get("articleId");
+		Map<String, Object> articleMap = new HashMap<>();
+		articleMap.put("articleId", articleId);
+		articleMap.put("content", map.get("content"));
+
+		articleMapper.modifyArticle(articleMap);
+
+		// 여행 후기랑 태그 관계 삭제 및 형성하기
+		List<TagDto> registedTags = articleMapper.getTagsOfArticle(articleId);
+		List<Integer> registedTagIds = new ArrayList<>();
+		List<Integer> removedTagIds = new ArrayList<>();
+		for (TagDto registedTag : registedTags) {
+			// 삭제 후보로 등록하기
+			if (!tags.contains(registedTag.getName())) {
+				removedTagIds.add(registedTag.getId());
+			}
+
+			// 이미 관계가 맺어진 태그 아이디 가져오기
+			registedTagIds.add(registedTag.getId());
+		}
+
+		// 없어진 여행 후기랑 태그 관계 삭제하기
+		if (removedTagIds.size() > 0) {
+			Map<String, Object> removedTagMap = new HashMap<>();
+			removedTagMap.put("articleId", articleId);
+			removedTagMap.put("articleTagIds", removedTagIds);
+
+			articleMapper.disconnectArticleAndTag(removedTagMap);
+		}
+
+		// 새로 생긴 여행 후기랑 태그 관계 형성하기
+		List<Integer> createdTagIds = new ArrayList<>();
+		for (Integer tagId : tagIds) {
+			if (!registedTagIds.contains(tagId)) {
+				createdTagIds.add(tagId);
+			}
+		}
+
+		if (createdTagIds.size() > 0) {
+			Map<String, Object> createdTagMap = new HashMap<>();
+			createdTagMap.put("articleId", articleId);
+			createdTagMap.put("articleTagIds", createdTagIds);
+
+			articleMapper.connectArticleAndTag(createdTagMap);
+		}
+
+		// 여행 후기 사진 서버 저장 후 DB에 정보 저장하기
+		MultipartFile mfile = (MultipartFile) map.get("file");
+		if (!mfile.isEmpty()) {
+			String today = new SimpleDateFormat("yyMMdd").format(new Date());
+			String saveFolder = uploadImagesPath + File.separator + today;
+
+			File folder = new File(saveFolder);
+			if (!folder.exists()) {
+				folder.mkdirs();
+			}
+
+			FileDto file = new FileDto();
+			String originalFileName = mfile.getOriginalFilename();
+			if (!originalFileName.isEmpty()) {
+				String saveFileName = UUID.randomUUID().toString()
+						+ originalFileName.substring(originalFileName.lastIndexOf('.'));
+				file.setArticleId(articleId);
+				file.setSaveFolder(today);
+				file.setOriginFile(originalFileName);
+				file.setSaveFile(saveFileName);
+				mfile.transferTo(new File(folder, saveFileName));
+			}
+
+			articleMapper.writeArticleFile(file);
+		}
 	}
 
 }

@@ -10,5 +10,6 @@ public interface ArticleService {
 	Map<String, Object> getArticles(Map<String, String> map) throws Exception;
 	byte[] getArticleFile(String src) throws Exception;
 	ArticleDto getArticleForModification(int articleId) throws Exception;
+	void modifyArticle(Map<String, Object> map) throws Exception;
 
 }

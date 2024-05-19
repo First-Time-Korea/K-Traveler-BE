@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -103,12 +104,33 @@ public class ArticleController {
 	
 	// 여행 후기 조회하기 for 수정
 	@GetMapping("/modify/{articleid}")
-	public ResponseEntity<Map<String, Object>> getMethodName(@PathVariable("articleid") int articleId) throws Exception {
+	public ResponseEntity<Map<String, Object>> getArticleForModification(@PathVariable("articleid") int articleId) throws Exception {
 		ArticleDto article = articleService.getArticleForModification(articleId);
 		
 		Map<String, Object> response = new HashMap<>();
 		response.put("message", "여행 후기 리스트 조회 성공");
 		response.put("article", article);
+
+		ResponseEntity<Map<String, Object>> responseEntity = ResponseEntity.status(200).body(response);
+
+		return responseEntity;
+	}
+	
+	// 여행 후기 수정하기
+	@PutMapping("modify")
+	public ResponseEntity<Map<String, Object>> modifyArticle(@RequestParam("articleid") int articleId,
+			@RequestParam("tags") List<String> tags, @RequestParam("content") String content,
+			@RequestParam("file") MultipartFile file) throws Exception {
+		Map<String, Object> map = new HashMap<>();
+		map.put("articleId", articleId);
+		map.put("tags", tags);
+		map.put("content", content);
+		map.put("file", file);
+		
+		articleService.modifyArticle(map);
+		
+		Map<String, Object> response = new HashMap<>();
+		response.put("message", "여행 후기 수정 성공");
 
 		ResponseEntity<Map<String, Object>> responseEntity = ResponseEntity.status(200).body(response);
 

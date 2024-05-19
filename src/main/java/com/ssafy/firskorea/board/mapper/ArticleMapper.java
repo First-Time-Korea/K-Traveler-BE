@@ -29,5 +29,9 @@ public interface ArticleMapper {
 	ArticleDto getArticleForModification(int articleId) throws Exception;
 	
 	List<TagDto> getTagsOfArticle(int articleId) throws Exception;
+	
+	void modifyArticle(Map<String, Object> map) throws Exception;
+	
+	void disconnectArticleAndTag(Map<String, Object> map) throws Exception;
 
 }
