@@ -171,10 +171,12 @@
 		        from article ar, article_file f
 		        where ar.id = f.article_id
 		        and ar.id = #{articleId}
+		        order by f.id desc
+		        limit 1
 		    ) a, member m
 		    where a.member_id = m.id
-		) r, article_comment c
-		where r.id = c.article_id;
+		) r left join article_comment c
+		on r.id = c.article_id
 	</select>
 
 </mapper>
