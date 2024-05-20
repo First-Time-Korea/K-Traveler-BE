@@ -144,7 +144,7 @@
 	<!-- 여행 후기 수정하기 -->
 	<update id="modifyArticle" parameterType="map">
 		update article
-		set content = #{content}
+		set content = #{content}, modified_time = NOW()
 		where id = #{articleId}
 	</update>
 	
