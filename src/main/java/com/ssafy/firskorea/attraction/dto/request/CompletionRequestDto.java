@@ -1,7 +1,6 @@
 package com.ssafy.firskorea.attraction.dto.request;
 
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,7 +14,6 @@ public class CompletionRequestDto {
     private String model;
     private List<Message> messages;
 
-    @Builder
     public CompletionRequestDto(String model, List<Message> messages) {
         this.model = model;
         this.messages = messages;
@@ -28,7 +26,6 @@ public class CompletionRequestDto {
         private String content;
         private Float temperature;
 
-        @Builder
         public Message(String role, String content, Float temperature) {
             this.role = role;
             this.content = content;
