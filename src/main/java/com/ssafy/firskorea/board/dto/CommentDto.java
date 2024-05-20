@@ -20,6 +20,10 @@ public class CommentDto {
 	private int depth;
 	private String content;
 	private String createdTime;
-	private String modifiedTime;
+	private boolean existed;
+	
+	public boolean getExisted() {
+		return existed;
+	}
 	
 }

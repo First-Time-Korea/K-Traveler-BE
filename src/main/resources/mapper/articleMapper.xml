@@ -41,9 +41,9 @@
 		<result column="comment_id" property="id" />
 		<result column="comment_member_id" property="memberId" />
 		<result column="parent_article_comment_id" property="parentCommentId" />
-		<result column="depth" property="depth" />
 		<result column="comment_content" property="content" />
 		<result column="comment_created_time" property="createdTime" />
+		<result column="comment_status" property="existed" />
 	</resultMap>
 	
 	<!-- 여행 후기 조회하기 -->
@@ -165,7 +165,7 @@
 		select r.id, r.member_id, r.content, r.hit, r.created_time, r.modified_time,
 			r.name,
 			r.save_folder, r.origin_file, r.save_file,
-			c.id comment_id, c.member_id comment_member_id, c.parent_article_comment_id, c.depth, c.content comment_content, c.created_time comment_created_time
+			c.id comment_id, c.member_id comment_member_id, c.parent_article_comment_id, c.content comment_content, c.created_time comment_created_time, c.status comment_status
 		from (
 			select a.id, a.member_id, a.content, a.hit, a.created_time, a.modified_time, m.name, a.save_folder, a.origin_file, a.save_file
 		    from (
