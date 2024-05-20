@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.firskorea.board.dto.ArticleDto;
+import com.ssafy.firskorea.board.dto.response.ArticleAndCommentDto;
 import com.ssafy.firskorea.board.service.ArticleService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -136,5 +137,20 @@ public class ArticleController {
 
 		return responseEntity;
 	}
+	
+	// 여행 후기 조회하기
+	@GetMapping("detail/{articleid}")
+	public ResponseEntity<Map<String, Object>> getArticle(@PathVariable("articleid") int articleId) throws Exception {
+		ArticleAndCommentDto ac = articleService.getArticle(articleId);
+		
+		Map<String, Object> response = new HashMap<>();
+		response.put("message", "여행 후기 조회 성공");
+		response.put("article", ac);
+
+		ResponseEntity<Map<String, Object>> responseEntity = ResponseEntity.status(200).body(response);
+
+		return responseEntity;
+	}
+	
 
 }
