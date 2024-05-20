@@ -150,12 +150,14 @@
 	
 	<!-- 여행 후기랑 태그 관계 삭제하기 -->
 	<delete id="disconnectArticleAndTag" parameterType="map">
-		delete from article_and_article_tag
-		where article_id = #{articleId}
-		and article_tag_id in 
-		<foreach item="item" collection="articleTagIds" open="(" separator="," close=")">
-            #{item}
-        </foreach>
+	    delete from article_and_article_tag
+	    where article_id = #{articleId}
+	    <if test="articleTagIds != null and articleTagIds.size() > 0">
+	        and article_tag_id in 
+	        <foreach item="item" collection="articleTagIds" open="(" separator="," close=")">
+	            #{item}
+	        </foreach>
+	    </if>
 	</delete>
 	
 	<!-- 여행 후기 조회하기 -->
@@ -178,5 +180,17 @@
 		) r left join article_comment c
 		on r.id = c.article_id
 	</select>
+	
+	<!-- 여행 후기 사진 삭제하기 -->
+	<delete id="deleteArticleFile" parameterType="int">
+		delete from article_file
+		where article_id = #{articleId}
+	</delete>
+	
+	<!-- 여행 후기 삭제하기 -->
+	<delete id="deleteArticle" parameterType="int">
+		delete from article
+		where id = #{id}
+	</delete>
 
 </mapper>

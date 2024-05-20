@@ -36,5 +36,9 @@ public interface ArticleMapper {
 	void disconnectArticleAndTag(Map<String, Object> map) throws Exception;
 	
 	ArticleAndCommentDto getArticle(int articleId) throws Exception;
+	
+	void deleteArticleFile(int articleId) throws Exception;
+	
+	void deleteArticle(int aritlceId) throws Exception;
 
 }

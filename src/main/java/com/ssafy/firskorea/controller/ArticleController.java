@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -152,5 +153,17 @@ public class ArticleController {
 		return responseEntity;
 	}
 	
+	// 여행 후기 삭제하기
+	@DeleteMapping("delete/{articleid}")
+	public ResponseEntity<Map<String, Object>> deleteArticle(@PathVariable("articleid") int articleId) throws Exception {
+		articleService.deleteArticle(articleId);
+		
+		Map<String, Object> response = new HashMap<>();
+		response.put("message", "여행 후기 삭제 성공");
+
+		ResponseEntity<Map<String, Object>> responseEntity = ResponseEntity.status(200).body(response);
+
+		return responseEntity;
+	}
 
 }

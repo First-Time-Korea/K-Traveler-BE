@@ -278,4 +278,19 @@ public class ArticleServiceImpl implements ArticleService {
 		return articleMapper.getArticle(articleId);
 	}
 
+	@Override
+	@Transactional
+	public void deleteArticle(int articleId) throws Exception {
+		// 여행 후기랑 태그 관계 제거하기
+		Map<String, Object> map = new HashMap<>();
+		map.put("articleId", articleId);
+		articleMapper.disconnectArticleAndTag(map);
+		
+		// 여행 사진 제거하기
+		articleMapper.deleteArticleFile(articleId);
+		
+		// 여행 후기 제거하기
+		articleMapper.deleteArticle(articleId);
+	}
+
 }
