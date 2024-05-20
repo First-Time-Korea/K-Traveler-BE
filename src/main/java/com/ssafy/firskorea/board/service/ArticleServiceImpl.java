@@ -14,11 +14,13 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.firskorea.board.dto.ArticleDto;
 import com.ssafy.firskorea.board.dto.FileDto;
 import com.ssafy.firskorea.board.dto.TagDto;
+import com.ssafy.firskorea.board.dto.response.ArticleAndCommentDto;
 import com.ssafy.firskorea.board.dto.response.ArticleFileDto;
 import com.ssafy.firskorea.board.mapper.ArticleMapper;
 import com.ssafy.firskorea.util.SizeConstant;
@@ -40,6 +42,7 @@ public class ArticleServiceImpl implements ArticleService {
 	private String uploadImagesPath;
 
 	@Override
+	@Transactional
 	public void writeArticle(Map<String, Object> map) throws Exception {
 		// 여행 후기 태그 확인 및 생성하기
 		List<String> tags = (List<String>) map.get("tags");
@@ -100,6 +103,7 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 
 	@Override
+	@Transactional
 	public Map<String, Object> getArticles(Map<String, String> map) throws Exception {
 		Map<String, Object> result = new HashMap<String, Object>();
 
@@ -160,6 +164,7 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 
 	@Override
+	@Transactional
 	public ArticleDto getArticleForModification(int articleId) throws Exception {
 		// 여행 후기 조회하기
 		ArticleDto article = articleMapper.getArticleForModification(articleId);
@@ -172,6 +177,7 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 
 	@Override
+	@Transactional
 	public void modifyArticle(Map<String, Object> map) throws Exception {
 		// 여행 후기 태그 확인 및 생성하기
 		List<String> tags = (List<String>) map.get("tags");
@@ -264,6 +270,12 @@ public class ArticleServiceImpl implements ArticleService {
 
 			articleMapper.writeArticleFile(file);
 		}
+	}
+
+	@Override
+	@Transactional
+	public ArticleAndCommentDto getArticle(int articleId) throws Exception {
+		return articleMapper.getArticle(articleId);
 	}
 
 }

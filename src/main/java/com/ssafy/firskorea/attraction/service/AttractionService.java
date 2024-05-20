@@ -20,4 +20,8 @@ public interface AttractionService {
     AttractionDto toggleBookmark(Map<String, String> map) throws SQLException;
 
 	AttractionDto getAttractionById(Map<String, String> map)  throws SQLException;
+
+    List<AttractionDto> getAttractionListBySidoCode(String sidoCode) throws SQLException;
+
+	List<AttractionDto> getBookmarkedAttractionList(String memberId) throws SQLException;
 }

@@ -56,4 +56,32 @@
         delete from bookmark
         where member_id=#{memberId} and content_id=#{contentId};
     </delete>
+
+    <select id="getAttractionListBySidoCode" parameterType="string">
+        select info.content_id, info.title, info.first_image, info.addr1, info.latitude, info.longitude, t.theme_name, description.overView
+        from attraction_info info
+                 join attraction_detail detail
+                      on info.content_id = detail.content_id
+                 join attraction_description description
+                      on info.content_id = description.content_id
+                 join theme t
+                      on t.theme_code = detail.theme_code
+        where sido_code=#{sidoCode};
+    </select>
+
+    <select id="getBookmarkedAttractionList" parameterType="string">
+        select info.content_id, info.title, info.first_image, info.addr1, info.latitude, info.longitude, t.theme_name, description.overView
+        from attraction_info info
+                 join attraction_detail detail
+                      on info.content_id = detail.content_id
+                 join attraction_description description
+                      on info.content_id = description.content_id
+                 join theme t
+                      on t.theme_code = detail.theme_code
+                 join bookmark b
+                      on b.content_id = info.content_id
+        where b.member_id=#{memberId};
+    </select>
+
+
 </mapper>

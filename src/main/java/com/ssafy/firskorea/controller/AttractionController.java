@@ -6,17 +6,11 @@ import java.util.List;
 import java.util.Locale.Category;
 import java.util.Map;
 
-import com.ssafy.firskorea.attraction.dto.request.CompletionRequestDto;
+import com.ssafy.firskorea.plan.dto.RegionDto;
 import com.ssafy.firskorea.attraction.service.AttractionGptService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.ssafy.firskorea.attraction.dto.request.SearchDto;
 import com.ssafy.firskorea.attraction.dto.response.AttractionDto;
@@ -68,7 +62,7 @@ public class AttractionController {
 
     @Operation(summary = "여행지 검색", description = "검색한 키워드를 선택한 테마, 카테고리 내에서 찾아 반환한다.")
     @PostMapping("/search")
-    public ResponseEntity<Map<String, Object>> getAttractionList(@RequestBody SearchDto searchDto)
+    public ResponseEntity<Map<String, Object>> getAttractionListByThema(@RequestBody SearchDto searchDto)
             throws SQLException {
         System.out.println(searchDto);
         Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -114,4 +108,28 @@ public class AttractionController {
         resultMap.put("data", dto);
         return new ResponseEntity<>(resultMap, status);
     }
+
+    @Operation(summary = "특정 지역의 관광지 전체 조회", description = "유저가 검색한 장소에 해당하는 시도 코드를 가지고 해당 지역에 존재하는 관광지 반환")
+    @GetMapping("/sido/{sidoCode}")
+    public ResponseEntity<Map<String, Object>> getAttractionListBySidoCode(@PathVariable String sidoCode) throws SQLException {
+        Map<String, Object> resultMap = new HashMap<>();
+        List<AttractionDto> dto = attractionService.getAttractionListBySidoCode(sidoCode);
+        HttpStatus status = HttpStatus.ACCEPTED;
+        resultMap.put("status", "success");
+        resultMap.put("data", dto);
+        return new ResponseEntity<>(resultMap, status);
+    }
+
+
+    @Operation(summary = "북마크 한 위치 조회", description = "해당 유저가 북마크한 모든 장소를 반환한다.")
+    @GetMapping("/bookmark")
+    public ResponseEntity<Map<String, Object>> getBookmarkedAttractionList(@RequestParam String memberId) throws SQLException {
+        Map<String, Object> resultMap = new HashMap<>();
+        List<AttractionDto> dto = attractionService.getBookmarkedAttractionList(memberId);
+        HttpStatus status = HttpStatus.ACCEPTED;
+        resultMap.put("status", "success");
+        resultMap.put("data", dto);
+        return new ResponseEntity<>(resultMap, status);
+    }
+
 }
