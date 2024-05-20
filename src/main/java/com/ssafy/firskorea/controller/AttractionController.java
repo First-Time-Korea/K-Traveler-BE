@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Locale.Category;
 import java.util.Map;
 
-import com.ssafy.firskorea.plan.dto.RegionDto;
 import com.ssafy.firskorea.attraction.service.AttractionGptService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -60,6 +59,17 @@ public class AttractionController {
         return new ResponseEntity<Map<String, Object>>(resultMap, status);
     }
 
+    @Operation(summary = "여행 지역 정보", description = "대한민국 행정 지역에 속한 시도를 조회한다.")
+    @GetMapping("/region")
+    public ResponseEntity<Map<String, Object>> getSidoList() throws SQLException {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        HttpStatus status = HttpStatus.ACCEPTED;
+        List<Category> list = attractionService.getSidoList();
+        resultMap.put("status", "success");
+        resultMap.put("data", list);
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+    }
+
     @Operation(summary = "여행지 검색", description = "검색한 키워드를 선택한 테마, 카테고리 내에서 찾아 반환한다.")
     @PostMapping("/search")
     public ResponseEntity<Map<String, Object>> getAttractionListByThema(@RequestBody SearchDto searchDto)
@@ -67,7 +77,7 @@ public class AttractionController {
         System.out.println(searchDto);
         Map<String, Object> resultMap = new HashMap<String, Object>();
         HttpStatus status = HttpStatus.ACCEPTED;
-        List<AttractionDto> list = attractionService.getAttractionByKeywordAndCode(searchDto);
+        List<AttractionDto> list = attractionService.getAttractionBySearch(searchDto);
         resultMap.put("status", "success");
         resultMap.put("data", list);
         return new ResponseEntity<Map<String, Object>>(resultMap, status);
@@ -119,7 +129,6 @@ public class AttractionController {
         resultMap.put("data", dto);
         return new ResponseEntity<>(resultMap, status);
     }
-
 
     @Operation(summary = "북마크 한 위치 조회", description = "해당 유저가 북마크한 모든 장소를 반환한다.")
     @GetMapping("/bookmark")

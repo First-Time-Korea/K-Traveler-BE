@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Locale.Category;
 import java.util.Map;
 
-import com.ssafy.firskorea.plan.dto.RegionDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.ssafy.firskorea.attraction.dto.request.SearchDto;
@@ -19,7 +18,7 @@ public interface AttractionMapper {
 
 	List<Category> getCategoryList(Character code) throws SQLException;
 
-	List<AttractionDto> getAttractionByKeywordAndCode(SearchDto searchDto) throws SQLException;
+	List<AttractionDto> getAttractionBySearch(SearchDto searchDto) throws SQLException;
 
 	void createBookmark(Map<String, String> map) throws SQLException;
 
@@ -30,4 +29,6 @@ public interface AttractionMapper {
 	List<AttractionDto> getBookmarkedAttractionList(String memberId) throws SQLException;
 
 	List<AttractionDto> getAttractionListBySidoCode(String sidoCode) throws SQLException;
+
+	List<Category> getSidoList() throws SQLException;
 }

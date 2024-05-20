@@ -11,17 +11,19 @@ import com.ssafy.firskorea.attraction.dto.response.ThemeDto;
 
 public interface AttractionService {
 
-	List<ThemeDto> getThemeList() throws SQLException;
+    List<ThemeDto> getThemeList() throws SQLException;
 
-	List<Category> getCategoryList(Character code) throws SQLException;
+    List<Category> getCategoryList(Character code) throws SQLException;
 
-	List<AttractionDto> getAttractionByKeywordAndCode(SearchDto searchDto) throws SQLException;
+    List<AttractionDto> getAttractionBySearch(SearchDto searchDto) throws SQLException;
 
     AttractionDto toggleBookmark(Map<String, String> map) throws SQLException;
 
-	AttractionDto getAttractionById(Map<String, String> map)  throws SQLException;
+    AttractionDto getAttractionById(Map<String, String> map) throws SQLException;
 
     List<AttractionDto> getAttractionListBySidoCode(String sidoCode) throws SQLException;
 
-	List<AttractionDto> getBookmarkedAttractionList(String memberId) throws SQLException;
+    List<AttractionDto> getBookmarkedAttractionList(String memberId) throws SQLException;
+
+    List<Category> getSidoList() throws SQLException;
 }

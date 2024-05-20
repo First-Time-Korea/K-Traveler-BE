@@ -33,13 +33,11 @@ public class PlanServiceImpl implements PlanService {
 		plan.put("memberId", dto.getMemberId());
 		plan.put("title", dto.getTitle());
 		planMapper.insertPlan(plan);
-		System.out.println(plan);
 
 		String planId = String.valueOf(plan.get("id"));
 		PlanFileDto fileDto = dto.getPlanFileDto();
 		if (fileDto != null) {
 			fileDto.setPlanId(planId);
-			System.out.println("fileDto" + fileDto);
 			planMapper.insertPlanFile(fileDto);
 		}
 
