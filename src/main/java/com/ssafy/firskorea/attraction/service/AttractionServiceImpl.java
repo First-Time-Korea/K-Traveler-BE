@@ -52,7 +52,6 @@ public class AttractionServiceImpl implements AttractionService {
 		return attractionMapper.getAttractionByContentId(map);
 	}
 
-	@Override
 	public List<AttractionDto> getAttractionListBySidoCode(String sidoCode) throws SQLException {
 		return attractionMapper.getAttractionListBySidoCode(sidoCode);
 	}
