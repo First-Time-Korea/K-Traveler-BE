@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.firskorea.board.dto.ArticleDto;
+import com.ssafy.firskorea.board.dto.response.ArticleAndCommentDto;
 import com.ssafy.firskorea.board.service.ArticleService;
+import com.ssafy.firskorea.util.CommentStratify;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -131,6 +134,36 @@ public class ArticleController {
 		
 		Map<String, Object> response = new HashMap<>();
 		response.put("message", "여행 후기 수정 성공");
+
+		ResponseEntity<Map<String, Object>> responseEntity = ResponseEntity.status(200).body(response);
+
+		return responseEntity;
+	}
+	
+	// 여행 후기 조회하기
+	@GetMapping("detail/{articleid}")
+	public ResponseEntity<Map<String, Object>> getArticle(@PathVariable("articleid") int articleId) throws Exception {
+		ArticleAndCommentDto ac = articleService.getArticle(articleId);
+		if (ac.getComments() != null) {
+			CommentStratify.stratify(ac.getComments());
+		}
+		
+		Map<String, Object> response = new HashMap<>();
+		response.put("message", "여행 후기 조회 성공");
+		response.put("article", ac);
+
+		ResponseEntity<Map<String, Object>> responseEntity = ResponseEntity.status(200).body(response);
+
+		return responseEntity;
+	}
+	
+	// 여행 후기 삭제하기
+	@DeleteMapping("delete/{articleid}")
+	public ResponseEntity<Map<String, Object>> deleteArticle(@PathVariable("articleid") int articleId) throws Exception {
+		articleService.deleteArticle(articleId);
+		
+		Map<String, Object> response = new HashMap<>();
+		response.put("message", "여행 후기 삭제 성공");
 
 		ResponseEntity<Map<String, Object>> responseEntity = ResponseEntity.status(200).body(response);
 

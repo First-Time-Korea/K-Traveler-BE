@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 import com.ssafy.firskorea.board.dto.ArticleDto;
 import com.ssafy.firskorea.board.dto.FileDto;
 import com.ssafy.firskorea.board.dto.TagDto;
+import com.ssafy.firskorea.board.dto.response.ArticleAndCommentDto;
 
 @Mapper
 public interface ArticleMapper {
@@ -33,5 +34,11 @@ public interface ArticleMapper {
 	void modifyArticle(Map<String, Object> map) throws Exception;
 	
 	void disconnectArticleAndTag(Map<String, Object> map) throws Exception;
+	
+	ArticleAndCommentDto getArticle(int articleId) throws Exception;
+	
+	void deleteArticleFile(int articleId) throws Exception;
+	
+	void deleteArticle(int aritlceId) throws Exception;
 
 }
