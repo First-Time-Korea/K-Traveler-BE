@@ -29,6 +29,7 @@
 	<resultMap type="articleAndCommentDto" id="articleAndComment">
 		<result column="id" property="id" />
 		<result column="member_id" property="memberId" />
+		<result column="member_status" property="existed" />
 		<result column="content" property="content" />
 		<result column="hit" property="hit" />
 		<result column="created_time" property="createdTime" />
@@ -163,11 +164,11 @@
 	<!-- 여행 후기 조회하기 -->
 	<select id="getArticle" parameterType="int" resultMap="articleAndComment">
 		select r.id, r.member_id, r.content, r.hit, r.created_time, r.modified_time,
-			r.name,
+			r.name, r.status member_status,
 			r.save_folder, r.origin_file, r.save_file,
 			c.id comment_id, c.member_id comment_member_id, c.parent_article_comment_id, c.content comment_content, c.created_time comment_created_time, c.status comment_status
 		from (
-			select a.id, a.member_id, a.content, a.hit, a.created_time, a.modified_time, m.name, a.save_folder, a.origin_file, a.save_file
+			select a.id, a.member_id, a.content, a.hit, a.created_time, a.modified_time, m.name, m.status, a.save_folder, a.origin_file, a.save_file
 		    from (
 				select ar.id, ar.member_id, ar.content, ar.hit, ar.created_time, ar.modified_time, f.save_folder, f.origin_file, f.save_file
 		        from article ar, article_file f

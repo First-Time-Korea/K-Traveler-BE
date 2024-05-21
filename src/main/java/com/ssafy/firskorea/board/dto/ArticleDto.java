@@ -22,6 +22,6 @@ public class ArticleDto {
 	private int hit;
 	private String createdTime;
 	private String modifiedTime;
-	private FileDto file; 
+	private FileDto file;
 
 }

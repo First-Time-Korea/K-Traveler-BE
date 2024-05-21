@@ -20,6 +20,7 @@ public class ArticleAndCommentDto {
 	
 	private int id;
 	private String memberId;
+	private boolean existed;
 	private String content;
 	private int hit;
 	private String createdTime;
