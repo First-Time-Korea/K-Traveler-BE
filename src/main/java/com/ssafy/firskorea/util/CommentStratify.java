@@ -47,6 +47,11 @@ public class CommentStratify {
 			if (!comment.getExisted()) {
 				comment.setContent("This comment has already been deleted.");
 			}
+			
+			// 탈퇴한 회원의 댓글인 경우 작성자 처리
+			if (!comment.getExistedOfMember()) {
+				comment.setMemberId("(withdrawn member)");
+			}
 		}
 	}
 	
