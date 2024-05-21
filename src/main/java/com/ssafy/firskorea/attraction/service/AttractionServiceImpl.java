@@ -31,8 +31,8 @@ public class AttractionServiceImpl implements AttractionService {
 	}
 
 	@Override
-	public List<AttractionDto> getAttractionByKeywordAndCode(SearchDto searchDto) throws SQLException {
-		return attractionMapper.getAttractionByKeywordAndCode(searchDto);
+	public List<AttractionDto> getAttractionBySearch(SearchDto searchDto) throws SQLException {
+		return attractionMapper.getAttractionBySearch(searchDto);
 	}
 
 	@Override
@@ -60,5 +60,10 @@ public class AttractionServiceImpl implements AttractionService {
 	@Override
 	public List<AttractionDto> getBookmarkedAttractionList(String memberId) throws SQLException {
 		return attractionMapper.getBookmarkedAttractionList(memberId);
+	}
+
+	@Override
+	public List<Category> getSidoList() throws SQLException {
+		return attractionMapper.getSidoList();
 	}
 }

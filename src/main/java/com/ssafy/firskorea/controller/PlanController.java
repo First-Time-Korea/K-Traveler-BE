@@ -62,7 +62,7 @@ public class PlanController {
 
 	@PostMapping() // 여행 계획 등록
 	private ResponseEntity<?> insertPlanner(@RequestPart("planRequest") PlanRequest planRequest,
-			@RequestParam("file") MultipartFile file) throws Exception {
+			@RequestPart("file") MultipartFile file) throws Exception {
 		Map<String, Object> res = new HashMap<>();
 		if (!file.isEmpty()) {
 			String today = new SimpleDateFormat("yyMMdd").format(new Date());

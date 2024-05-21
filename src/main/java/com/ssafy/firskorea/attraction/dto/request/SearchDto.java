@@ -12,6 +12,7 @@ import lombok.ToString;
 public class SearchDto {
     private String memberId;
     private String keyword;
+    private int sidoCode;
     private Character themeCode;
     private String categoryCode;
 }
