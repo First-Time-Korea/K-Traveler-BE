@@ -10,6 +10,7 @@
 		<result column="parent_article_comment_id" property="parentCommentId" />
 		<result column="content" property="content" />
 		<result column="created_time" property="createdTime" />
+		<result column="status" property="existed" />
 	</resultMap>
 	
 	<!-- 여행 후기 댓글 등록하기 -->
@@ -25,6 +26,13 @@
 			</otherwise>
 		</choose>
 	</insert>
+	
+	<!-- 여행 후기 댓글 리스트 조회하기 -->
+	<select id="getComments" parameterType="int" resultMap="comment">
+		select id, article_id, member_id, parent_article_comment_id, content, created_time, status
+		from article_comment
+		where article_id = #{articleId}
+	</select>
 	
 	<!-- 여행 후기 댓글 삭제하기 -->
 	<update id="deleteComment" parameterType="int">
