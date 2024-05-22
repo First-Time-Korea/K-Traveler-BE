@@ -54,7 +54,7 @@
 			from plan_and_attraction
 			group by plan_id
 		) a, plan_file f
-		where p.id = f.plan_id
+		where p.id = a.plan_id
 		and p.id = f.plan_id
 		order by p.id desc
 		limit #{start}, #{listsize}
