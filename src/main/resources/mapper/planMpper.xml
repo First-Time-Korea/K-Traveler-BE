@@ -48,13 +48,20 @@
 		from plan_memo pm
 		where
 		pm.plan_and_attraction_id=paa.id
-		) as meme_text
+		) as memo_text
 		from plan_and_attraction
 		paa
 		join attraction_info ai
 		on paa.content_id= ai.content_id
 		where paa.id=#{paaId} and paa.content_id=#{contentId};
 	</select>
-
+	
+	<update id="updateMemo" parameterType="PlanMemoDto">
+	INSERT INTO plan_memo (plan_and_attraction_id, text)
+	VALUES (#{planAndAttractionId},#{text})
+	ON DUPLICATE KEY UPDATE
+	text = VALUES(text);
+	</update>
+	
 
 </mapper>

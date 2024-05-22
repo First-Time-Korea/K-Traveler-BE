@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ssafy.firskorea.plan.dto.PlanFileDto;
+import com.ssafy.firskorea.plan.dto.PlanMemoDto;
 import com.ssafy.firskorea.plan.dto.RegionDto;
 import com.ssafy.firskorea.plan.dto.request.AttractionPerDate;
 import com.ssafy.firskorea.plan.dto.request.PlanRequest;
@@ -75,8 +76,22 @@ public class PlanServiceImpl implements PlanService {
 			attractions.add(planMapper.getAttractionForPlan(dto));
 		}
 
-		planResponse.setAttractions(attractions);
+		Map<String, List<AttractionForPlan>> map = new HashMap<>();
+		for (AttractionForPlan afp : attractions) {
+			String dateKey = afp.getDate().toString();
+			map.computeIfAbsent(dateKey, k -> new ArrayList<>()).add(afp);
+		}
+
+		planResponse.setAttractions(map);
 		return planResponse;
+	}
+
+	@Override
+	@Transactional
+	public void updateMemo(List<PlanMemoDto> memoList) throws SQLException {
+		for (PlanMemoDto memoDto : memoList) {
+			planMapper.updateMemo(memoDto);
+		}
 	}
 
 }

@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.firskorea.plan.dto.PlanFileDto;
+import com.ssafy.firskorea.plan.dto.PlanMemoDto;
 import com.ssafy.firskorea.plan.dto.RegionDto;
 import com.ssafy.firskorea.plan.dto.request.PlanRequest;
 import com.ssafy.firskorea.plan.dto.response.PlanResponse;
@@ -118,23 +121,15 @@ public class PlanController {
 		res.put("data", "null");
 		return new ResponseEntity<>(res, HttpStatus.UNAUTHORIZED);
 	}
-//
-//	@PutMapping("/memo")
-//	public ResponseEntity<?> viewPlannerInfo(@RequestBody MemoDto memoDto, HttpSession session) throws Exception {
-////        String memberId = (String) session.getAttribute("loginId");
-//		Map<String, Object> res = new HashMap<>();
-//		if (memberId != null) {
-//			memoDto.setMemberId(memberId);
-//			res.put("status", "success");
-//			res.put("message", "메모 수정 성공");
-//			res.put("data", "null");
-//			plannerService.updateMemo(memoDto);
-//			return new ResponseEntity<>(res, HttpStatus.OK);
-//		}
-//		res.put("status", "fail");
-//		res.put("message", "로그인 안되어 있음");
-//		res.put("data", "null");
-//		return new ResponseEntity<>(res, HttpStatus.FAILED_DEPENDENCY);
-//	}
 
+	@PutMapping("/memo")
+	public ResponseEntity<?> viewPlannerInfo(@RequestBody Map<String, List<PlanMemoDto>> memoMap) throws Exception {
+		Map<String, Object> res = new HashMap<>();
+		res.put("status", "success");
+		res.put("message", "메모 수정 성공");
+		res.put("data", "null");
+		System.out.println(memoMap);
+		planService.updateMemo((List<PlanMemoDto>) memoMap.get("memos"));
+		return new ResponseEntity<>(res, HttpStatus.OK);
+	}
 }

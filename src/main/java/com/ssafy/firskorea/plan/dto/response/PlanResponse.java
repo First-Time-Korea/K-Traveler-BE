@@ -1,8 +1,7 @@
 package com.ssafy.firskorea.plan.dto.response;
 
 import java.util.List;
-
-import com.ssafy.firskorea.plan.dto.request.AttractionPerDate;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +15,7 @@ import lombok.ToString;
 public class PlanResponse {
 	private int planId;
 	private String planTitle;
-	private List<AttractionForPlan> attractions;
+	private Map<String, List<AttractionForPlan>> attractions;
 
 	public PlanResponse(int planId) {
 		this.planId = planId;

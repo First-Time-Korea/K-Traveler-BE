@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.ssafy.firskorea.plan.dto.PlanFileDto;
+import com.ssafy.firskorea.plan.dto.PlanMemoDto;
 import com.ssafy.firskorea.plan.dto.RegionDto;
 import com.ssafy.firskorea.plan.dto.response.AttractionForPlan;
 import com.ssafy.firskorea.plan.dto.response.PlanAndAttractionDto;
@@ -21,8 +22,10 @@ public interface PlanMapper {
 
 	void insertPlanFile(PlanFileDto dto) throws SQLException;
 
-	List<PlanAndAttractionDto> getPlanAndAttractions(int planId);
+	List<PlanAndAttractionDto> getPlanAndAttractions(int planId) throws SQLException;
 
-	AttractionForPlan getAttractionForPlan(PlanAndAttractionDto dto);
+	AttractionForPlan getAttractionForPlan(PlanAndAttractionDto dto) throws SQLException;
+
+	void updateMemo(PlanMemoDto memoDto) throws SQLException;
 
 }

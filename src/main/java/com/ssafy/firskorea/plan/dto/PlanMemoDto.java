@@ -1,4 +1,4 @@
-package com.ssafy.firskorea.plan.dto.response;
+package com.ssafy.firskorea.plan.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,5 +12,4 @@ import lombok.ToString;
 public class PlanMemoDto {
 	private int planAndAttractionId;
 	private String text;
-	private String modifiedTime;
 }
