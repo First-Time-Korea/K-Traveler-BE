@@ -15,4 +15,5 @@ public class SearchDto {
     private int sidoCode;
     private Character themeCode;
     private String categoryCode;
+    private int contentId;
 }

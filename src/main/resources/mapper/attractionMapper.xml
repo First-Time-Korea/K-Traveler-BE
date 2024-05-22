@@ -48,6 +48,9 @@
         <if test="categoryCode != null and categoryCode != ''">
             AND detail.category_code = #{categoryCode}
         </if>
+        <if test="contentId != 0 and contentId != ''">
+        	AND info.content_id = #{contentId}
+        </if>
     </select>
 
     <insert id="createBookmark" parameterType="map">
