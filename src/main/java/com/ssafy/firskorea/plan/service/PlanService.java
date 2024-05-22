@@ -6,7 +6,6 @@ import java.util.Map;
 
 import com.ssafy.firskorea.plan.dto.RegionDto;
 import com.ssafy.firskorea.plan.dto.request.PlanRequest;
-import com.ssafy.firskorea.plan.dto.response.PlanInfoDto;
 
 public interface PlanService {
 	List<RegionDto> getRegionList() throws SQLException;

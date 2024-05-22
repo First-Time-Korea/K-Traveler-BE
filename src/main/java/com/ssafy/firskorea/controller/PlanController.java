@@ -88,7 +88,7 @@ public class PlanController {
 		return new ResponseEntity<>(res, HttpStatus.OK);
 	}
 	
-	// 나의 여행 계획 조회하기
+	// 나의 여행 계획 리스트 조회하기
 	@GetMapping("/list")
 	public ResponseEntity<Map<String, Object>> getPlanInfos(@RequestParam Map<String, String> map) throws Exception {
 		Map<String, Object> result = planService.getPlanInfos(map);

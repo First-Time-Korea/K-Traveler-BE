@@ -140,5 +140,21 @@ public class AttractionController {
         resultMap.put("data", dto);
         return new ResponseEntity<>(resultMap, status);
     }
+    
+    // 나의 여행지 리스트 조회하기
+	@GetMapping("/list")
+	public ResponseEntity<Map<String, Object>> getBookmarkedAttractionInfos(@RequestParam Map<String, String> map) throws Exception {
+		Map<String, Object> result = attractionService.getBookmarkedAttractionInfos(map);
+
+		Map<String, Object> response = new HashMap<>();
+		response.put("message", "여행 계획 리스트 조회 성공");
+		response.put("bookmarkedAttractionInfos", result.get("bookmarkedAttractionInfos"));
+		response.put("currentPage", result.get("currentPage"));
+		response.put("totalPageCount", result.get("totalPageCount"));
+
+		ResponseEntity<Map<String, Object>> responseEntity = ResponseEntity.status(200).body(response);
+
+		return responseEntity;
+	}
 
 }

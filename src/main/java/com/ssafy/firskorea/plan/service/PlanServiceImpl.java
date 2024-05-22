@@ -81,8 +81,8 @@ public class PlanServiceImpl implements PlanService {
 		// 페이지네비게이션 계산하기
 		int currentPage = Integer.parseInt(map.get("pgno") == null ? "1" : map.get("pgno"));
 		int sizePerPage = SizeConstant.LIST_SIZE;
-		int totalArticleCount = planMapper.getTotalPlanCount(map.get("memberId"));
-		int totalPageCount = (totalArticleCount - 1) / sizePerPage + 1;
+		int totalPlanCount = planMapper.getTotalPlanCount(map.get("memberId"));
+		int totalPageCount = (totalPlanCount - 1) / sizePerPage + 1;
 
 		result.put("currentPage", currentPage);
 		result.put("totalPageCount", totalPageCount);

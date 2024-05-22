@@ -4,6 +4,15 @@
 
 <mapper
 	namespace="com.ssafy.firskorea.attraction.mapper.AttractionMapper">
+	
+	<resultMap type="bookmarkedAttractionInfoDto" id="bookmarkedAttractionInfo">
+		<result column="bookmark_id" property="bookmarkId" />
+		<result column="content_id" property="contentId"/>
+		<result column="title" property="title"/>
+		<result column="first_image" property="firstImage"/>
+		<result column="first_image2" property="firstImage2"/>
+	</resultMap>
+	
 	<select id="getThemeList" resultType="themeDto">
 		select * from theme;
 	</select>
@@ -95,5 +104,24 @@
         where b.member_id=#{memberId};
     </select>
 
+	<!-- 나의 여행지 조회하기 -->
+	<select id="getBookmarkedAttractionInfos" parameterType="map" resultMap="bookmarkedAttractionInfo">
+		select b.id bookmark_id, a.content_id, a.title, a.first_image, a.first_image2
+		from attraction_info a, (
+			select id, content_id
+		    from bookmark
+		    where member_id = #{memberId}
+		) b
+		where a.content_id = b.content_id
+		order by bookmark_id desc
+		limit #{start}, #{listsize}
+	</select>
+	
+	<!-- 나의 여행지 총 개수 구하기 -->
+	<select id="getTotalBookmarkedAttractionCount" parameterType="string" resultType="int">
+		select count(id)
+		from bookmark
+		where member_id = #{memberId}
+	</select>
 
 </mapper>

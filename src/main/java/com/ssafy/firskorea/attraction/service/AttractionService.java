@@ -26,4 +26,6 @@ public interface AttractionService {
     List<AttractionDto> getBookmarkedAttractionList(String memberId) throws SQLException;
 
     List<Category> getSidoList() throws SQLException;
+	
+	Map<String, Object> getBookmarkedAttractionInfos(Map<String, String> map) throws Exception;
 }
