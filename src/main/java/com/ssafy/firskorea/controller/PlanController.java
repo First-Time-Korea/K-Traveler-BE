@@ -85,6 +85,22 @@ public class PlanController {
 		res.put("data", "null");
 		return new ResponseEntity<>(res, HttpStatus.OK);
 	}
+	
+	@GetMapping("/list")
+	public ResponseEntity<Map<String, Object>> getPlanInfos(@RequestParam Map<String, String> map) throws Exception {
+		Map<String, Object> result = planService.getPlanInfos(map);
+
+		Map<String, Object> response = new HashMap<>();
+		response.put("message", "여행 계획 리스트 조회 성공");
+		response.put("planInfos", result.get("planInfos"));
+		response.put("currentPage", result.get("currentPage"));
+		response.put("totalPageCount", result.get("totalPageCount"));
+
+		ResponseEntity<Map<String, Object>> responseEntity = ResponseEntity.status(200).body(response);
+
+		return responseEntity;
+	}
+	
 
 //	@GetMapping("/list") // 본인의 계획 목록 조회
 //	private ResponseEntity<?> listPlanner(HttpSession session) throws Exception {
