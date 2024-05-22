@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.ssafy.firskorea.attraction.dto.request.SearchDto;
 import com.ssafy.firskorea.attraction.dto.response.AttractionDto;
+import com.ssafy.firskorea.attraction.dto.response.BookmarkedAttractionInfoDto;
 import com.ssafy.firskorea.attraction.dto.response.ThemeDto;
 
 @Mapper
@@ -31,4 +32,8 @@ public interface AttractionMapper {
 	List<AttractionDto> getAttractionListBySidoCode(String sidoCode) throws SQLException;
 
 	List<Category> getSidoList() throws SQLException;
+	
+	List<BookmarkedAttractionInfoDto> getBookmarkedAttractionInfos(Map<String, Object> map) throws Exception;
+	
+	int getTotalBookmarkedAttractionCount(String memberId) throws Exception;
 }

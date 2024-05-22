@@ -11,6 +11,7 @@
 		<result column="content" property="content" />
 		<result column="created_time" property="createdTime" />
 		<result column="status" property="existed" />
+		<result column="member_status" property="existedOfMember" />
 	</resultMap>
 	
 	<!-- 여행 후기 댓글 등록하기 -->
@@ -29,9 +30,13 @@
 	
 	<!-- 여행 후기 댓글 리스트 조회하기 -->
 	<select id="getComments" parameterType="int" resultMap="comment">
-		select id, article_id, member_id, parent_article_comment_id, content, created_time, status
-		from article_comment
-		where article_id = #{articleId}
+		select c.id, c.article_id, c.member_id, m.status member_status, c.parent_article_comment_id, c.content, c.created_time, c.status
+		from member m, (
+			select id, article_id, member_id, parent_article_comment_id, content, created_time, status
+			from article_comment c
+			where article_id = #{articleId}
+		) c
+		where m.id = c.member_id
 	</select>
 	
 	<!-- 여행 후기 댓글 삭제하기 -->
