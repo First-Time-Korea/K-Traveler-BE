@@ -144,6 +144,12 @@ public class ArticleController {
 	@GetMapping("detail/{articleid}")
 	public ResponseEntity<Map<String, Object>> getArticle(@PathVariable("articleid") int articleId) throws Exception {
 		ArticleAndCommentDto ac = articleService.getArticle(articleId);
+		
+		// 탈퇴한 여행 후기인 경우 작성자 처리
+		if (!ac.getExistedOfMember()) {
+			ac.setMemberId("(withdrawn member)");
+		}
+		
 		if (ac.getComments() != null) {
 			CommentStratify.stratify(ac.getComments());
 		}

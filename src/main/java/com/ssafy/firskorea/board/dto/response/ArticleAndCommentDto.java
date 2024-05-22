@@ -20,12 +20,16 @@ public class ArticleAndCommentDto {
 	
 	private int id;
 	private String memberId;
-	private boolean existed;
+	private boolean existedOfMember;
 	private String content;
 	private int hit;
 	private String createdTime;
 	private String modifiedTime;
 	private FileDto file;
 	private List<CommentDto> comments;
+	
+	public boolean getExistedOfMember() {
+		return existedOfMember;
+	}
 
 }

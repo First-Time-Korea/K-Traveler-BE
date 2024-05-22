@@ -21,9 +21,14 @@ public class CommentDto {
 	private String content;
 	private String createdTime;
 	private boolean existed;
+	private boolean existedOfMember;
 	
 	public boolean getExisted() {
 		return existed;
+	}
+	
+	public boolean getExistedOfMember() {
+		return existedOfMember;
 	}
 	
 }
