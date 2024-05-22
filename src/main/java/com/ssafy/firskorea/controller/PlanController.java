@@ -12,9 +12,11 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,7 +41,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PlanController {
 
-	@Value("${planThumbFile.path}")
+	@Value("${planThumbFile.path.upload-images}")
 	private String UPLOAD_PATH;
 
 	private PlanService planService;
@@ -86,6 +88,7 @@ public class PlanController {
 		return new ResponseEntity<>(res, HttpStatus.OK);
 	}
 	
+	// 나의 여행 계획 조회하기
 	@GetMapping("/list")
 	public ResponseEntity<Map<String, Object>> getPlanInfos(@RequestParam Map<String, String> map) throws Exception {
 		Map<String, Object> result = planService.getPlanInfos(map);
@@ -101,6 +104,36 @@ public class PlanController {
 		return responseEntity;
 	}
 	
+	// 여행 계획 썸네일 조회하기
+	@GetMapping("/img/{savefolder}/{savefile}")
+	public ResponseEntity<byte[]> getArticleFile(@PathVariable("savefolder") String saveFolder,
+			@PathVariable("savefile") String saveFile) throws Exception {
+		String src = saveFolder + "/" + saveFile;
+
+		byte[] img = planService.getPlanFile(src);
+
+		if (img == null) {
+			return ResponseEntity.notFound().build();
+		} else {
+			String imgType = src.substring(src.indexOf(".") + 1);
+			MediaType mt = null;
+			switch (imgType) {
+			case "jpg":
+				mt = MediaType.IMAGE_JPEG;
+				break;
+			case "png":
+				mt = MediaType.IMAGE_PNG;
+				break;
+			case "gif":
+				mt = MediaType.IMAGE_GIF;
+				break;
+			}
+
+			ResponseEntity<byte[]> responseEntity = ResponseEntity.status(200).contentType(mt).body(img);
+
+			return responseEntity;
+		}
+	}
 
 //	@GetMapping("/list") // 본인의 계획 목록 조회
 //	private ResponseEntity<?> listPlanner(HttpSession session) throws Exception {

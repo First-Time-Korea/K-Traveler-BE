@@ -14,5 +14,7 @@ public interface PlanService {
 	void registerPlanner(PlanRequest planRequest) throws SQLException;
 	
 	Map<String, Object> getPlanInfos(Map<String, String> map) throws Exception;
+	
+	byte[] getPlanFile(String src) throws Exception;
 
 }
