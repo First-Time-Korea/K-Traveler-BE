@@ -12,8 +12,8 @@ import lombok.ToString;
 public class RegionDto {
     private String sidoCode;
     private String sidoName;
-    private String gugunName;
-    private String gugunCode;
+//    private String gugunName;
+//    private String gugunCode;
     private String sidoDescription;
     private String sidoImage;
 }
