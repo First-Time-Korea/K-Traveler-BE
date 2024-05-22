@@ -12,5 +12,4 @@ import lombok.ToString;
 public class PlanMemoDto {
 	private int planAndAttractionId;
 	private String text;
-	private String modifiedTime;
 }
