@@ -1,4 +1,4 @@
-package com.ssafy.firskorea.plan.dto;
+package com.ssafy.firskorea.plan.dto.response;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -4,7 +4,8 @@
 
 <mapper namespace="com.ssafy.firskorea.plan.mapper.PlanMapper">
 	<select id="getRegionList" resultType="regionDto">
-		select sido_code, sido_name, sido_description, sido_image
+		select sido_code,
+		sido_name, sido_description, sido_image
 		from sido;
 	</select>
 
@@ -16,8 +17,10 @@
 	</insert>
 
 	<insert id="insertPlanAndAttraction" parameterType="map">
-		insert into plan_and_attraction (plan_id, content_id, date)
-		values (#{planId},#{contentId},#{date});
+		insert into
+		plan_and_attraction (plan_id, content_id, date)
+		values
+		(#{planId},#{contentId},#{date});
 	</insert>
 
 	<insert id="insertPlanFile" parameterType="PlanFileDto">
@@ -26,6 +29,32 @@
 		values
 		(#{saveFolder},#{originFile},#{saveFile},#{planId});
 	</insert>
+
+	<select id="getPlanAndAttractions"
+		resultType="PlanAndAttractionDto" parameterType="int">
+		select p.id plan_id, paa.id paa_id, p.title planTitle, paa.content_id, paa.date
+		from plan p
+		join plan_and_attraction paa
+		on p.id=paa.plan_id
+		where p.id=#{planId};
+	</select>
+
+	<select id="getAttractionForPlan" resultType="AttractionForPlan"
+		parameterType="PlanAndAttractionDto">
+		select paa.plan_id, paa.id paa_id, paa.date, ai.title
+		contentTitle, ai.content_id, ai.addr1, ai.first_image, ai.longitude,
+		ai.latitude,
+		(select pm.text
+		from plan_memo pm
+		where
+		pm.plan_and_attraction_id=paa.id
+		) as meme_text
+		from plan_and_attraction
+		paa
+		join attraction_info ai
+		on paa.content_id= ai.content_id
+		where paa.id=#{paaId} and paa.content_id=#{contentId};
+	</select>
 
 
 </mapper>

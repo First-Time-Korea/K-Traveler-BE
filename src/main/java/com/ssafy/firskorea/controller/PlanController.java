@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ssafy.firskorea.plan.dto.PlanFileDto;
 import com.ssafy.firskorea.plan.dto.RegionDto;
 import com.ssafy.firskorea.plan.dto.request.PlanRequest;
+import com.ssafy.firskorea.plan.dto.response.PlanResponse;
 import com.ssafy.firskorea.plan.service.PlanService;
 import com.ssafy.firskorea.plan.service.PlanServiceImpl;
 
@@ -78,7 +79,6 @@ public class PlanController {
 			file.transferTo(new File(folder, saveFileName)); // 실제 파일을 저장한다.
 			planRequest.setPlanFileDto(fileInfoDto);
 		}
-		System.out.println(planRequest);
 		planService.registerPlanner(planRequest);
 		res.put("status", "success");
 		res.put("message", "여행 계획 등록 성공");
@@ -103,23 +103,21 @@ public class PlanController {
 //		return new ResponseEntity<>(res, HttpStatus.UNAUTHORIZED);
 //	}
 //
-//	@GetMapping("/info") // 계획 상세 조회
-//	private ResponseEntity<?> viewPlannerInfo(HttpSession session, @RequestParam("planNo") String planNo)
-//			throws Exception {
-////        String memberId = (String) session.getAttribute("loginId");
-//		Map<String, Object> res = new HashMap<>();
-//		if (memberId != null) {
-//			PlannerDto planInfo = plannerService.getCompletePlanner(planNo);
-//			res.put("status", "success");
-//			res.put("message", "여행 계획 상세 조회 성공");
-//			res.put("data", planInfo);
-//			return new ResponseEntity<>(res, HttpStatus.OK);
-//		}
-//		res.put("status", "fail");
-//		res.put("message", "로그인 안되어 있음");
-//		res.put("data", "null");
-//		return new ResponseEntity<>(res, HttpStatus.UNAUTHORIZED);
-//	}
+	@GetMapping("/info") // 계획 상세 조회
+	private ResponseEntity<?> viewPlannerInfo(@RequestParam("planId") String planId) throws Exception {
+		Map<String, Object> res = new HashMap<>();
+		PlanResponse planInfo = planService.getCompletePlanner(Integer.parseInt(planId));
+		if (planInfo != null) {
+			res.put("status", "success");
+			res.put("message", "여행 계획 상세 조회 성공");
+			res.put("data", planInfo);
+			return new ResponseEntity<>(res, HttpStatus.OK);
+		}
+		res.put("status", "fail");
+		res.put("message", "로그인 안되어 있음");
+		res.put("data", "null");
+		return new ResponseEntity<>(res, HttpStatus.UNAUTHORIZED);
+	}
 //
 //	@PutMapping("/memo")
 //	public ResponseEntity<?> viewPlannerInfo(@RequestBody MemoDto memoDto, HttpSession session) throws Exception {
