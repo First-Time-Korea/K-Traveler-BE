@@ -115,7 +115,7 @@ public class PlanServiceImpl implements PlanService {
 
 		// planId랑 paaId랑 contentId를 가져온다.
 		List<PlanAndAttractionDto> paaDtos = planMapper.getPlanAndAttractions(planId);
-		if (paaDtos != null) {
+		if (paaDtos.size() != 0) {
 			String planTitle = paaDtos.get(0).getPlanTitle();
 			planResponse.setPlanTitle(planTitle);
 		}
