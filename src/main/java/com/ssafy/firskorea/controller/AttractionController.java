@@ -110,7 +110,7 @@ public class AttractionController {
 
     @Operation(summary = "GPT를 사용, 여행지 단일 조회", description = "GPT를 사용해 한글을 영문으로 번역 후 반환")
     @PostMapping("/ai")
-    public ResponseEntity<Map<String, Object>> selectPrompt(@RequestBody Map<String, String> map) throws SQLException {
+    public ResponseEntity<Map<String, Object>> selectPrompt(@RequestBody Map<String, String> map) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         AttractionDto dto = attractionGptService.prompt(map);
         HttpStatus status = HttpStatus.ACCEPTED;

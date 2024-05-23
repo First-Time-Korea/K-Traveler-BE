@@ -4,15 +4,16 @@
 
 <mapper
 	namespace="com.ssafy.firskorea.attraction.mapper.AttractionMapper">
-	
-	<resultMap type="bookmarkedAttractionInfoDto" id="bookmarkedAttractionInfo">
+
+	<resultMap type="bookmarkedAttractionInfoDto"
+		id="bookmarkedAttractionInfo">
 		<result column="bookmark_id" property="bookmarkId" />
-		<result column="content_id" property="contentId"/>
-		<result column="title" property="title"/>
-		<result column="first_image" property="firstImage"/>
-		<result column="first_image2" property="firstImage2"/>
+		<result column="content_id" property="contentId" />
+		<result column="title" property="title" />
+		<result column="first_image" property="firstImage" />
+		<result column="first_image2" property="firstImage2" />
 	</resultMap>
-	
+
 	<select id="getThemeList" resultType="themeDto">
 		select * from theme;
 	</select>
@@ -23,108 +24,255 @@
 		where theme_code = #{code};
 	</select>
 
-    <select id="getSidoList" resultType="sidoDto">
-        select * from sido;
-    </select>
+	<select id="getSidoList" resultType="sidoDto">
+		select * from sido;
+	</select>
 
-	<select id="getAttractionBySearch" resultType="AttractionDto" parameterType="searchDto">
-        SELECT
-        info.content_id,
-        info.latitude,
-        info.longitude,
-        detail.theme_code
-        FROM
-        attraction_detail detail
-        LEFT JOIN attraction_info as info ON detail.content_id = info.content_id
-        LEFT JOIN bookmark as book ON book.member_id = #{memberId} AND detail.content_id = book.content_id
-        WHERE
-        info.title LIKE CONCAT('%', #{keyword}, '%')
-        <if test="sidoCode != 0 and sidoCode != ''">
-            AND info.sido_code = #{sidoCode}
-        </if>
-        <if test="themeCode != null and themeCode != ''">
-            AND detail.theme_code = #{themeCode}
-        </if>
-        <if test="categoryCode != null and categoryCode != ''">
-            AND detail.category_code = #{categoryCode}
-        </if>
-        <if test="contentId != 0 and contentId != ''">
-        	AND info.content_id = #{contentId}
-        </if>
-    </select>
+	<select id="getAttractionBySearch" resultType="AttractionDto"
+		parameterType="searchDto">
+		SELECT
+		info.content_id,
+		info.latitude,
+		info.longitude,
+		detail.theme_code
+		FROM
+		attraction_detail detail
+		LEFT JOIN attraction_info as info ON
+		detail.content_id = info.content_id
+		LEFT JOIN bookmark as book ON
+		book.member_id = #{memberId} AND
+		detail.content_id = book.content_id
+		WHERE
+		info.title LIKE CONCAT('%', #{keyword}, '%')
+		<if test="sidoCode != 0 and sidoCode != ''">
+			AND info.sido_code = #{sidoCode}
+		</if>
+		<if test="themeCode != null and themeCode != ''">
+			AND detail.theme_code = #{themeCode}
+		</if>
+		<if test="categoryCode != null and categoryCode != ''">
+			AND detail.category_code = #{categoryCode}
+		</if>
+		<if test="contentId != 0 and contentId != ''">
+			AND info.content_id = #{contentId}
+		</if>
+	</select>
 
-    <insert id="createBookmark" parameterType="map">
-        INSERT INTO bookmark (member_id, content_id)
-        SELECT #{memberId}, #{contentId}
-            WHERE NOT EXISTS (
-                SELECT 1
-                FROM bookmark
-                WHERE member_id = #{memberId} AND content_id = #{contentId}
-            );
-    </insert>
+	<insert id="createBookmark" parameterType="map">
+		INSERT INTO bookmark
+		(member_id, content_id)
+		SELECT #{memberId}, #{contentId}
+		WHERE NOT
+		EXISTS (
+		SELECT 1
+		FROM bookmark
+		WHERE member_id = #{memberId} AND
+		content_id = #{contentId}
+		);
+	</insert>
 
-    <select id="getAttractionByContentId" parameterType="map" resultType="AttractionDto">
-        select info.content_id, info.title, info.latitude,
-               info.longitude, info.addr1, info.first_image, description.overview, book.id bookmarkId
-        from attraction_detail detail
-                 left join attraction_info as info
-                           on detail.content_id=info.content_id
-                 left join attraction_description as description
-                           on detail.content_id=description.content_id
-                 left join bookmark as book
-                           on book.member_id=#{memberId} and detail.content_id = book.content_id
-        where info.content_id=#{contentId}
-    </select>
+	<select id="getAttractionByContentId" parameterType="map"
+		resultType="AttractionDto">
+		SELECT
+		info.content_id,
+		info.title,
+		info.addr1,
+		info.addr2,
+		info.first_image,
+		info.sido_code,
+		info.gugun_code,
+		sido.sido_name,
+		detail.theme_code,
+		theme.theme_name,
+		detail.category_code,
+		category.category_name,
+		info.latitude,
+		info.longitude,
+		description.overview
+		FROM
+		attraction_info AS info
+		LEFT JOIN
+		(SELECT
+		content_id, theme_code, category_code FROM attraction_detail) AS
+		detail
+		ON info.content_id = detail.content_id
+		LEFT JOIN
+		(SELECT
+		content_id, overview FROM attraction_description) AS description
+		ON
+		info.content_id = description.content_id
+		LEFT JOIN
+		(SELECT sido_code,
+		sido_name FROM sido) AS sido
+		ON info.sido_code = sido.sido_code
+		LEFT
+		JOIN
+		(SELECT theme_code, theme_name FROM theme) AS theme
+		ON
+		detail.theme_code = theme.theme_code
+		LEFT JOIN
+		(SELECT category_code,
+		category_name FROM category) AS category
+		ON detail.category_code =
+		category.category_code
+		WHERE
+		info.content_id = #{contentId};
+	</select>
 
-    <delete id="deleteBookmark" parameterType="map">
-        delete from bookmark
-        where member_id=#{memberId} and content_id=#{contentId};
-    </delete>
+	<select id="getKCurtureAttractionByContentId"
+		parameterType="map" resultType="AttractionDto">
+		SELECT
+		info.content_id,
+		info.title,
+		info.addr1,
+		info.addr2,
+		info.first_image,
+		info.sido_code,
+		info.gugun_code,
+		sido.sido_name,
+		detail.theme_code,
+		theme.theme_name,
+		detail.category_code,
+		category.category_name,
+		info.latitude,
+		info.longitude,
+		description.overview
+		FROM
+		k_attraction_info AS info
+		LEFT
+		JOIN
+		(SELECT content_id, theme_code, category_code FROM
+		k_attraction_detail) AS
+		detail
+		ON info.content_id = detail.content_id
+		LEFT
+		JOIN
+		(SELECT content_id, overview FROM k_attraction_description) AS
+		description
+		ON info.content_id = description.content_id
+		LEFT JOIN
+		(SELECT sido_code, sido_name FROM sido) AS sido
+		ON info.sido_code =
+		sido.sido_code
+		LEFT JOIN
+		(SELECT theme_code, theme_name FROM theme) AS
+		theme
+		ON detail.theme_code = theme.theme_code
+		LEFT JOIN
+		(SELECT
+		category_code, category_name FROM category) AS category
+		ON
+		detail.category_code = category.category_code
+		WHERE
+		info.content_id =
+		#{contentId};
+	</select>
 
-    <select id="getAttractionListBySidoCode" parameterType="string">
-        select info.content_id, info.title, info.first_image, info.addr1, info.latitude, info.longitude, t.theme_name, description.overView
-        from attraction_info info
-                 join attraction_detail detail
-                      on info.content_id = detail.content_id
-                 join attraction_description description
-                      on info.content_id = description.content_id
-                 join theme t
-                      on t.theme_code = detail.theme_code
-        where sido_code=#{sidoCode};
-    </select>
+	<delete id="deleteBookmark" parameterType="map">
+		delete from bookmark
+		where member_id=#{memberId} and content_id=#{contentId};
+	</delete>
 
-    <select id="getBookmarkedAttractionList" parameterType="string">
-        select info.content_id, info.title, info.first_image, info.addr1, info.latitude, info.longitude, t.theme_name, description.overView
-        from attraction_info info
-                 join attraction_detail detail
-                      on info.content_id = detail.content_id
-                 join attraction_description description
-                      on info.content_id = description.content_id
-                 join theme t
-                      on t.theme_code = detail.theme_code
-                 join bookmark b
-                      on b.content_id = info.content_id
-        where b.member_id=#{memberId};
-    </select>
+	<select id="getAttractionListBySidoCode" parameterType="string">
+		select
+		info.content_id, info.title, info.first_image, info.addr1,
+		info.latitude, info.longitude, t.theme_name, description.overView
+		from
+		attraction_info info
+		join attraction_detail detail
+		on info.content_id =
+		detail.content_id
+		join attraction_description description
+		on
+		info.content_id = description.content_id
+		join theme t
+		on t.theme_code =
+		detail.theme_code
+		where sido_code=#{sidoCode};
+	</select>
+
+	<select id="getBookmarkedAttractionList" parameterType="string">
+		select
+		info.content_id, info.title, info.first_image, info.addr1,
+		info.latitude, info.longitude, t.theme_name, description.overView
+		from
+		attraction_info info
+		join attraction_detail detail
+		on info.content_id =
+		detail.content_id
+		join attraction_description description
+		on
+		info.content_id = description.content_id
+		join theme t
+		on t.theme_code =
+		detail.theme_code
+		join bookmark b
+		on b.content_id = info.content_id
+		where b.member_id=#{memberId};
+	</select>
 
 	<!-- 나의 여행지 조회하기 -->
-	<select id="getBookmarkedAttractionInfos" parameterType="map" resultMap="bookmarkedAttractionInfo">
-		select b.id bookmark_id, a.content_id, a.title, a.first_image, a.first_image2
+	<select id="getBookmarkedAttractionInfos" parameterType="map"
+		resultMap="bookmarkedAttractionInfo">
+		select b.id bookmark_id, a.content_id, a.title,
+		a.first_image, a.first_image2
 		from attraction_info a, (
-			select id, content_id
-		    from bookmark
-		    where member_id = #{memberId}
-		) b
-		where a.content_id = b.content_id
-		order by bookmark_id desc
-		limit #{start}, #{listsize}
-	</select>
-	
-	<!-- 나의 여행지 총 개수 구하기 -->
-	<select id="getTotalBookmarkedAttractionCount" parameterType="string" resultType="int">
-		select count(id)
+		select id,
+		content_id
 		from bookmark
 		where member_id = #{memberId}
+		) b
+		where
+		a.content_id = b.content_id
+		order by
+		bookmark_id desc
+		limit #{start},
+		#{listsize}
 	</select>
+
+	<!-- 나의 여행지 총 개수 구하기 -->
+	<select id="getTotalBookmarkedAttractionCount"
+		parameterType="string" resultType="int">
+		select count(id)
+		from bookmark
+		where
+		member_id = #{memberId}
+	</select>
+
+	<insert id="insertKCurtureAttractionInfoEnglish"
+		parameterType="AttractionDto">
+		INSERT INTO attraction_info (
+		content_id,
+		sido_code,
+		gugun_code,
+		title,
+		addr1,
+		latitude,
+		longitude
+		) VALUES (
+		#{contentId},
+		#{sidoCode},
+		#{gugunCode},
+		#{title},
+		#{addr1},
+		#{latitude},
+		#{longitude}
+		);
+	</insert>
+
+	<insert id="insertKCurtureAttractionDetailEnglish"
+		parameterType="AttractionDto">
+		INSERT INTO attraction_detail (content_id, theme_code,
+		category_code)
+		VALUES (#{contentId}, #{themeCode},
+		#{categoryCode});
+	</insert>
+
+	<insert id="insertKCurtureAttractionDescriptionEnglish"
+		parameterType="AttractionDto">
+		INSERT INTO attraction_description (content_id,
+		overview)
+		VALUES (#{contentId}, #{overView});
+	</insert>
 
 </mapper>

@@ -10,5 +10,5 @@ import java.util.Map;
 @Service
 public interface AttractionGptService {
 
-    AttractionDto prompt(Map<String, String> map) throws SQLException;
+    AttractionDto prompt(Map<String, String> map) throws SQLException, Exception;
 }

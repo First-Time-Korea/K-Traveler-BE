@@ -32,8 +32,16 @@ public interface AttractionMapper {
 	List<AttractionDto> getAttractionListBySidoCode(String sidoCode) throws SQLException;
 
 	List<Category> getSidoList() throws SQLException;
-	
+
 	List<BookmarkedAttractionInfoDto> getBookmarkedAttractionInfos(Map<String, Object> map) throws Exception;
-	
+
 	int getTotalBookmarkedAttractionCount(String memberId) throws Exception;
+
+	AttractionDto getKCurtureAttractionByContentId(Map<String, String> map) throws Exception;
+
+	void insertKCurtureAttractionInfoEnglish(AttractionDto attractionDto) throws Exception;
+
+	void insertKCurtureAttractionDetailEnglish(AttractionDto attractionDto) throws Exception;
+
+	void insertKCurtureAttractionDescriptionEnglish(AttractionDto attractionDto) throws Exception;
 }
