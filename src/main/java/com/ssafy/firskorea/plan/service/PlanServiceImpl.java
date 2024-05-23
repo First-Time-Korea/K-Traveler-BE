@@ -144,4 +144,9 @@ public class PlanServiceImpl implements PlanService {
 		}
 	}
 
+	@Override
+	public void deletePlan(String planId) throws SQLException {
+		planMapper.deletePlan(planId);
+	}
+
 }

@@ -103,4 +103,8 @@
 		where member_id = #{memberId}
 	</select>
 
+	<delete id="deletePlan" parameterType="string">
+		delete from plan where id=#{planId};
+	</delete>
+
 </mapper>
