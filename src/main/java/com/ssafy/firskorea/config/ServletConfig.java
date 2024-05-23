@@ -17,6 +17,9 @@ public class ServletConfig implements WebMvcConfigurer {
 	@Value("${planThumbFile.path}")
 	private String PLAN_FILE_PATH;
 
+	@Value("${attractionKCurtureFile.path}")
+	private String K_ATTRACTION_IMG_PATH;
+
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
@@ -24,6 +27,7 @@ public class ServletConfig implements WebMvcConfigurer {
 		registry.addResourceHandler("/css/**").addResourceLocations("/WEB-INF/assets/css/");
 		registry.addResourceHandler("/js/**").addResourceLocations("/WEB-INF/assets/js/");
 		registry.addResourceHandler("/plan/img/**").addResourceLocations("file:///" + PLAN_FILE_PATH);
+		registry.addResourceHandler("/attraction/kculture/img/**").addResourceLocations("file:///" + K_ATTRACTION_IMG_PATH);
 	}
 
 	@Bean
