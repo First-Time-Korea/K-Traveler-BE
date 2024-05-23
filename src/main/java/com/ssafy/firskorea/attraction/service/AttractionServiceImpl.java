@@ -57,8 +57,31 @@ public class AttractionServiceImpl implements AttractionService {
 		return dto;
 	}
 
-	public List<AttractionDto> getAttractionListBySidoCode(String sidoCode) throws SQLException {
-		return attractionMapper.getAttractionListBySidoCode(sidoCode);
+	public Map<String, Object> getAttractionsBySidoCode(Map<String, String> map) throws Exception {
+		Map<String, Object> result = new HashMap<String, Object>();
+
+		// 여행지 정보 리스트 가져오기
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("sidoCode", Integer.parseInt(map.get("sidocode")));
+		int pgNo = Integer.parseInt(map.get("pgno") == null ? "1" : map.get("pgno"));
+		int start = pgNo * SizeConstant.LIST_SIZE - SizeConstant.LIST_SIZE;
+		param.put("start", start);
+		param.put("listsize", SizeConstant.LIST_SIZE);
+		
+		List<AttractionDto> attractions = attractionMapper.getAttractionsBySidoCode(param);
+		
+		result.put("attractions", attractions);
+		
+		// 페이지네비게이션 계산하기
+		int currentPage = Integer.parseInt(map.get("pgno") == null ? "1" : map.get("pgno"));
+		int sizePerPage = SizeConstant.LIST_SIZE;
+		int totalAttractionsBySidoCode = attractionMapper.getTotalAttractionsBySidoCodeCount(Integer.parseInt(map.get("sidocode")));
+		int totalPageCount = (totalAttractionsBySidoCode - 1) / sizePerPage + 1;
+
+		result.put("currentPage", currentPage);
+		result.put("totalPageCount", totalPageCount);
+
+		return result;
 	}
 
 	@Override

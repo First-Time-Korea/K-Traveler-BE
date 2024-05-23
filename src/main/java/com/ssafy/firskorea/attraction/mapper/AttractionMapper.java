@@ -29,7 +29,9 @@ public interface AttractionMapper {
 
 	List<AttractionDto> getBookmarkedAttractionList(String memberId) throws SQLException;
 
-	List<AttractionDto> getAttractionListBySidoCode(String sidoCode) throws SQLException;
+	List<AttractionDto> getAttractionsBySidoCode(Map<String, Object> map) throws SQLException;
+	
+	int getTotalAttractionsBySidoCodeCount(int sidoCode) throws Exception;
 
 	List<Category> getSidoList() throws SQLException;
 

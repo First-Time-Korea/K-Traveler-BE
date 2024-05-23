@@ -118,16 +118,21 @@ public class AttractionController {
         resultMap.put("data", dto);
         return new ResponseEntity<>(resultMap, status);
     }
-
+    
     @Operation(summary = "특정 지역의 관광지 전체 조회", description = "유저가 검색한 장소에 해당하는 시도 코드를 가지고 해당 지역에 존재하는 관광지 반환")
-    @GetMapping("/sido/{sidoCode}")
-    public ResponseEntity<Map<String, Object>> getAttractionListBySidoCode(@PathVariable String sidoCode) throws SQLException {
-        Map<String, Object> resultMap = new HashMap<>();
-        List<AttractionDto> dto = attractionService.getAttractionListBySidoCode(sidoCode);
-        HttpStatus status = HttpStatus.ACCEPTED;
-        resultMap.put("status", "success");
-        resultMap.put("data", dto);
-        return new ResponseEntity<>(resultMap, status);
+    @GetMapping("/sido")
+    public ResponseEntity<Map<String, Object>> getAttractionsBySidoCode(@RequestParam Map<String, String> map) throws Exception {
+		Map<String, Object> result = attractionService.getAttractionsBySidoCode(map);
+
+		Map<String, Object> response = new HashMap<>();
+		response.put("status", "success");
+		response.put("data", result.get("attractions"));
+		response.put("currentPage", result.get("currentPage"));
+		response.put("totalPageCount", result.get("totalPageCount"));
+
+		ResponseEntity<Map<String, Object>> responseEntity = ResponseEntity.status(200).body(response);
+
+		return responseEntity;
     }
 
     @Operation(summary = "북마크 한 위치 조회", description = "해당 유저가 북마크한 모든 장소를 반환한다.")

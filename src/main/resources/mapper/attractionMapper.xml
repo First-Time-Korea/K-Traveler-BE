@@ -208,7 +208,7 @@
 		where member_id=#{memberId} and content_id=#{contentId};
 	</delete>
 
-	<select id="getAttractionListBySidoCode" parameterType="string">
+	<select id="getAttractionsBySidoCode" parameterType="map">
 		select
 		info.content_id, info.title, info.first_image, info.addr1,
 		info.latitude, info.longitude, t.theme_name, description.overView
@@ -223,7 +223,19 @@
 		join theme t
 		on t.theme_code =
 		detail.theme_code
-		where sido_code=#{sidoCode};
+		where sido_code=#{sidoCode}
+		order by
+		info.content_id desc
+		limit #{start},
+		#{listsize};
+	</select>
+	
+	<select id="getTotalAttractionsBySidoCodeCount"
+		parameterType="int" resultType="int">
+		select count(content_id)
+		from attraction_info
+		where
+		sido_code = #{sidoCode}
 	</select>
 
 	<select id="getBookmarkedAttractionList" parameterType="string">
