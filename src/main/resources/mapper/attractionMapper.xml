@@ -30,6 +30,7 @@
 
 	<select id="getAttractionBySearch" resultType="AttractionDto"
 		parameterType="searchDto">
+		(
 		SELECT
 		info.content_id,
 		info.latitude,
@@ -37,9 +38,9 @@
 		detail.theme_code
 		FROM
 		attraction_detail detail
-		LEFT JOIN attraction_info as info ON
+		LEFT JOIN attraction_info AS info ON
 		detail.content_id = info.content_id
-		LEFT JOIN bookmark as book ON
+		LEFT JOIN bookmark AS book ON
 		book.member_id = #{memberId} AND
 		detail.content_id = book.content_id
 		WHERE
@@ -56,6 +57,37 @@
 		<if test="contentId != 0 and contentId != ''">
 			AND info.content_id = #{contentId}
 		</if>
+		)
+		UNION ALL
+		(
+		SELECT
+		k_info.content_id,
+		k_info.latitude,
+		k_info.longitude,
+		k_detail.theme_code
+		FROM
+		k_attraction_detail k_detail
+		LEFT JOIN k_attraction_info AS k_info ON
+		k_detail.content_id = k_info.content_id
+		LEFT JOIN bookmark AS book ON
+		book.member_id = #{memberId} AND
+		k_detail.content_id = book.content_id
+		WHERE
+		k_info.title LIKE CONCAT('%', #{keyword}, '%')
+		<if test="sidoCode != 0 and sidoCode != ''">
+			AND k_info.sido_code = #{sidoCode}
+		</if>
+		<if test="themeCode != null and themeCode != ''">
+			AND k_detail.theme_code = #{themeCode}
+		</if>
+		<if test="categoryCode != null and categoryCode != ''">
+			AND k_detail.category_code = #{categoryCode}
+		</if>
+		<if test="contentId != 0 and contentId != ''">
+			AND k_info.content_id = #{contentId}
+		</if>
+		)
+
 	</select>
 
 	<insert id="createBookmark" parameterType="map">
