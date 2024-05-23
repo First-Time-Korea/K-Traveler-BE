@@ -33,4 +33,5 @@ public interface PlanMapper {
 
 	void updateMemo(PlanMemoDto memoDto) throws SQLException;
 
+    void deletePlan(String planId) throws SQLException;
 }

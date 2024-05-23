@@ -105,51 +105,54 @@
 
 	<select id="getAttractionByContentId" parameterType="map"
 		resultType="AttractionDto">
-		SELECT
-		info.content_id,
-		info.title,
-		info.addr1,
-		info.addr2,
-		info.first_image,
-		info.sido_code,
-		info.gugun_code,
-		sido.sido_name,
-		detail.theme_code,
-		theme.theme_name,
-		detail.category_code,
-		category.category_name,
-		info.latitude,
-		info.longitude,
-		description.overview
-		FROM
-		attraction_info AS info
-		LEFT JOIN
-		(SELECT
-		content_id, theme_code, category_code FROM attraction_detail) AS
-		detail
-		ON info.content_id = detail.content_id
-		LEFT JOIN
-		(SELECT
-		content_id, overview FROM attraction_description) AS description
-		ON
-		info.content_id = description.content_id
-		LEFT JOIN
-		(SELECT sido_code,
-		sido_name FROM sido) AS sido
-		ON info.sido_code = sido.sido_code
-		LEFT
-		JOIN
-		(SELECT theme_code, theme_name FROM theme) AS theme
-		ON
-		detail.theme_code = theme.theme_code
-		LEFT JOIN
-		(SELECT category_code,
-		category_name FROM category) AS category
-		ON detail.category_code =
-		category.category_code
-		WHERE
-		info.content_id = #{contentId};
-	</select>
+        SELECT info.content_id,
+               info.title,
+               info.addr1,
+               info.addr2,
+               info.first_image,
+               info.sido_code,
+               info.gugun_code,
+               sido.sido_name,
+               detail.theme_code,
+               theme.theme_name,
+               detail.category_code,
+               category.category_name,
+               info.latitude,
+               info.longitude,
+               book.id bookmarkId,
+               description.overview
+        FROM attraction_info AS info
+                 LEFT JOIN
+             (SELECT content_id,
+                     theme_code,
+                     category_code
+              FROM attraction_detail) AS detail
+             ON info.content_id = detail.content_id
+                 LEFT JOIN
+             (SELECT content_id,
+                     overview
+              FROM attraction_description) AS description
+             ON
+                 info.content_id = description.content_id
+                 LEFT JOIN
+             (SELECT sido_code,
+                     sido_name
+              FROM sido) AS sido
+             ON info.sido_code = sido.sido_code
+                 LEFT JOIN
+                 (SELECT theme_code, theme_name FROM theme) AS theme
+                 ON
+                     detail.theme_code = theme.theme_code
+                 LEFT JOIN
+             (SELECT category_code,
+                     category_name
+              FROM category) AS category
+             ON detail.category_code =
+                category.category_code
+                 LEFT JOIN bookmark AS book
+                           ON book.member_id = #{memberId} AND detail.content_id = book.content_id
+        WHERE info.content_id = #{contentId};
+    </select>
 
 	<select id="getKCurtureAttractionByContentId"
 		parameterType="map" resultType="AttractionDto">

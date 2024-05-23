@@ -22,4 +22,5 @@ public interface PlanService {
 
 	void updateMemo(List<PlanMemoDto> memoList) throws SQLException;
 
+	void deletePlan(String planId) throws SQLException;
 }

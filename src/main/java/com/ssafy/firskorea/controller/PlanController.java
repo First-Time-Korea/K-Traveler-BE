@@ -14,16 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.firskorea.plan.dto.PlanFileDto;
@@ -138,23 +129,6 @@ public class PlanController {
 		}
 	}
 
-//	@GetMapping("/list") // 본인의 계획 목록 조회
-//	private ResponseEntity<?> listPlanner(HttpSession session) throws Exception {
-////        String memberId = (String) session.getAttribute("loginId");
-//		Map<String, Object> res = new HashMap<>();
-//		if (memberId != null) {
-//			List<PlannerDto> plan = plannerService.listPlanner(memberId);
-//			res.put("status", "success");
-//			res.put("message", "여행 계획 목록 조회 성공");
-//			res.put("data", plan);
-//			return new ResponseEntity<>(res, HttpStatus.OK);
-//		}
-//		res.put("status", "fail");
-//		res.put("message", "로그인 안되어 있음");
-//		res.put("data", "null");
-//		return new ResponseEntity<>(res, HttpStatus.UNAUTHORIZED);
-//	}
-//
 	@GetMapping("/info") // 계획 상세 조회
 	private ResponseEntity<?> viewPlannerInfo(@RequestParam("planId") String planId) throws Exception {
 		Map<String, Object> res = new HashMap<>();
@@ -179,6 +153,16 @@ public class PlanController {
 		res.put("data", "null");
 		System.out.println(memoMap);
 		planService.updateMemo((List<PlanMemoDto>) memoMap.get("memos"));
+		return new ResponseEntity<>(res, HttpStatus.OK);
+	}
+
+	@DeleteMapping()
+	public ResponseEntity<?> deletePlan(@RequestParam String planId) throws Exception {
+		Map<String, Object> res = new HashMap<>();
+		res.put("status", "success");
+		res.put("message", "여행 삭제 성공");
+		res.put("data", "null");
+		planService.deletePlan(planId);
 		return new ResponseEntity<>(res, HttpStatus.OK);
 	}
 }
