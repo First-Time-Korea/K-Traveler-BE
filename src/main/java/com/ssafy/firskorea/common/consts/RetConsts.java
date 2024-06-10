@@ -6,12 +6,18 @@ import lombok.Getter;
 public enum RetConsts {
 
     NRM000(RetStatus.SUCCESS, 200, "성공"),
-    ERR401(RetStatus.AUTH, 401, "유효하지 않은 토큰"), //Unauthorized
-    ERR403(RetStatus.AUTH, 403, "토큰 누락"), //Forbidden
-    ERR500(RetStatus.INFRA, 500, "파일 업로드 에러"),
-    ERR501(RetStatus.INFRA, 501, "파일 경로 문제"),
-    ERR600(RetStatus.BUSINESS, 600, "해당 유저가 없어요"),
-    ERR601(RetStatus.BUSINESS, 601, "회원 정보가 일치하지 않습니다."),
+
+    ERR400(RetStatus.AUTH, 400, "잘못된 요청"), //Bad Request
+    ERR401(RetStatus.AUTH, 401, "권한 없음"), //Unauthorized
+
+    ERR500(RetStatus.INFRA, 500, "서버 에러"),
+    ERR501(RetStatus.INFRA, 501, "파일 업로드 에러"),
+    ERR502(RetStatus.INFRA, 502, "파일 경로 조회 실패"),
+
+    ERR600(RetStatus.BUSINESS, 600, "비즈니스 로직 처리 중 문제 발생"),
+    ERR601(RetStatus.BUSINESS, 601, "존재하지 않는 회원"),
+    ERR602(RetStatus.BUSINESS, 602, "회원 정보 불일치"),
+    ERR603(RetStatus.BUSINESS, 603, "중복된 회원 아이디"),
     ;
 
     private final RetStatus retStatus;

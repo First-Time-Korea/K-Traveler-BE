@@ -5,8 +5,8 @@ public enum RetStatus {
     SUCCESS(200),
     AUTH(400),
     VALIDATION(410),
-    INFRA(420),
-    BUSINESS(430);
+    INFRA(500),
+    BUSINESS(600);
 
     private int retCode;
 
