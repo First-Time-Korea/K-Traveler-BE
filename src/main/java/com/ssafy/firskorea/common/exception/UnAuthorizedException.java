@@ -1,4 +1,4 @@
-package com.ssafy.firskorea.exception;
+package com.ssafy.firskorea.common.exception;
 
 public class UnAuthorizedException extends RuntimeException {
 	
