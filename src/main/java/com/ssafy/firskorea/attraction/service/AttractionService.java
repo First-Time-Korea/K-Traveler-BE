@@ -10,7 +10,7 @@ import com.ssafy.firskorea.attraction.dto.request.SearchDto;
 import com.ssafy.firskorea.attraction.dto.request.SidoPgnoDto;
 import com.ssafy.firskorea.attraction.dto.response.AttractionDto;
 import com.ssafy.firskorea.attraction.dto.response.PaginatedAttractionsDto;
-import com.ssafy.firskorea.attraction.dto.response.ThemeDto;
+import com.ssafy.firskorea.attraction.dto.response.category.ThemeDto;
 
 public interface AttractionService {
 

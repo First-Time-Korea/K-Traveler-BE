@@ -1,4 +1,4 @@
-package com.ssafy.firskorea.attraction.dto.response;
+package com.ssafy.firskorea.attraction.dto.response.category;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,4 +1,4 @@
-package com.ssafy.firskorea.attraction.dto.request;
+package com.ssafy.firskorea.attraction.dto.prompt;
 
 import lombok.AccessLevel;
 import lombok.Getter;

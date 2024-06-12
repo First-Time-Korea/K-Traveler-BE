@@ -8,7 +8,7 @@ import com.ssafy.firskorea.attraction.dto.request.MemberContentDto;
 import com.ssafy.firskorea.attraction.dto.response.AttractionDto;
 import com.ssafy.firskorea.attraction.mapper.AttractionMapper;
 import com.ssafy.firskorea.config.ChatGPTConfig;
-import com.ssafy.firskorea.attraction.dto.request.CompletionRequestDto;
+import com.ssafy.firskorea.attraction.dto.prompt.CompletionRequestDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,14 +26,14 @@ import java.util.*;
 @Service
 public class AttractionGptServiceImpl implements AttractionGptService {
 
-	@Autowired
-	private AttractionMapper attractionMapper;
+	private final AttractionMapper attractionMapper;
 	private final ChatGPTConfig chatGPTConfig;
 	private final ObjectMapper objectMapper;
 
-	public AttractionGptServiceImpl(ChatGPTConfig chatGPTConfig) {
+	public AttractionGptServiceImpl(ChatGPTConfig chatGPTConfig, AttractionMapper attractionMapper) {
 		this.chatGPTConfig = chatGPTConfig;
 		this.objectMapper = new ObjectMapper(); // jackson 직렬화 라이브러리
+		this.attractionMapper = attractionMapper;
 	}
 
 	@Value("${openai.model}")

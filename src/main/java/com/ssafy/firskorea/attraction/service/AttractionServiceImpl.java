@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ssafy.firskorea.attraction.dto.request.SearchDto;
 import com.ssafy.firskorea.attraction.dto.response.AttractionDto;
-import com.ssafy.firskorea.attraction.dto.response.ThemeDto;
+import com.ssafy.firskorea.attraction.dto.response.category.ThemeDto;
 import com.ssafy.firskorea.attraction.mapper.AttractionMapper;
 import com.ssafy.firskorea.util.SizeConstant;
 

@@ -1,4 +1,4 @@
-package com.ssafy.firskorea.attraction.dto.response;
+package com.ssafy.firskorea.attraction.dto.response.category;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +9,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class CategoryDto {
-	private String categoryCode;
-	private String categoryName;
+public class ThemeDto {
+	private String themeCode;
+	private String themeName;
 }

@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.ssafy.firskorea.attraction.dto.request.SearchDto;
 import com.ssafy.firskorea.attraction.dto.response.AttractionDto;
-import com.ssafy.firskorea.attraction.dto.response.ThemeDto;
+import com.ssafy.firskorea.attraction.dto.response.category.ThemeDto;
 
 @Mapper
 public interface AttractionMapper {
