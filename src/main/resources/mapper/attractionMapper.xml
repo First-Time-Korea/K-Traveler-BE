@@ -81,7 +81,7 @@
 
 	</select>
 
-	<insert id="createBookmark" parameterType="map">
+	<insert id="createAttractionBookmark" parameterType="map">
 		INSERT INTO bookmark
 		(member_id, content_id)
 		SELECT #{memberId}, #{contentId}
@@ -194,12 +194,12 @@
 		#{contentId};
 	</select>
 
-	<delete id="deleteBookmark" parameterType="map">
+	<delete id="deleteAttractionBookmark" parameterType="map">
 		delete from bookmark
 		where member_id=#{memberId} and content_id=#{contentId};
 	</delete>
 
-	<select id="getAttractionsBySidoCode" parameterType="map">
+	<select id="getPaginatedAttractionsBySidoCode" parameterType="map">
 		select
 		info.content_id, info.title, info.first_image, info.addr1,
 		info.latitude, info.longitude, t.theme_name, description.overView
@@ -229,7 +229,7 @@
 		sido_code = #{sidoCode}
 	</select>
 
-	<select id="getBookmarkedAttractionList" parameterType="string">
+	<select id="getAllAttractionsBookmarked" parameterType="string">
 		select
 		info.content_id, info.title, info.first_image, info.addr1,
 		info.latitude, info.longitude, t.theme_name, description.overView
@@ -250,7 +250,7 @@
 	</select>
 
 	<!-- 나의 여행지 조회하기 -->
-	<select id="getBookmarkedAttractionInfos" parameterType="map"
+	<select id="getPaginatedAttractionsBookmarked" parameterType="map"
 		resultType="AttractionDto">
 		select b.id bookmark_id, a.content_id, a.title,
 		a.first_image, a.first_image2
@@ -269,7 +269,7 @@
 	</select>
 
 	<!-- 나의 여행지 총 개수 구하기 -->
-	<select id="getTotalBookmarkedAttractionCount"
+	<select id="getTotalAttractionsBookmarkedCount"
 		parameterType="string" resultType="int">
 		select count(id)
 		from bookmark

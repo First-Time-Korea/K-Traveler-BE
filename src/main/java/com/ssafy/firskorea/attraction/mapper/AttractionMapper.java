@@ -21,29 +21,29 @@ public interface AttractionMapper {
 
 	List<AttractionDto> getAttractionBySearch(SearchDto searchDto) throws SQLException;
 
-	void createBookmark(MemberContentDto memberContentDto) throws SQLException;
+	void createAttractionBookmark(MemberContentDto memberContentDto) throws SQLException;
 
 	AttractionDto getAttractionByContentId(MemberContentDto memberContentDto) throws SQLException;
 
-	void deleteBookmark(MemberContentDto memberContentDto) throws SQLException;
+	void deleteAttractionBookmark(MemberContentDto memberContentDto) throws SQLException;
 
-	List<AttractionDto> getBookmarkedAttractionList(String memberId) throws SQLException;
+	List<AttractionDto> getAllAttractionsBookmarked(String memberId) throws SQLException;
 
-	List<AttractionDto> getAttractionsBySidoCode(Map<String, Object> map) throws SQLException;
+	List<AttractionDto> getPaginatedAttractionsBySidoCode(Map<String, Object> map) throws SQLException;
 	
-	int getTotalAttractionsBySidoCodeCount(int sidoCode) throws Exception;
+	int getTotalAttractionsBySidoCodeCount(int sidoCode) throws SQLException;
 
 	List<Category> getSidoList() throws SQLException;
 
-	List<AttractionDto> getBookmarkedAttractionInfos(Map<String, Object> map) throws Exception;
+	List<AttractionDto> getPaginatedAttractionsBookmarked(Map<String, Object> map) throws SQLException;
 
-	int getTotalBookmarkedAttractionCount(String memberId) throws Exception;
+	int getTotalAttractionsBookmarkedCount(String memberId) throws SQLException;
 
-	AttractionDto getKCurtureAttractionByContentId(MemberContentDto memberContentDto) throws Exception;
+	AttractionDto getKCurtureAttractionByContentId(MemberContentDto memberContentDto) throws SQLException;
 
-	void insertKCurtureAttractionInfoEnglish(AttractionDto attractionDto) throws Exception;
+	void insertKCurtureAttractionInfoEnglish(AttractionDto attractionDto) throws SQLException;
 
-	void insertKCurtureAttractionDetailEnglish(AttractionDto attractionDto) throws Exception;
+	void insertKCurtureAttractionDetailEnglish(AttractionDto attractionDto) throws SQLException;
 
-	void insertKCurtureAttractionDescriptionEnglish(AttractionDto attractionDto) throws Exception;
+	void insertKCurtureAttractionDescriptionEnglish(AttractionDto attractionDto) throws SQLException;
 }
