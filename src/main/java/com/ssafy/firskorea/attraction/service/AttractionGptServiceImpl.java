@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLException;
 import java.util.*;
 
 @Slf4j
@@ -40,7 +41,7 @@ public class AttractionGptServiceImpl implements AttractionGptService {
 
 	@Override
 	@Transactional
-	public AttractionDto getAttractionDetailWithAI(MemberContentDto memberContentDto) throws Exception {
+	public AttractionDto getAttractionDetailWithAI(MemberContentDto memberContentDto) throws SQLException {
 		AttractionDto attractionDto = attractionMapper.getAttractionByContentId(memberContentDto);
 		if (attractionDto != null) {
 			// 그냥 반환하기

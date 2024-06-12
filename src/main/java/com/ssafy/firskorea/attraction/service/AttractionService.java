@@ -26,9 +26,9 @@ public interface AttractionService {
 
     AttractionDto getAttractionDetail(MemberContentDto memberContentDto) throws SQLException;
 
-    PaginatedAttractionsDto getPaginatedAttractionsBySidoCode(SidoPgnoDto sidoPgnoDto) throws Exception;
+    PaginatedAttractionsDto getPaginatedAttractionsBySidoCode(SidoPgnoDto sidoPgnoDto) throws SQLException;
 
-    PaginatedAttractionsDto getPaginatedAttractionsBookmarked(MemberPgnoDto memberPgnoDto) throws Exception;
+    PaginatedAttractionsDto getPaginatedAttractionsBookmarked(MemberPgnoDto memberPgnoDto) throws SQLException;
 
     List<AttractionDto> getAllAttractionsBookmarked(String memberId) throws SQLException;
 }

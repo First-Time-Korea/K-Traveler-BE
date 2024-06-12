@@ -107,7 +107,7 @@ public class AttractionServiceImpl implements AttractionService {
      * @return 페이징 처리된 {@link PaginatedAttractionsDto} 객체를 반환한다.
      */
     @Override
-    public PaginatedAttractionsDto getPaginatedAttractionsBySidoCode(SidoPgnoDto sidoPgnoDto) throws Exception {
+    public PaginatedAttractionsDto getPaginatedAttractionsBySidoCode(SidoPgnoDto sidoPgnoDto) throws SQLException {
         int pgNo = Integer.parseInt(sidoPgnoDto.getPgno() == null ? "1" : sidoPgnoDto.getPgno());
         int start = (pgNo - 1) * SizeConstant.LIST_SIZE;
 
@@ -133,7 +133,7 @@ public class AttractionServiceImpl implements AttractionService {
      * @return 페이징 처리된 {@link PaginatedAttractionsDto} 객체를 반환한다.
      */
     @Override
-    public PaginatedAttractionsDto getPaginatedAttractionsBookmarked(MemberPgnoDto memberPgnoDto) throws Exception {
+    public PaginatedAttractionsDto getPaginatedAttractionsBookmarked(MemberPgnoDto memberPgnoDto) throws SQLException {
         int pgNo = Integer.parseInt(memberPgnoDto.getPgno() == null ? "1" : memberPgnoDto.getPgno());
         int start = pgNo * SizeConstant.LIST_SIZE - SizeConstant.LIST_SIZE;
 
