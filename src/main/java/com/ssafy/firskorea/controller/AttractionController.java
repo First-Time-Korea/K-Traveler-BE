@@ -1,21 +1,14 @@
 package com.ssafy.firskorea.controller;
 
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale.Category;
 import java.util.Map;
 
+import com.ssafy.firskorea.attraction.dto.request.AttractionIdentityDto;
 import com.ssafy.firskorea.attraction.service.AttractionGptService;
 import com.ssafy.firskorea.common.dto.CommonResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.ssafy.firskorea.attraction.dto.request.SearchDto;
-import com.ssafy.firskorea.attraction.dto.response.AttractionDto;
 import com.ssafy.firskorea.attraction.service.AttractionService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -63,22 +56,22 @@ public class AttractionController {
 
     @Operation(summary = "북마크 토글", description = "회원과 관광지 아이디를 기반으로 북마크를 토글한다.")
     @PostMapping("/bookmark")
-    public CommonResponse<?> toggleBookmark(@RequestBody Map<String, String> map)
+    public CommonResponse<?> toggleBookmark(@RequestBody AttractionIdentityDto attractionIdentityDto)
             throws SQLException {
-        return CommonResponse.ok(attractionService.toggleBookmark(map));
+        return CommonResponse.ok(attractionService.toggleBookmark(attractionIdentityDto));
     }
 
     @Operation(summary = "여행지 단일 조회", description = "회원과 관광지 아이디를 기반으로 여행지를 조회한다.")
     @PostMapping()
-    public CommonResponse<?> getAttraction(@RequestBody Map<String, String> map)
+    public CommonResponse<?> getAttraction(@RequestBody AttractionIdentityDto attractionIdentityDto)
             throws SQLException {
-        return CommonResponse.ok(attractionService.getAttractionById(map));
+        return CommonResponse.ok(attractionService.getAttractionById(attractionIdentityDto));
     }
 
     @Operation(summary = "GPT를 사용, 여행지 단일 조회", description = "회원과 관광지 아이디를 기반으로 여행지를 조회 하되, GPT를 사용한다.")
     @PostMapping("/ai")
-    public CommonResponse<?> selectPrompt(@RequestBody Map<String, String> map) throws Exception {
-        return CommonResponse.ok(attractionGptService.prompt(map));
+    public CommonResponse<?> selectPrompt(@RequestBody AttractionIdentityDto attractionIdentityDto) throws Exception {
+        return CommonResponse.ok(attractionGptService.prompt(attractionIdentityDto));
     }
 
     @Operation(summary = "특정 지역의 관광지 전체 조회", description = "시도코드에 해당하는 관광지를 전체 조회한다.")

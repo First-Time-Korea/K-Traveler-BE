@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Locale.Category;
 import java.util.Map;
 
+import com.ssafy.firskorea.attraction.dto.request.AttractionIdentityDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.ssafy.firskorea.attraction.dto.request.SearchDto;
@@ -21,11 +22,11 @@ public interface AttractionMapper {
 
 	List<AttractionDto> getAttractionBySearch(SearchDto searchDto) throws SQLException;
 
-	void createBookmark(Map<String, String> map) throws SQLException;
+	void createBookmark(AttractionIdentityDto map) throws SQLException;
 
-	AttractionDto getAttractionByContentId(Map<String, String> map) throws SQLException;
+	AttractionDto getAttractionByContentId(AttractionIdentityDto map) throws SQLException;
 
-	void deleteBookmark(Map<String, String> map) throws SQLException;
+	void deleteBookmark(AttractionIdentityDto map) throws SQLException;
 
 	List<AttractionDto> getBookmarkedAttractionList(String memberId) throws SQLException;
 
@@ -39,7 +40,7 @@ public interface AttractionMapper {
 
 	int getTotalBookmarkedAttractionCount(String memberId) throws Exception;
 
-	AttractionDto getKCurtureAttractionByContentId(Map<String, String> map) throws Exception;
+	AttractionDto getKCurtureAttractionByContentId(AttractionIdentityDto map) throws Exception;
 
 	void insertKCurtureAttractionInfoEnglish(AttractionDto attractionDto) throws Exception;
 
