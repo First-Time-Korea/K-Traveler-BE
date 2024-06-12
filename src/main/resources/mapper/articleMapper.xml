@@ -21,11 +21,6 @@
 		<result column="save_file" property="saveFile" />
 	</resultMap>
 	
-	<resultMap type="tagDto" id="tag">
-		<result column="id" property="id" />
-		<result column="name" property="name" />
-	</resultMap>
-	
 	<resultMap type="articleAndCommentDto" id="articleAndComment">
 		<result column="id" property="id" />
 		<result column="member_id" property="memberId" />
@@ -133,7 +128,7 @@
 	</select>
 	
 	<!-- 여행 후기 관련 태그 조회하기 -->
-	<select id="getTagsOfArticle" parameterType="int" resultMap="tag">
+	<select id="getTagsOfArticle" parameterType="int" resultType="tagDto">
 		select id, name
 		from article_tag
 		where id in (
