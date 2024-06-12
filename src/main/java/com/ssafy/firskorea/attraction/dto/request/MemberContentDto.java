@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class AttractionIdentityDto {
+public class MemberContentDto {
     private String memberId;
     private String contentId;
 }

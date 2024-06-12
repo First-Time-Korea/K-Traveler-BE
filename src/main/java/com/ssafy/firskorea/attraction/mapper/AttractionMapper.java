@@ -5,12 +5,11 @@ import java.util.List;
 import java.util.Locale.Category;
 import java.util.Map;
 
-import com.ssafy.firskorea.attraction.dto.request.AttractionIdentityDto;
+import com.ssafy.firskorea.attraction.dto.request.MemberContentDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.ssafy.firskorea.attraction.dto.request.SearchDto;
 import com.ssafy.firskorea.attraction.dto.response.AttractionDto;
-import com.ssafy.firskorea.attraction.dto.response.BookmarkedAttractionInfoDto;
 import com.ssafy.firskorea.attraction.dto.response.ThemeDto;
 
 @Mapper
@@ -22,11 +21,11 @@ public interface AttractionMapper {
 
 	List<AttractionDto> getAttractionBySearch(SearchDto searchDto) throws SQLException;
 
-	void createBookmark(AttractionIdentityDto map) throws SQLException;
+	void createBookmark(MemberContentDto memberContentDto) throws SQLException;
 
-	AttractionDto getAttractionByContentId(AttractionIdentityDto map) throws SQLException;
+	AttractionDto getAttractionByContentId(MemberContentDto memberContentDto) throws SQLException;
 
-	void deleteBookmark(AttractionIdentityDto map) throws SQLException;
+	void deleteBookmark(MemberContentDto memberContentDto) throws SQLException;
 
 	List<AttractionDto> getBookmarkedAttractionList(String memberId) throws SQLException;
 
@@ -36,11 +35,11 @@ public interface AttractionMapper {
 
 	List<Category> getSidoList() throws SQLException;
 
-	List<BookmarkedAttractionInfoDto> getBookmarkedAttractionInfos(Map<String, Object> map) throws Exception;
+	List<AttractionDto> getBookmarkedAttractionInfos(Map<String, Object> map) throws Exception;
 
 	int getTotalBookmarkedAttractionCount(String memberId) throws Exception;
 
-	AttractionDto getKCurtureAttractionByContentId(AttractionIdentityDto map) throws Exception;
+	AttractionDto getKCurtureAttractionByContentId(MemberContentDto memberContentDto) throws Exception;
 
 	void insertKCurtureAttractionInfoEnglish(AttractionDto attractionDto) throws Exception;
 

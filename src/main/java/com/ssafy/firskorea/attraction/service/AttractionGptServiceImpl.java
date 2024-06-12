@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.firskorea.attraction.constant.PromptMessage;
-import com.ssafy.firskorea.attraction.dto.request.AttractionIdentityDto;
+import com.ssafy.firskorea.attraction.dto.request.MemberContentDto;
 import com.ssafy.firskorea.attraction.dto.response.AttractionDto;
 import com.ssafy.firskorea.attraction.mapper.AttractionMapper;
 import com.ssafy.firskorea.config.ChatGPTConfig;
@@ -40,14 +40,14 @@ public class AttractionGptServiceImpl implements AttractionGptService {
 
 	@Override
 	@Transactional
-	public AttractionDto prompt(AttractionIdentityDto attractionIdentityDto) throws Exception {
-		AttractionDto attractionDto = attractionMapper.getAttractionByContentId(attractionIdentityDto);
+	public AttractionDto getAttractionDetailWithAI(MemberContentDto memberContentDto) throws Exception {
+		AttractionDto attractionDto = attractionMapper.getAttractionByContentId(memberContentDto);
 		if (attractionDto != null) {
 			// 그냥 반환하기
 			return attractionDto;
 		}
 
-		attractionDto = attractionMapper.getKCurtureAttractionByContentId(attractionIdentityDto);
+		attractionDto = attractionMapper.getKCurtureAttractionByContentId(memberContentDto);
 		CompletionRequestDto completionRequestDto = new CompletionRequestDto("gpt-3.5-turbo",
 				List.of(new CompletionRequestDto.Message("system",
 						PromptMessage.MESSAGE.formatMessage(attractionDto.getTitle(), attractionDto.getOverView()),
