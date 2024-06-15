@@ -18,6 +18,7 @@ public enum RetConsts {
     ERR601(RetStatus.BUSINESS, 601, "존재하지 않는 회원"),
     ERR602(RetStatus.BUSINESS, 602, "회원 정보 불일치"),
     ERR603(RetStatus.BUSINESS, 603, "중복된 회원 아이디"),
+    ERR604(RetStatus.BUSINESS, 604, "GPT가 잘못된 구조로 번역"),
     ;
 
     private final RetStatus retStatus;

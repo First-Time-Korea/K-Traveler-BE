@@ -9,5 +9,6 @@ import java.sql.SQLException;
 @Service
 public interface AttractionGptService {
 
-    AttractionDto getAttractionDetailWithAI(MemberContentDto memberContentDto) throws SQLException;
+    AttractionDto getAttractionDetailWithGptApi(MemberContentDto memberContentDto) throws SQLException;
+    AttractionDto getAttractionDetailAtDB(MemberContentDto memberContentDto) throws SQLException;
 }

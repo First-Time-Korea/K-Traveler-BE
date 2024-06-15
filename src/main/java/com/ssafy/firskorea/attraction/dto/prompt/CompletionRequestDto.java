@@ -3,11 +3,13 @@ package com.ssafy.firskorea.attraction.dto.prompt;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 
 //프롬프트 요청 DTO
 @Getter
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CompletionRequestDto {
 
@@ -20,6 +22,7 @@ public class CompletionRequestDto {
     }
 
     @Getter
+    @ToString
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class Message {
         private String role;

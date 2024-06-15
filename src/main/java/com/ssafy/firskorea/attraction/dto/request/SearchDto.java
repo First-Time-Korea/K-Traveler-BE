@@ -1,11 +1,13 @@
 package com.ssafy.firskorea.attraction.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 @Schema(title = "SearchDto", description = "조건으로 목록을 필터링 할 때 사용")
 public class SearchDto {
     @Schema(description = "회원 아이디", nullable = true) // nullable 속성 추가

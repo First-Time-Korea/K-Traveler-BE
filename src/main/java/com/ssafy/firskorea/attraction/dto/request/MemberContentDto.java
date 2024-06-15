@@ -1,11 +1,15 @@
 package com.ssafy.firskorea.attraction.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Schema(title = "MemberContentDto", description = "회원의 관광지에 대한 상태를 알아야 할 때 사용 ex) 북마크")
 public class MemberContentDto {
     @Schema(required = true, description = "회원 아이디")
