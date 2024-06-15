@@ -39,6 +39,7 @@ public class AttractionController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "600", description = "로직 수행 중 실패"),
+            @ApiResponse(responseCode = "410", description = "잘못된 형태로 요청"),
     })
     @PostMapping("/search")
     public CommonResponse<?> getAttractionsBySearch(
@@ -55,6 +56,7 @@ public class AttractionController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "600", description = "로직 수행 중 실패"),
+            @ApiResponse(responseCode = "410", description = "잘못된 형태로 요청"),
     })
     @PutMapping("/bookmarks")
     public CommonResponse<?> toggleAttractionBookmark(
@@ -71,6 +73,7 @@ public class AttractionController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "600", description = "로직 수행 중 실패"),
+            @ApiResponse(responseCode = "410", description = "잘못된 형태로 요청"),
     })
     @PostMapping("/details")
     public CommonResponse<?> getAttractionDetail(
@@ -87,6 +90,7 @@ public class AttractionController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "600", description = "로직 수행 중 실패"),
+            @ApiResponse(responseCode = "410", description = "잘못된 형태로 요청"),
     })
     @PostMapping("/details/ai/v1")
     public CommonResponse<?> getAttractionDetailWithAIV1(
@@ -101,6 +105,11 @@ public class AttractionController {
     }
 
     @PostMapping("/details/ai/v2")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "600", description = "로직 수행 중 실패"),
+            @ApiResponse(responseCode = "410", description = "잘못된 형태로 요청"),
+    })
     public CommonResponse<?> getAttractionDetailWithAIV2(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "조회할 회원과 관광지 아이디",
@@ -116,6 +125,7 @@ public class AttractionController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "600", description = "로직 수행 중 실패"),
+            @ApiResponse(responseCode = "410", description = "잘못된 형태로 요청"),
     })
     @PostMapping("/regions/paginated")
     public CommonResponse<?> getPaginatedAttractionsBySidoCode(
@@ -132,6 +142,7 @@ public class AttractionController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "600", description = "로직 수행 중 실패"),
+            @ApiResponse(responseCode = "410", description = "잘못된 형태로 요청"),
     })
     @PostMapping("/bookmarks/paginated")
     public CommonResponse<?> getPaginatedAttractionsBookmarked(

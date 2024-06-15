@@ -10,6 +10,8 @@ public enum RetConsts {
     ERR400(RetStatus.AUTH, 400, "잘못된 요청"), //Bad Request
     ERR401(RetStatus.AUTH, 401, "권한 없음"), //Unauthorized
 
+    ERR410(RetStatus.AUTH, 410, "잘못된 포맷으로 요청"),
+
     ERR500(RetStatus.INFRA, 500, "서버 에러"),
     ERR501(RetStatus.INFRA, 501, "파일 업로드 에러"),
     ERR502(RetStatus.INFRA, 502, "파일 경로 조회 실패"),
