@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,9 +23,14 @@ import com.ssafy.firskorea.board.dto.response.ArticleAndCommentDto;
 import com.ssafy.firskorea.board.service.ArticleService;
 import com.ssafy.firskorea.util.CommentStratify;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Tag(name = "여행 후기 컨트롤러")
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/article")
@@ -37,28 +43,56 @@ public class ArticleController {
 		this.articleService = articleService;
 	}
 
-	// 여행 후기 작성하기
+	@Operation(summary = "여행 후기 작성")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "201", description = "여행 후기 작성 성공"),
+			@ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패 \n\n 유효하지 않은 회원 아이디"),
+	})
 	@PostMapping("/write")
 	public ResponseEntity<Map<String, Object>> writeArticle(@RequestParam("userid") String userId,
-			@RequestParam("tags") List<String> tags, @RequestParam("content") String content,
+			@RequestParam("tags") List<String> tags, @RequestParam(value = "content", required = false) String content,
 			@RequestParam("file") MultipartFile file) throws Exception {
 		Map<String, Object> map = new HashMap<>();
+		
+		// 입력값 유효성 검사하기
+		if (userId.equals("") || tags.isEmpty() || file.isEmpty()) {
+			Map<String, Object> response = new HashMap<>();
+			response.put("message", "입력값 유효성 검사 실패했습니다.");
+			
+			return ResponseEntity.status(400).body(response);
+		}
+		
 		map.put("userId", userId);
 		map.put("tags", tags);
-		map.put("content", content);
 		map.put("file", file);
+		
+		if (content == null) {
+			map.put("content", "");
+		} else {
+			map.put("content", content);
+		}
 
-		articleService.writeArticle(map);
+		try {
+			articleService.writeArticle(map);
+			
+			Map<String, Object> response = new HashMap<>();
+			response.put("message", "여행 후기 작성 성공");
 
-		Map<String, Object> response = new HashMap<>();
-		response.put("message", "여행 후기 작성 성공");
+			ResponseEntity<Map<String, Object>> responseEntity = ResponseEntity.status(201).body(response);
 
-		ResponseEntity<Map<String, Object>> responseEntity = ResponseEntity.status(201).body(response);
-
-		return responseEntity;
+			return responseEntity;
+		} catch (DataIntegrityViolationException e) {  // 유효하지 않은 회원 아이디인 경우
+			Map<String, Object> response = new HashMap<>();
+			response.put("message", "유효하지 않은 회원 아이디입니다.");
+			
+			return ResponseEntity.status(400).body(response);
+		}
 	}
 
-	// 여행 후기 리스트 조회하기
+	@Operation(summary = "여행 후기 리스트 조회")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "여행 후기 리스트 조회 성공"),
+	})
 	@GetMapping("/list")
 	public ResponseEntity<Map<String, Object>> getArticles(@RequestParam Map<String, String> map) throws Exception {
 		Map<String, Object> result = articleService.getArticles(map);
@@ -73,8 +107,37 @@ public class ArticleController {
 
 		return responseEntity;
 	}
+	
+	@Operation(summary = "여행 후기 조회")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "여행 후기 조회 성공"),
+	})
+	@GetMapping("/detail/{articleid}")
+	public ResponseEntity<Map<String, Object>> getArticle(@PathVariable("articleid") int articleId) throws Exception {
+		ArticleAndCommentDto ac = articleService.getArticle(articleId);
+		
+		// 탈퇴한 여행 후기인 경우 작성자 처리
+		if (!ac.getExistedOfMember()) {
+			ac.setMemberId("(withdrawn member)");
+		}
+		
+		if (ac.getComments() != null) {
+			CommentStratify.stratify(ac.getComments());
+		}
+		
+		Map<String, Object> response = new HashMap<>();
+		response.put("message", "여행 후기 조회 성공");
+		response.put("article", ac);
 
-	// 여행 후기 사진 조회하기
+		ResponseEntity<Map<String, Object>> responseEntity = ResponseEntity.status(200).body(response);
+
+		return responseEntity;
+	}
+
+	@Operation(summary = "여행 후기 사진 조회")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "여행 후기 사진 조회 성공"),
+	})
 	@GetMapping("/img/{savefolder}/{savefile}")
 	public ResponseEntity<byte[]> getArticleFile(@PathVariable("savefolder") String saveFolder,
 			@PathVariable("savefile") String saveFile) throws Exception {
@@ -105,7 +168,10 @@ public class ArticleController {
 		}
 	}
 	
-	// 여행 후기 조회하기 for 수정
+	@Operation(summary = "여행 후기 조회 for 수정")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "여행 후기 조회 for 수정 성공"),
+	})
 	@GetMapping("/modify/{articleid}")
 	public ResponseEntity<Map<String, Object>> getArticleForModification(@PathVariable("articleid") int articleId) throws Exception {
 		ArticleDto article = articleService.getArticleForModification(articleId);
@@ -119,16 +185,34 @@ public class ArticleController {
 		return responseEntity;
 	}
 	
-	// 여행 후기 수정하기
-	@PutMapping("modify")
+	@Operation(summary = "여행 후기 수정")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "여행 후기 수정 성공"),
+	})
+	@PutMapping("/modify")
 	public ResponseEntity<Map<String, Object>> modifyArticle(@RequestParam("articleid") int articleId,
-			@RequestParam("tags") List<String> tags, @RequestParam("content") String content,
-			@RequestParam("file") MultipartFile file) throws Exception {
+			@RequestParam("tags") List<String> tags, @RequestParam(value = "content", required = false) String content,
+			@RequestParam(value = "file", required = false) MultipartFile file) throws Exception {
 		Map<String, Object> map = new HashMap<>();
+		
+		// 입력값 유효성 검사하기
+		if (tags.isEmpty() || (file != null && file.isEmpty())) {
+			Map<String, Object> response = new HashMap<>();
+			response.put("message", "입력값 유효성 검사 실패했습니다.");
+			
+			return ResponseEntity.status(400).body(response);
+		}
+		
 		map.put("articleId", articleId);
 		map.put("tags", tags);
-		map.put("content", content);
-		map.put("file", file);
+
+		if (content != null) {
+			map.put("content", content);
+		}
+		
+		if (file != null && file.isEmpty()) {
+			map.put("file", file);
+		}
 		
 		articleService.modifyArticle(map);
 		
@@ -140,31 +224,11 @@ public class ArticleController {
 		return responseEntity;
 	}
 	
-	// 여행 후기 조회하기
-	@GetMapping("detail/{articleid}")
-	public ResponseEntity<Map<String, Object>> getArticle(@PathVariable("articleid") int articleId) throws Exception {
-		ArticleAndCommentDto ac = articleService.getArticle(articleId);
-		
-		// 탈퇴한 여행 후기인 경우 작성자 처리
-		if (!ac.getExistedOfMember()) {
-			ac.setMemberId("(withdrawn member)");
-		}
-		
-		if (ac.getComments() != null) {
-			CommentStratify.stratify(ac.getComments());
-		}
-		
-		Map<String, Object> response = new HashMap<>();
-		response.put("message", "여행 후기 조회 성공");
-		response.put("article", ac);
-
-		ResponseEntity<Map<String, Object>> responseEntity = ResponseEntity.status(200).body(response);
-
-		return responseEntity;
-	}
-	
-	// 여행 후기 삭제하기
-	@DeleteMapping("delete/{articleid}")
+	@Operation(summary = "여행 후기 삭제")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "여행 후기 삭제 성공"),
+	})
+	@DeleteMapping("/delete/{articleid}")
 	public ResponseEntity<Map<String, Object>> deleteArticle(@PathVariable("articleid") int articleId) throws Exception {
 		articleService.deleteArticle(articleId);
 		

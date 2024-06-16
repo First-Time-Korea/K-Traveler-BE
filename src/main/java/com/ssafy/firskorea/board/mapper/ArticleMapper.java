@@ -13,32 +13,32 @@ import com.ssafy.firskorea.board.dto.response.ArticleAndCommentDto;
 @Mapper
 public interface ArticleMapper {
 
+	Integer getArticleTagId(String tag) throws Exception;
+
+	void writeArticleTag(TagDto tag) throws Exception;
+
+	void writeArticle(ArticleDto article) throws Exception;
+
+	void connectArticleAndTag(Map<String, Object> map) throws Exception;
+
+	void writeArticleFile(FileDto file) throws Exception;
+
 	List<ArticleDto> getArticles(Map<String, Object> map) throws Exception;
 
 	int getTotalArticleCount(Map<String, Object> map) throws Exception;
-	
-	Integer getArticleTagId(String tag) throws Exception;
-	
-	void writeArticleTag(TagDto tag) throws Exception;
-	
-	void writeArticle(ArticleDto article) throws Exception;
-	
-	void connectArticleAndTag(Map<String, Object> map) throws Exception;
-	
-	void writeArticleFile(FileDto file) throws Exception;
-	
-	ArticleDto getArticleForModification(int articleId) throws Exception;
-	
-	List<TagDto> getTagsOfArticle(int articleId) throws Exception;
-	
-	void modifyArticle(Map<String, Object> map) throws Exception;
-	
-	void disconnectArticleAndTag(Map<String, Object> map) throws Exception;
-	
+
 	ArticleAndCommentDto getArticle(int articleId) throws Exception;
-	
+
+	ArticleDto getArticleForModification(int articleId) throws Exception;
+
+	List<TagDto> getTagsOfArticle(int articleId) throws Exception;
+
+	void modifyArticle(Map<String, Object> map) throws Exception;
+
+	void disconnectArticleAndTag(Map<String, Object> map) throws Exception;
+
 	void deleteArticleFile(int articleId) throws Exception;
-	
+
 	void deleteArticle(int aritlceId) throws Exception;
 
 }

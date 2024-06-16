@@ -43,48 +43,6 @@
 		<result column="comment_member_status" property="existedOfMember" />
 	</resultMap>
 	
-	<!-- 여행 후기 조회하기 -->
-	<sql id="search">
-		<if test="word != null and word != ''">
-			<if test="key == 'tag'">
-				and a.id in (
-					select article_id
-					from article_and_article_tag
-					where article_tag_id = (
-						select id
-						from article_tag
-						where name like concat('%', #{word}, '%')
-					)
-				)
-			</if>
-			<if test="key == 'username'">
-				and member_id = (
-					select id
-					from member
-					where name = #{word}
-				)
-			</if>
-		</if>
-	</sql>
-	
-	<select id="getArticles" parameterType="map" resultMap="article">
-		select a.id, f.id file_id, f.save_folder, f.origin_file, f.save_file
-		from article a, article_file f
-		where a.id = f.article_id
-		<include refid="search"></include>
-		order by a.id desc
-		limit #{start}, #{listsize}
-	</select>
-	
-	<!-- 여행 후기 총 개수 구하기 -->
-	<select id="getTotalArticleCount" parameterType="map" resultType="int">
-		select count(a.id)
-		from article a
-		<where>
-			<include refid="search"></include>
-		</where>
-	</select>
-	
 	<!-- 여행 태그 ID 조회하기 -->
 	<select id="getArticleTagId" parameterType="string" resultType="java.lang.Integer">
 		select id
@@ -118,6 +76,74 @@
 		insert into article_file (article_id, save_folder, origin_file, save_file)
 		values (#{articleId}, #{saveFolder}, #{originFile}, #{saveFile})
 	</insert>
+	
+	<!-- 여행 후기 조회하기 -->
+	<sql id="search">
+		<if test="word != null and word != ''">
+			<if test="key == 'tag'">
+				and a.id in (
+					select article_id
+					from article_and_article_tag
+					where article_tag_id = (
+						select id
+						from article_tag
+						where name like concat('%', #{word}, '%')
+					)
+				)
+			</if>
+			<if test="key == 'username'">
+				and member_id = (
+					select id
+					from member
+					where name = #{word}
+				)
+			</if>
+		</if>
+	</sql>
+	
+	<select id="getArticles" parameterType="map" resultMap="article">
+		select a.id, a.member_id, f.id file_id, f.save_folder, f.origin_file, f.save_file
+		from article a, article_file f
+		where a.id = f.article_id
+		<include refid="search"></include>
+		order by a.id desc
+		limit #{start}, #{listsize}
+	</select>
+	
+	<!-- 여행 후기 총 개수 구하기 -->
+	<select id="getTotalArticleCount" parameterType="map" resultType="int">
+		select count(a.id)
+		from article a
+		<where>
+			<include refid="search"></include>
+		</where>
+	</select>
+	
+	<!-- 여행 후기 조회하기 -->
+	<select id="getArticle" parameterType="int" resultMap="articleAndComment">
+		select r.id, r.member_id, r.content, r.hit, r.created_time, r.modified_time,
+			r.name, r.status member_status,
+			r.save_folder, r.origin_file, r.save_file,
+			r2.id comment_id, r2.member_id comment_member_id, r2.comment_member_status, r2.parent_article_comment_id, r2.content comment_content, r2.created_time comment_created_time, r2.comment_status
+		from (
+			select a.id, a.member_id, a.content, a.hit, a.created_time, a.modified_time, m.name, m.status, a.save_folder, a.origin_file, a.save_file
+			from (
+				select ar.id, ar.member_id, ar.content, ar.hit, ar.created_time, ar.modified_time, f.save_folder, f.origin_file, f.save_file
+				from article ar, article_file f
+				where ar.id = f.article_id
+				and ar.id = #{articleId}
+				order by f.id desc
+				limit 1
+			) a, member m
+			where a.member_id = m.id
+		) r left join (
+			select c.id, c.article_id, c.member_id, m.status comment_member_status, c.parent_article_comment_id, c.content, c.created_time, c.status comment_status
+			from article_comment c, member m
+			where c.member_id = m.id
+			and c.article_id = #{articleId}
+		) r2
+		on r.id = r2.article_id;
+	</select>
 	
 	<!-- 여행 후기 조회하기 for 수정 -->
 	<select id="getArticleForModification" parameterType="int" resultMap="article">
@@ -156,32 +182,6 @@
 	        </foreach>
 	    </if>
 	</delete>
-	
-	<!-- 여행 후기 조회하기 -->
-	<select id="getArticle" parameterType="int" resultMap="articleAndComment">
-		select r.id, r.member_id, r.content, r.hit, r.created_time, r.modified_time,
-			r.name, r.status member_status,
-			r.save_folder, r.origin_file, r.save_file,
-			r2.id comment_id, r2.member_id comment_member_id, r2.comment_member_status, r2.parent_article_comment_id, r2.content comment_content, r2.created_time comment_created_time, r2.comment_status
-		from (
-			select a.id, a.member_id, a.content, a.hit, a.created_time, a.modified_time, m.name, m.status, a.save_folder, a.origin_file, a.save_file
-			from (
-				select ar.id, ar.member_id, ar.content, ar.hit, ar.created_time, ar.modified_time, f.save_folder, f.origin_file, f.save_file
-				from article ar, article_file f
-				where ar.id = f.article_id
-				and ar.id = #{articleId}
-				order by f.id desc
-				limit 1
-			) a, member m
-			where a.member_id = m.id
-		) r left join (
-			select c.id, c.article_id, c.member_id, m.status comment_member_status, c.parent_article_comment_id, c.content, c.created_time, c.status comment_status
-			from article_comment c, member m
-			where c.member_id = m.id
-			and c.article_id = #{articleId}
-		) r2
-		on r.id = r2.article_id;
-	</select>
 	
 	<!-- 여행 후기 사진 삭제하기 -->
 	<delete id="deleteArticleFile" parameterType="int">
