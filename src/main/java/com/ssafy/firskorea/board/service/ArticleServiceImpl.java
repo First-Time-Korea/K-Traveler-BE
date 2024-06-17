@@ -42,7 +42,7 @@ public class ArticleServiceImpl implements ArticleService {
 	private String uploadImagesPath;
 
 	/*
-	 * 태그, 내용 그리고 사진을 토대로 여행 후기를 생성한다.
+	 * 사용자 ID, 태그, 내용 그리고 사진을 토대로 여행 후기를 생성한다.
 	 * 
 	 * @param map 태그, 내용 그리고 사진을 포함하는 전송 객체다.
 	 */

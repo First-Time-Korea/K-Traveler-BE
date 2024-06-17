@@ -12,27 +12,44 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.firskorea.board.dto.CommentDto;
 import com.ssafy.firskorea.board.service.CommentService;
+import com.ssafy.firskorea.common.consts.RetConsts;
 import com.ssafy.firskorea.common.dto.CommonResponse;
 import com.ssafy.firskorea.util.CommentStratify;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Tag(name = "여행 후기 댓글 컨트롤러")
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/article")
 public class CommentController {
-	
+
 	private final CommentService commentService;
 
 	public CommentController(CommentService commentService) {
 		super();
 		this.commentService = commentService;
 	}
-	
-	// 여행 후기 댓글 작성하기
+
+	@Operation(summary = "여행 후기 댓글 작성")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "201", description = "여행 후기 댓글 작성 성공"),
+			@ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
+			@ApiResponse(responseCode = "401", description = "유효하지 않은 회원 아이디")
+	})
 	@PostMapping("/{articleid}/comment/write")
 	public CommonResponse<?> postMethodName(@RequestBody CommentDto comment) throws Exception {
+		// 입력값 유효성 검사하기
+		if (comment.getArticleId() == 0 || comment.getMemberId() == null || comment.getMemberId().equals("")
+				|| comment.getContent() == null || comment.getContent().equals("")) {
+			return CommonResponse.failure(RetConsts.ERR400, "입력값에 대한 유효성 검사를 실패했습니다.");
+		}
+		
 		List<CommentDto> comments = commentService.writeComment(comment);
 		if (comments != null) {
 			CommentStratify.stratify(comments);
@@ -40,12 +57,15 @@ public class CommentController {
 
 		return CommonResponse.okCreation(comments);
 	}
-	
-	// 여행 후기 댓글 삭제하기
+
+	@Operation(summary = "여행 후기 댓글 삭제")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "여행 후기 댓글 삭제 성공")
+	})
 	@DeleteMapping("/{articleid}/comment/delete/{commentid}")
 	public CommonResponse<?> deleteComment(@PathVariable("commentid") int commentId) throws Exception {
 		commentService.deleteComment(commentId);
-		
+
 		return CommonResponse.ok();
 	}
 
