@@ -21,6 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ssafy.firskorea.board.dto.ArticleDto;
 import com.ssafy.firskorea.board.dto.response.ArticleAndCommentDto;
 import com.ssafy.firskorea.board.service.ArticleService;
+import com.ssafy.firskorea.common.consts.RetConsts;
+import com.ssafy.firskorea.common.dto.CommonResponse;
 import com.ssafy.firskorea.util.CommentStratify;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,20 +48,18 @@ public class ArticleController {
 	@Operation(summary = "여행 후기 작성")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "201", description = "여행 후기 작성 성공"),
-			@ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패 \n\n 유효하지 않은 회원 아이디"),
+			@ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
+			@ApiResponse(responseCode = "401", description = "유효하지 않은 회원 아이디")
 	})
 	@PostMapping("/write")
-	public ResponseEntity<Map<String, Object>> writeArticle(@RequestParam("userid") String userId,
+	public CommonResponse<?> writeArticle(@RequestParam("userid") String userId,
 			@RequestParam("tags") List<String> tags, @RequestParam(value = "content", required = false) String content,
 			@RequestParam("file") MultipartFile file) throws Exception {
 		Map<String, Object> map = new HashMap<>();
 		
 		// 입력값 유효성 검사하기
 		if (userId.equals("") || tags.isEmpty() || file.isEmpty()) {
-			Map<String, Object> response = new HashMap<>();
-			response.put("message", "입력값 유효성 검사 실패했습니다.");
-			
-			return ResponseEntity.status(400).body(response);
+			return CommonResponse.failure(RetConsts.ERR400, "입력값에 대한 유효성 검사를 실패했습니다.");
 		}
 		
 		map.put("userId", userId);
@@ -74,18 +74,10 @@ public class ArticleController {
 
 		try {
 			articleService.writeArticle(map);
-			
-			Map<String, Object> response = new HashMap<>();
-			response.put("message", "여행 후기 작성 성공");
 
-			ResponseEntity<Map<String, Object>> responseEntity = ResponseEntity.status(201).body(response);
-
-			return responseEntity;
+			return CommonResponse.ok();
 		} catch (DataIntegrityViolationException e) {  // 유효하지 않은 회원 아이디인 경우
-			Map<String, Object> response = new HashMap<>();
-			response.put("message", "유효하지 않은 회원 아이디입니다.");
-			
-			return ResponseEntity.status(400).body(response);
+			return CommonResponse.failure(RetConsts.ERR401, "입력값에 대한 유효성 검사를 실패했습니다.");
 		}
 	}
 
@@ -94,18 +86,15 @@ public class ArticleController {
 			@ApiResponse(responseCode = "200", description = "여행 후기 리스트 조회 성공"),
 	})
 	@GetMapping("/list")
-	public ResponseEntity<Map<String, Object>> getArticles(@RequestParam Map<String, String> map) throws Exception {
+	public CommonResponse<?> getArticles(@RequestParam Map<String, String> map) throws Exception {
 		Map<String, Object> result = articleService.getArticles(map);
 
-		Map<String, Object> response = new HashMap<>();
-		response.put("message", "여행 후기 리스트 조회 성공");
-		response.put("articles", result.get("articleFiles"));
-		response.put("currentPage", result.get("currentPage"));
-		response.put("totalPageCount", result.get("totalPageCount"));
+		Map<String, Object> responseData = new HashMap<>();
+		responseData.put("articles", result.get("articleFiles"));
+		responseData.put("currentPage", result.get("currentPage"));
+		responseData.put("totalPageCount", result.get("totalPageCount"));
 
-		ResponseEntity<Map<String, Object>> responseEntity = ResponseEntity.status(200).body(response);
-
-		return responseEntity;
+		return CommonResponse.ok(responseData);
 	}
 	
 	@Operation(summary = "여행 후기 조회")
@@ -113,7 +102,7 @@ public class ArticleController {
 			@ApiResponse(responseCode = "200", description = "여행 후기 조회 성공"),
 	})
 	@GetMapping("/detail/{articleid}")
-	public ResponseEntity<Map<String, Object>> getArticle(@PathVariable("articleid") int articleId) throws Exception {
+	public CommonResponse<?> getArticle(@PathVariable("articleid") int articleId) throws Exception {
 		ArticleAndCommentDto ac = articleService.getArticle(articleId);
 		
 		// 탈퇴한 여행 후기인 경우 작성자 처리
@@ -125,13 +114,10 @@ public class ArticleController {
 			CommentStratify.stratify(ac.getComments());
 		}
 		
-		Map<String, Object> response = new HashMap<>();
-		response.put("message", "여행 후기 조회 성공");
-		response.put("article", ac);
+		Map<String, Object> responseData = new HashMap<>();
+		responseData.put("article", ac);
 
-		ResponseEntity<Map<String, Object>> responseEntity = ResponseEntity.status(200).body(response);
-
-		return responseEntity;
+		return CommonResponse.ok(responseData);
 	}
 	
 	@Operation(summary = "여행 후기 조회 for 수정")
@@ -139,34 +125,29 @@ public class ArticleController {
 			@ApiResponse(responseCode = "200", description = "여행 후기 조회 for 수정 성공"),
 	})
 	@GetMapping("/modify/{articleid}")
-	public ResponseEntity<Map<String, Object>> getArticleForModification(@PathVariable("articleid") int articleId) throws Exception {
+	public CommonResponse<?> getArticleForModification(@PathVariable("articleid") int articleId) throws Exception {
 		ArticleDto article = articleService.getArticleForModification(articleId);
 		
-		Map<String, Object> response = new HashMap<>();
-		response.put("message", "여행 후기 리스트 조회 성공");
-		response.put("article", article);
+		Map<String, Object> responseData = new HashMap<>();
+		responseData.put("article", article);
 
-		ResponseEntity<Map<String, Object>> responseEntity = ResponseEntity.status(200).body(response);
-
-		return responseEntity;
+		return CommonResponse.ok(responseData);
 	}
 	
 	@Operation(summary = "여행 후기 수정")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "여행 후기 수정 성공"),
+			@ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
 	})
 	@PutMapping("/modify")
-	public ResponseEntity<Map<String, Object>> modifyArticle(@RequestParam("articleid") int articleId,
+	public CommonResponse<?> modifyArticle(@RequestParam("articleid") int articleId,
 			@RequestParam("tags") List<String> tags, @RequestParam(value = "content", required = false) String content,
 			@RequestParam(value = "file", required = false) MultipartFile file) throws Exception {
 		Map<String, Object> map = new HashMap<>();
 		
 		// 입력값 유효성 검사하기
 		if (tags.isEmpty() || (file != null && file.isEmpty())) {
-			Map<String, Object> response = new HashMap<>();
-			response.put("message", "입력값 유효성 검사 실패했습니다.");
-			
-			return ResponseEntity.status(400).body(response);
+			return CommonResponse.failure(RetConsts.ERR400, "입력값에 대한 유효성 검사를 실패했습니다.");
 		}
 		
 		map.put("articleId", articleId);
@@ -181,13 +162,8 @@ public class ArticleController {
 		}
 		
 		articleService.modifyArticle(map);
-		
-		Map<String, Object> response = new HashMap<>();
-		response.put("message", "여행 후기 수정 성공");
 
-		ResponseEntity<Map<String, Object>> responseEntity = ResponseEntity.status(200).body(response);
-
-		return responseEntity;
+		return CommonResponse.ok();
 	}
 	
 	@Operation(summary = "여행 후기 삭제")
@@ -195,15 +171,10 @@ public class ArticleController {
 			@ApiResponse(responseCode = "200", description = "여행 후기 삭제 성공"),
 	})
 	@DeleteMapping("/delete/{articleid}")
-	public ResponseEntity<Map<String, Object>> deleteArticle(@PathVariable("articleid") int articleId) throws Exception {
+	public CommonResponse<?> deleteArticle(@PathVariable("articleid") int articleId) throws Exception {
 		articleService.deleteArticle(articleId);
 		
-		Map<String, Object> response = new HashMap<>();
-		response.put("message", "여행 후기 삭제 성공");
-
-		ResponseEntity<Map<String, Object>> responseEntity = ResponseEntity.status(200).body(response);
-
-		return responseEntity;
+		return CommonResponse.ok();
 	}
 
 }
