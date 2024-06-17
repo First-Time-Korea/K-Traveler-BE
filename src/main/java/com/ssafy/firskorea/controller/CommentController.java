@@ -17,6 +17,7 @@ import com.ssafy.firskorea.common.dto.CommonResponse;
 import com.ssafy.firskorea.util.CommentStratify;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -62,6 +63,7 @@ public class CommentController {
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "여행 후기 댓글 삭제 성공")
 	})
+	@Parameter(name = "commentid", description = "여행 후기 댓글 ID")
 	@DeleteMapping("/{articleid}/comment/delete/{commentid}")
 	public CommonResponse<?> deleteComment(@PathVariable("commentid") int commentId) throws Exception {
 		commentService.deleteComment(commentId);
