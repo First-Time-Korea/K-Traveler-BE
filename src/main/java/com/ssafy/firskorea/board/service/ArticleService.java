@@ -13,8 +13,6 @@ public interface ArticleService {
 
 	ArticleAndCommentDto getArticle(int articleId) throws Exception;
 
-	byte[] getArticleFile(String src) throws Exception;
-
 	ArticleDto getArticleForModification(int articleId) throws Exception;
 
 	void modifyArticle(Map<String, Object> map) throws Exception;

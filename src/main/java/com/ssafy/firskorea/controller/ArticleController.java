@@ -133,40 +133,6 @@ public class ArticleController {
 
 		return responseEntity;
 	}
-
-	@Operation(summary = "여행 후기 사진 조회")
-	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "여행 후기 사진 조회 성공"),
-	})
-	@GetMapping("/img/{savefolder}/{savefile}")
-	public ResponseEntity<byte[]> getArticleFile(@PathVariable("savefolder") String saveFolder,
-			@PathVariable("savefile") String saveFile) throws Exception {
-		String src = saveFolder + "/" + saveFile;
-
-		byte[] img = articleService.getArticleFile(src);
-
-		if (img == null) {
-			return ResponseEntity.notFound().build();
-		} else {
-			String imgType = src.substring(src.indexOf(".") + 1);
-			MediaType mt = null;
-			switch (imgType) {
-			case "jpg":
-				mt = MediaType.IMAGE_JPEG;
-				break;
-			case "png":
-				mt = MediaType.IMAGE_PNG;
-				break;
-			case "gif":
-				mt = MediaType.IMAGE_GIF;
-				break;
-			}
-
-			ResponseEntity<byte[]> responseEntity = ResponseEntity.status(200).contentType(mt).body(img);
-
-			return responseEntity;
-		}
-	}
 	
 	@Operation(summary = "여행 후기 조회 for 수정")
 	@ApiResponses(value = {

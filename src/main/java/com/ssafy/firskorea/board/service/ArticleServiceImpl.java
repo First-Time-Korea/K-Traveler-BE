@@ -174,25 +174,6 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 
 	/*
-	 * 저장된 폴더 및 파일 이름 기준으로 특정 여행 후기 사진을 조회한다.
-	 * 
-	 * @param src 여행 후기 사진이 저장된 폴더 및 저장된 파일 이름을 포함하는 문자열이다.
-	 * @return 주어진 저장 관련된 정보에 해당하는 사진의 
-	 */
-	@Override
-	public byte[] getArticleFile(String src) throws Exception {
-		try {
-			InputStream imgStream = new FileInputStream(uploadImagesPath + "/" + src);
-			byte[] img = imgStream.readAllBytes();
-			imgStream.close();
-
-			return img;
-		} catch (FileNotFoundException e) {
-			return null;
-		}
-	}
-
-	/*
 	 * 여행 후기 ID를 기준으로 특정 여행 후기의 상세 정보를 조회한다.
 	 * 
 	 * @param articleId 여행 후기의 식별자다.
