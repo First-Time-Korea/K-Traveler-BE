@@ -29,11 +29,17 @@ public class SwaggerConfig {
         return GroupedOpenApi.builder().group("게시판 관리").pathsToMatch("/article/**").build();
     }
 
-
     @Bean
     public GroupedOpenApi attractionApi() {
-        return GroupedOpenApi.builder().group("관광지 관리").pathsToMatch("/attraction/**").build();
+        return GroupedOpenApi.builder().group("관광지 관리").pathsToMatch("/attractions/**").build();
     }
 
+    @Bean
+    public GroupedOpenApi categoryApi(){
+        return GroupedOpenApi.builder()
+                .group("테마 및 지역 정보")
+                .pathsToMatch("/themes/**", "/regions/**")
+                .build();
+    }
 
 }
