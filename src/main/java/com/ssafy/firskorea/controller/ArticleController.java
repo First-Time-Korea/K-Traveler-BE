@@ -75,7 +75,7 @@ public class ArticleController {
 		try {
 			articleService.writeArticle(map);
 
-			return CommonResponse.ok();
+			return CommonResponse.okCreation();
 		} catch (DataIntegrityViolationException e) {  // 유효하지 않은 회원 아이디인 경우
 			return CommonResponse.failure(RetConsts.ERR401, "입력값에 대한 유효성 검사를 실패했습니다.");
 		}

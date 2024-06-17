@@ -1,10 +1,7 @@
 package com.ssafy.firskorea.controller;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.firskorea.board.dto.CommentDto;
 import com.ssafy.firskorea.board.service.CommentService;
+import com.ssafy.firskorea.common.dto.CommonResponse;
 import com.ssafy.firskorea.util.CommentStratify;
 
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/comment")
+@RequestMapping("/article")
 public class CommentController {
 	
 	private final CommentService commentService;
@@ -33,33 +31,22 @@ public class CommentController {
 	}
 	
 	// 여행 후기 댓글 작성하기
-	@PostMapping("/write")
-	public ResponseEntity<Map<String, Object>> postMethodName(@RequestBody CommentDto comment) throws Exception {
+	@PostMapping("/{articleid}/comment/write")
+	public CommonResponse<?> postMethodName(@RequestBody CommentDto comment) throws Exception {
 		List<CommentDto> comments = commentService.writeComment(comment);
 		if (comments != null) {
 			CommentStratify.stratify(comments);
 		}
-		
-		Map<String, Object> response = new HashMap<>();
-		response.put("message", "여행 후기 댓글 작성 성공");
-		response.put("comments", comments);
 
-		ResponseEntity<Map<String, Object>> responseEntity = ResponseEntity.status(201).body(response);
-
-		return responseEntity;
+		return CommonResponse.okCreation(comments);
 	}
 	
 	// 여행 후기 댓글 삭제하기
-	@DeleteMapping("/delete/{commentid}")
-	public ResponseEntity<Map<String, Object>> deleteComment(@PathVariable("commentid") int commentId) throws Exception {
+	@DeleteMapping("/{articleid}/comment/delete/{commentid}")
+	public CommonResponse<?> deleteComment(@PathVariable("commentid") int commentId) throws Exception {
 		commentService.deleteComment(commentId);
 		
-		Map<String, Object> response = new HashMap<>();
-		response.put("message", "여행 후기 댓글 삭제 성공");
-
-		ResponseEntity<Map<String, Object>> responseEntity = ResponseEntity.status(200).body(response);
-
-		return responseEntity;
+		return CommonResponse.ok();
 	}
 
 }
