@@ -36,7 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 @Tag(name = "여행 후기 컨트롤러")
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/article")
+@RequestMapping("/articles")
 public class ArticleController {
 
 	private final ArticleService articleService;
@@ -92,7 +92,7 @@ public class ArticleController {
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "여행 후기 리스트 조회 성공"),
 	})
-	@GetMapping("/list")
+	@GetMapping("/")
 	public CommonResponse<?> getArticles(@RequestParam SearchDto search) throws Exception {
 		Map<String, Object> result = articleService.getArticles(search);
 
