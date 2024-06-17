@@ -43,7 +43,7 @@ public class CommentController {
 			@ApiResponse(responseCode = "401", description = "유효하지 않은 회원 아이디")
 	})
 	@PostMapping("/{articleid}/comment/write")
-	public CommonResponse<?> postMethodName(@RequestBody CommentDto comment) throws Exception {
+	public CommonResponse<?> writeComment(@RequestBody CommentDto comment) throws Exception {
 		// 입력값 유효성 검사하기
 		if (comment.getArticleId() == 0 || comment.getMemberId() == null || comment.getMemberId().equals("")
 				|| comment.getContent() == null || comment.getContent().equals("")) {
