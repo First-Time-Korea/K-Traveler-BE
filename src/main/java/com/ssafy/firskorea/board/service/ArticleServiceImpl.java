@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ssafy.firskorea.board.dto.ArticleDto;
 import com.ssafy.firskorea.board.dto.FileDto;
 import com.ssafy.firskorea.board.dto.TagDto;
+import com.ssafy.firskorea.board.dto.request.SearchDto;
 import com.ssafy.firskorea.board.dto.response.ArticleAndCommentDto;
 import com.ssafy.firskorea.board.dto.response.ArticleFileDto;
 import com.ssafy.firskorea.board.mapper.ArticleMapper;
@@ -115,14 +116,14 @@ public class ArticleServiceImpl implements ArticleService {
 	 */
 	@Override
 	@Transactional
-	public Map<String, Object> getArticles(Map<String, String> map) throws Exception {
+	public Map<String, Object> getArticles(SearchDto search) throws Exception {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		// 여행 후기 리스트 가져오기
 		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("key", map.get("key"));
-		param.put("word", map.get("word") == null ? "" : map.get("word"));
-		int pgNo = Integer.parseInt(map.get("pgno") == null ? "1" : map.get("pgno"));
+		param.put("key", search.getKey());
+		param.put("word", search.getWord() == null ? "" : search.getWord());
+		int pgNo = search.getPgNo() == 0 ? 1 : search.getPgNo();
 		int start = pgNo * SizeConstant.LIST_SIZE - SizeConstant.LIST_SIZE;
 		param.put("start", start);
 		param.put("listsize", SizeConstant.LIST_SIZE);
@@ -150,7 +151,7 @@ public class ArticleServiceImpl implements ArticleService {
 		result.put("articleFiles", articleFiles);
 
 		// 페이지네이션 계산하기
-		int currentPage = Integer.parseInt(map.get("pgno") == null ? "1" : map.get("pgno"));
+		int currentPage = pgNo;
 		int sizePerPage = SizeConstant.LIST_SIZE;
 		int totalArticleCount = articleMapper.getTotalArticleCount(param);
 		int totalPageCount = (totalArticleCount - 1) / sizePerPage + 1;

@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.firskorea.board.dto.ArticleDto;
+import com.ssafy.firskorea.board.dto.request.SearchDto;
 import com.ssafy.firskorea.board.dto.response.ArticleAndCommentDto;
 import com.ssafy.firskorea.board.service.ArticleService;
 import com.ssafy.firskorea.common.consts.RetConsts;
@@ -26,6 +25,8 @@ import com.ssafy.firskorea.common.dto.CommonResponse;
 import com.ssafy.firskorea.util.CommentStratify;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -50,6 +51,12 @@ public class ArticleController {
 			@ApiResponse(responseCode = "201", description = "여행 후기 작성 성공"),
 			@ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
 			@ApiResponse(responseCode = "401", description = "유효하지 않은 회원 아이디")
+	})
+	@Parameters({
+		@Parameter(name = "userid", description = "사용자 아이디"),
+		@Parameter(name = "tags", description = "여행 후기 태그"),
+		@Parameter(name = "content", description = "여행 후기 본문"),
+		@Parameter(name = "file", description = "여행 후기 사진")
 	})
 	@PostMapping("/write")
 	public CommonResponse<?> writeArticle(@RequestParam("userid") String userId,
@@ -86,8 +93,8 @@ public class ArticleController {
 			@ApiResponse(responseCode = "200", description = "여행 후기 리스트 조회 성공"),
 	})
 	@GetMapping("/list")
-	public CommonResponse<?> getArticles(@RequestParam Map<String, String> map) throws Exception {
-		Map<String, Object> result = articleService.getArticles(map);
+	public CommonResponse<?> getArticles(@RequestParam SearchDto search) throws Exception {
+		Map<String, Object> result = articleService.getArticles(search);
 
 		Map<String, Object> responseData = new HashMap<>();
 		responseData.put("articles", result.get("articleFiles"));
@@ -101,6 +108,7 @@ public class ArticleController {
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "여행 후기 조회 성공"),
 	})
+	@Parameter(name = "articleid", description = "여행 후기 ID")
 	@GetMapping("/detail/{articleid}")
 	public CommonResponse<?> getArticle(@PathVariable("articleid") int articleId) throws Exception {
 		ArticleAndCommentDto ac = articleService.getArticle(articleId);
@@ -124,6 +132,7 @@ public class ArticleController {
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "여행 후기 조회 for 수정 성공"),
 	})
+	@Parameter(name = "articleid", description = "여행 후기 ID")
 	@GetMapping("/modify/{articleid}")
 	public CommonResponse<?> getArticleForModification(@PathVariable("articleid") int articleId) throws Exception {
 		ArticleDto article = articleService.getArticleForModification(articleId);
@@ -138,6 +147,12 @@ public class ArticleController {
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "여행 후기 수정 성공"),
 			@ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
+	})
+	@Parameters({
+		@Parameter(name = "articleid", description = "여행 후기 ID"),
+		@Parameter(name = "tags", description = "여행 후기 태그"),
+		@Parameter(name = "content", description = "여행 후기 본문"),
+		@Parameter(name = "file", description = "여행 후기 사진")
 	})
 	@PutMapping("/modify")
 	public CommonResponse<?> modifyArticle(@RequestParam("articleid") int articleId,
@@ -170,6 +185,7 @@ public class ArticleController {
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "여행 후기 삭제 성공"),
 	})
+	@Parameter(name = "articleid", description = "여행 후기 ID")
 	@DeleteMapping("/delete/{articleid}")
 	public CommonResponse<?> deleteArticle(@PathVariable("articleid") int articleId) throws Exception {
 		articleService.deleteArticle(articleId);
