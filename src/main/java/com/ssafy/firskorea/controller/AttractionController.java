@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import com.ssafy.firskorea.attraction.dto.request.SearchDto;
@@ -37,9 +38,10 @@ public class AttractionController {
     //TODO: 페이징 적용 -> 클라이언트가 여러번 호출해서 붙이도록 하기
     @Operation(summary = "여행지 검색", description = "키워드, 카테고리, 테마, 지역을 선택하면 필터링 후 반환한다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200"),
-            @ApiResponse(responseCode = "400"),
-            @ApiResponse(responseCode = "500"),
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
+            @ApiResponse(responseCode = "401", description = "회원 인증 실패"),
+            @ApiResponse(responseCode = "500", description = "로직 처리 실패"),
     })
     @GetMapping("/search")
     public CommonResponse<?> getAttractionsBySearch(@Valid @ModelAttribute SearchDto searchDto) throws SQLException {
@@ -48,20 +50,23 @@ public class AttractionController {
 
     @Operation(summary = "여행지 북마크 토글", description = "회원과 관광지 아이디를 기반으로 북마크를 토글한다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200"),
-            @ApiResponse(responseCode = "400"),
-            @ApiResponse(responseCode = "500"),
+            @ApiResponse(responseCode = "201", description = "로직 성공"),
+            @ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
+            @ApiResponse(responseCode = "401", description = "회원 인증 실패"),
+            @ApiResponse(responseCode = "500", description = "로직 처리 실패"),
     })
+    @ResponseStatus(HttpStatus.CREATED)
     @PutMapping("/bookmarks")
     public CommonResponse<?> toggleAttractionBookmark(@Valid @RequestBody MemberContentDto memberContentDto) throws SQLException {
-        return CommonResponse.ok(attractionService.toggleAttractionBookmark(memberContentDto));
+        return CommonResponse.okCreation(attractionService.toggleAttractionBookmark(memberContentDto));
     }
 
     @Operation(summary = "여행지 단일 조회", description = "회원과 관광지 아이디를 기반으로 여행지를 조회한다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200"),
-            @ApiResponse(responseCode = "400"),
-            @ApiResponse(responseCode = "500"),
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
+            @ApiResponse(responseCode = "401", description = "회원 인증 실패"),
+            @ApiResponse(responseCode = "500", description = "로직 처리 실패"),
     })
     @GetMapping("/details")
     public CommonResponse<?> getAttractionDetail(@Valid @ModelAttribute MemberContentDto memberContentDto) throws SQLException {
@@ -79,9 +84,10 @@ public class AttractionController {
 
     @Operation(summary = "특정 지역의 관광지 조회(페이지네이션)", description = "시도코드에 해당하는 관광지를 페이지네이션 한다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200"),
-            @ApiResponse(responseCode = "400"),
-            @ApiResponse(responseCode = "500"),
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
+            @ApiResponse(responseCode = "401", description = "회원 인증 실패"),
+            @ApiResponse(responseCode = "500", description = "로직 처리 실패"),
     })
     @GetMapping("/regions/paginated")
     public CommonResponse<?> getPaginatedAttractionsBySidoCode(@Valid @ModelAttribute SidoPgnoDto sidoPgnoDto) throws SQLException {
@@ -90,9 +96,10 @@ public class AttractionController {
 
     @Operation(summary = "북마크 한 관광지 조회(페이지네이션)", description = "유저가 북마크한 장소를 페이지네이션 한다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200"),
-            @ApiResponse(responseCode = "400"),
-            @ApiResponse(responseCode = "500"),
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
+            @ApiResponse(responseCode = "401", description = "회원 인증 실패"),
+            @ApiResponse(responseCode = "500", description = "로직 처리 실패"),
     })
     @GetMapping("/bookmarks/paginated")
     public CommonResponse<?> getPaginatedAttractionsBookmarked(@Valid @ModelAttribute MemberPgnoDto memberPgnoDto) throws SQLException {
