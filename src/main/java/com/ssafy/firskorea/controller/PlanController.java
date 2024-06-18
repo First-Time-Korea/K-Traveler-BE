@@ -46,6 +46,7 @@ public class PlanController {
 		this.planService = planServiceImpl;
 	}
 
+	//TODO: 카테고리 컨트롤러로 이동
 	@Operation(summary = "대한민국 행정 구역 전체 조회", description = "시도 코드, 이름, 이미지, 설명 전체 반환")
 	@GetMapping("/regions")
 	public ResponseEntity<Map<String, Object>> getRegionList() throws SQLException {
@@ -96,37 +97,6 @@ public class PlanController {
 		ResponseEntity<Map<String, Object>> responseEntity = ResponseEntity.status(200).body(response);
 
 		return responseEntity;
-	}
-	
-	// 여행 계획 썸네일 조회하기
-	@GetMapping("/img/{savefolder}/{savefile}")
-	public ResponseEntity<byte[]> getArticleFile(@PathVariable("savefolder") String saveFolder,
-			@PathVariable("savefile") String saveFile) throws Exception {
-		String src = saveFolder + "/" + saveFile;
-
-		byte[] img = planService.getPlanFile(src);
-
-		if (img == null) {
-			return ResponseEntity.notFound().build();
-		} else {
-			String imgType = src.substring(src.indexOf(".") + 1);
-			MediaType mt = null;
-			switch (imgType) {
-			case "jpg":
-				mt = MediaType.IMAGE_JPEG;
-				break;
-			case "png":
-				mt = MediaType.IMAGE_PNG;
-				break;
-			case "gif":
-				mt = MediaType.IMAGE_GIF;
-				break;
-			}
-
-			ResponseEntity<byte[]> responseEntity = ResponseEntity.status(200).contentType(mt).body(img);
-
-			return responseEntity;
-		}
 	}
 
 	@GetMapping("/info") // 계획 상세 조회
