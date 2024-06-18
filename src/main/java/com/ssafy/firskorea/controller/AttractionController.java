@@ -7,8 +7,6 @@ import com.ssafy.firskorea.attraction.dto.request.MemberPgnoDto;
 import com.ssafy.firskorea.attraction.dto.request.SidoPgnoDto;
 import com.ssafy.firskorea.attraction.service.AttractionGptService;
 import com.ssafy.firskorea.common.dto.CommonResponse;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
@@ -43,13 +41,7 @@ public class AttractionController {
             @ApiResponse(responseCode = "410", description = "잘못된 형태로 요청"),
     })
     @PostMapping("/search")
-    public CommonResponse<?> getAttractionsBySearch(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "관광지 필터링 조건",
-                    required = true,
-                    content = @Content(schema = @Schema(implementation = SearchDto.class)))
-            @Valid @org.springframework.web.bind.annotation.RequestBody SearchDto searchDto)
-            throws SQLException {
+    public CommonResponse<?> getAttractionsBySearch(@Valid @RequestBody SearchDto searchDto) throws SQLException {
         return CommonResponse.ok(attractionService.getAttractionsBySearch(searchDto));
     }
 
@@ -60,13 +52,7 @@ public class AttractionController {
             @ApiResponse(responseCode = "410", description = "잘못된 형태로 요청"),
     })
     @PutMapping("/bookmarks")
-    public CommonResponse<?> toggleAttractionBookmark(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "조회할 회원과 관광지 아이디",
-                    required = true,
-                    content = @Content(schema = @Schema(implementation = MemberContentDto.class)))
-            @Valid @org.springframework.web.bind.annotation.RequestBody MemberContentDto memberContentDto)
-            throws SQLException {
+    public CommonResponse<?> toggleAttractionBookmark(@Valid @RequestBody MemberContentDto memberContentDto) throws SQLException {
         return CommonResponse.ok(attractionService.toggleAttractionBookmark(memberContentDto));
     }
 
@@ -77,13 +63,7 @@ public class AttractionController {
             @ApiResponse(responseCode = "410", description = "잘못된 형태로 요청"),
     })
     @PostMapping("/details")
-    public CommonResponse<?> getAttractionDetail(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "조회할 회원과 관광지 아이디",
-                    required = true,
-                    content = @Content(schema = @Schema(implementation = MemberContentDto.class)))
-            @Valid @org.springframework.web.bind.annotation.RequestBody MemberContentDto memberContentDto)
-            throws SQLException {
+    public CommonResponse<?> getAttractionDetail(@Valid @RequestBody MemberContentDto memberContentDto) throws SQLException {
         return CommonResponse.ok(attractionService.getAttractionDetail(memberContentDto));
     }
 
@@ -95,11 +75,7 @@ public class AttractionController {
     })
     @PostMapping("/details/ai/v1")
     public CommonResponse<?> getAttractionDetailWithAIV1(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "조회할 회원과 관광지 아이디",
-                    required = true,
-                    content = @Content(schema = @Schema(implementation = MemberContentDto.class)))
-            @Valid @org.springframework.web.bind.annotation.RequestBody MemberContentDto memberContentDto)
+            @Valid @RequestBody MemberContentDto memberContentDto)
             throws SQLException {
 
         return CommonResponse.ok(attractionGptService.getAttractionDetailWithGptApi(memberContentDto));
@@ -111,14 +87,7 @@ public class AttractionController {
             @ApiResponse(responseCode = "600", description = "로직 수행 중 실패"),
             @ApiResponse(responseCode = "410", description = "잘못된 형태로 요청"),
     })
-    public CommonResponse<?> getAttractionDetailWithAIV2(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "조회할 회원과 관광지 아이디",
-                    required = true,
-                    content = @Content(schema = @Schema(implementation = MemberContentDto.class)))
-            @Valid @org.springframework.web.bind.annotation.RequestBody MemberContentDto memberContentDto)
-            throws SQLException {
-
+    public CommonResponse<?> getAttractionDetailWithAIV2(@Valid @RequestBody MemberContentDto memberContentDto) throws SQLException {
         return CommonResponse.ok(attractionGptService.getAttractionDetailAtDB(memberContentDto));
     }
 
@@ -129,13 +98,7 @@ public class AttractionController {
             @ApiResponse(responseCode = "410", description = "잘못된 형태로 요청"),
     })
     @PostMapping("/regions/paginated")
-    public CommonResponse<?> getPaginatedAttractionsBySidoCode(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "조회할 지역 코드와 페이징 정보",
-                    required = true,
-                    content = @Content(schema = @Schema(implementation = SidoPgnoDto.class)))
-            @Valid @org.springframework.web.bind.annotation.RequestBody SidoPgnoDto sidoPgnoDto)
-            throws SQLException {
+    public CommonResponse<?> getPaginatedAttractionsBySidoCode(@Valid @RequestBody SidoPgnoDto sidoPgnoDto) throws SQLException {
         return CommonResponse.ok(attractionService.getPaginatedAttractionsBySidoCode(sidoPgnoDto));
     }
 
@@ -146,12 +109,7 @@ public class AttractionController {
             @ApiResponse(responseCode = "410", description = "잘못된 형태로 요청"),
     })
     @PostMapping("/bookmarks/paginated")
-    public CommonResponse<?> getPaginatedAttractionsBookmarked(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "조회할 회원 아이디와 페이징 정보",
-                    required = true,
-                    content = @Content(schema = @Schema(implementation = MemberPgnoDto.class)))
-            @Valid @org.springframework.web.bind.annotation.RequestBody MemberPgnoDto memberPgnoDto) throws SQLException {
+    public CommonResponse<?> getPaginatedAttractionsBookmarked(@Valid @RequestBody MemberPgnoDto memberPgnoDto) throws SQLException {
         return CommonResponse.ok(attractionService.getPaginatedAttractionsBookmarked(memberPgnoDto));
     }
 

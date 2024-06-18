@@ -2,6 +2,7 @@ package com.ssafy.firskorea.controller;
 
 import com.ssafy.firskorea.common.consts.RetConsts;
 import com.ssafy.firskorea.common.dto.CommonResponse;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -14,16 +15,22 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Slf4j
 public class ExceptionController {
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler({MethodArgumentNotValidException.class, ConstraintViolationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public CommonResponse<?> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        log.info("Request 유효성 검증 실패");
+    public CommonResponse<?> handleValidationExceptions(Exception ex) {
         StringBuilder errors = new StringBuilder();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String errorMessage = error.getDefaultMessage();
-            errors.append(errorMessage).append(" ");
-        });
+        if (ex instanceof MethodArgumentNotValidException) {
+            ((MethodArgumentNotValidException) ex).getBindingResult().getAllErrors().forEach((error) -> {
+                String errorMessage = error.getDefaultMessage();
+                errors.append(errorMessage).append(" ");
+            });
+        } else if (ex instanceof ConstraintViolationException) {
+            ((ConstraintViolationException) ex).getConstraintViolations().forEach(violation -> {
+                String message = violation.getMessage();
+                errors.append(message).append(" ");
+            });
+        }
         return CommonResponse.failure(RetConsts.ERR410, errors.toString().trim());
     }
 
