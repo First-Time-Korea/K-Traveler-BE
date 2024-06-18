@@ -8,6 +8,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -92,8 +93,8 @@ public class ArticleController {
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "여행 후기 리스트 조회 성공"),
 	})
-	@GetMapping("/")
-	public CommonResponse<?> getArticles(@RequestParam SearchDto search) throws Exception {
+	@GetMapping("")
+	public CommonResponse<?> getArticles(@ModelAttribute SearchDto search) throws Exception {
 		Map<String, Object> result = articleService.getArticles(search);
 
 		Map<String, Object> responseData = new HashMap<>();

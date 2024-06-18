@@ -95,7 +95,7 @@
 				and member_id = (
 					select id
 					from member
-					where name = #{word}
+					where id = #{word}
 				)
 			</if>
 		</if>
