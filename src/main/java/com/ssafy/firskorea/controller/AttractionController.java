@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import com.ssafy.firskorea.attraction.dto.request.SearchDto;
@@ -47,7 +48,7 @@ public class AttractionController {
                     description = "관광지 필터링 조건",
                     required = true,
                     content = @Content(schema = @Schema(implementation = SearchDto.class)))
-            @org.springframework.web.bind.annotation.RequestBody SearchDto searchDto)
+            @Valid @org.springframework.web.bind.annotation.RequestBody SearchDto searchDto)
             throws SQLException {
         return CommonResponse.ok(attractionService.getAttractionsBySearch(searchDto));
     }
@@ -64,7 +65,7 @@ public class AttractionController {
                     description = "조회할 회원과 관광지 아이디",
                     required = true,
                     content = @Content(schema = @Schema(implementation = MemberContentDto.class)))
-            @org.springframework.web.bind.annotation.RequestBody MemberContentDto memberContentDto)
+            @Valid @org.springframework.web.bind.annotation.RequestBody MemberContentDto memberContentDto)
             throws SQLException {
         return CommonResponse.ok(attractionService.toggleAttractionBookmark(memberContentDto));
     }
@@ -81,7 +82,7 @@ public class AttractionController {
                     description = "조회할 회원과 관광지 아이디",
                     required = true,
                     content = @Content(schema = @Schema(implementation = MemberContentDto.class)))
-            @org.springframework.web.bind.annotation.RequestBody MemberContentDto memberContentDto)
+            @Valid @org.springframework.web.bind.annotation.RequestBody MemberContentDto memberContentDto)
             throws SQLException {
         return CommonResponse.ok(attractionService.getAttractionDetail(memberContentDto));
     }
@@ -98,7 +99,7 @@ public class AttractionController {
                     description = "조회할 회원과 관광지 아이디",
                     required = true,
                     content = @Content(schema = @Schema(implementation = MemberContentDto.class)))
-            @org.springframework.web.bind.annotation.RequestBody MemberContentDto memberContentDto)
+            @Valid @org.springframework.web.bind.annotation.RequestBody MemberContentDto memberContentDto)
             throws SQLException {
 
         return CommonResponse.ok(attractionGptService.getAttractionDetailWithGptApi(memberContentDto));
@@ -115,7 +116,7 @@ public class AttractionController {
                     description = "조회할 회원과 관광지 아이디",
                     required = true,
                     content = @Content(schema = @Schema(implementation = MemberContentDto.class)))
-            @org.springframework.web.bind.annotation.RequestBody MemberContentDto memberContentDto)
+            @Valid @org.springframework.web.bind.annotation.RequestBody MemberContentDto memberContentDto)
             throws SQLException {
 
         return CommonResponse.ok(attractionGptService.getAttractionDetailAtDB(memberContentDto));
@@ -133,7 +134,7 @@ public class AttractionController {
                     description = "조회할 지역 코드와 페이징 정보",
                     required = true,
                     content = @Content(schema = @Schema(implementation = SidoPgnoDto.class)))
-            @org.springframework.web.bind.annotation.RequestBody SidoPgnoDto sidoPgnoDto)
+            @Valid @org.springframework.web.bind.annotation.RequestBody SidoPgnoDto sidoPgnoDto)
             throws SQLException {
         return CommonResponse.ok(attractionService.getPaginatedAttractionsBySidoCode(sidoPgnoDto));
     }
@@ -150,7 +151,7 @@ public class AttractionController {
                     description = "조회할 회원 아이디와 페이징 정보",
                     required = true,
                     content = @Content(schema = @Schema(implementation = MemberPgnoDto.class)))
-            @org.springframework.web.bind.annotation.RequestBody MemberPgnoDto memberPgnoDto) throws SQLException {
+            @Valid @org.springframework.web.bind.annotation.RequestBody MemberPgnoDto memberPgnoDto) throws SQLException {
         return CommonResponse.ok(attractionService.getPaginatedAttractionsBookmarked(memberPgnoDto));
     }
 

@@ -1,41 +1,20 @@
 package com.ssafy.firskorea.attraction.dto.request;
 
-import com.ssafy.firskorea.common.consts.RetConsts;
-import com.ssafy.firskorea.common.exception.KTravelerException;
-import com.ssafy.firskorea.config.ValidationConfig;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 @Schema(title = "MemberPgnoDto", description = "회원의 북마크된 관광지 목록을 조회할 때 페이지네이션")
 public class MemberPgnoDto {
+    @NotNull(message = "회원 아이디는 필수입니다.")
+    @Size(min = 1, max = 20, message = "회원 ID는 최소 {min}자 이상, 최대 {max}자 이하이어야 합니다.")
     @Schema(required = true, description = "회원 아이디")
     private String memberId;
+
+    @Digits(integer = Integer.MAX_VALUE, fraction = 0, message = "페이지 번호는 숫자여야 합니다.")
     @Schema(description = "페이지 번호")
     private String pgno;
-
-    public MemberPgnoDto(String memberId, String pgno) {
-        validateMemberId(memberId);
-        validatePgno(pgno);
-        this.memberId = memberId;
-        this.pgno = pgno;
-    }
-
-    private void validatePgno(String pgno) {
-        try {
-            if (pgno != null) {
-                Integer.parseInt(pgno);
-            }
-        } catch (NumberFormatException e) {
-            throw new KTravelerException(RetConsts.ERR410);
-        }
-    }
-
-    private void validateMemberId(String memberId) {
-        if (memberId != null && memberId.length() > ValidationConfig.MEMBER_ID_MIN_LENGTH.getIntValue() &&
-                memberId.length() < ValidationConfig.MEMBER_ID_MAX_LENGTH.getIntValue()) {
-            return;
-        }
-        throw new KTravelerException(RetConsts.ERR410);
-    }
 }

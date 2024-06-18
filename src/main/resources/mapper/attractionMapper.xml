@@ -35,16 +35,16 @@
 		detail.content_id = book.content_id
 		WHERE
 		info.title LIKE CONCAT('%', #{keyword}, '%')
-		<if test="sidoCode != 0 and sidoCode != ''">
+		<if test="sidoCode != null and sidoCode !=''">
 			AND info.sido_code = #{sidoCode}
 		</if>
-		<if test="themeCode != null and themeCode != ''">
+		<if test="themeCode != null and themeCode !=''">
 			AND detail.theme_code = #{themeCode}
 		</if>
-		<if test="categoryCode != null and categoryCode != ''">
+		<if test="categoryCode != null and categoryCode !=''">
 			AND detail.category_code = #{categoryCode}
 		</if>
-		<if test="contentId != 0 and contentId != ''">
+		<if test="contentId != null and contentId!='' ">
 			AND info.content_id = #{contentId}
 		</if>
 
