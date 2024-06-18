@@ -19,6 +19,12 @@
 		select * from sido;
 	</select>
 
+	<select id="getSidoInfoList" resultType="sidoDetailDto">
+		select sido_code,
+			   sido_name, sido_description, sido_image
+		from sido;
+	</select>
+
 	<select id="getAttractionBySearch" resultType="AttractionDto"
 		parameterType="searchDto">
 		SELECT

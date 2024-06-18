@@ -29,7 +29,7 @@ public class CategoryController {
     @Operation(summary = "여행 테마", description = "여행 테마를 비동기로 불러올 때 사용")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공"),
-            @ApiResponse(responseCode = "600", description = "로직 수행 중 실패"),
+            @ApiResponse(responseCode = "500", description = "로직 처리 실패"),
     })
     @GetMapping("/themes")
     public CommonResponse<?> getThemeList() throws SQLException {
@@ -39,7 +39,8 @@ public class CategoryController {
     @Operation(summary = "여행 카테고리", description = "선택한 여행 테마에 해당하는 카테고리를 불러온다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공"),
-            @ApiResponse(responseCode = "600", description = "로직 수행 중 실패"),
+            @ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
+            @ApiResponse(responseCode = "500", description = "로직 처리 실패"),
     })
     @GetMapping("/themes/{themeCode}/categories")
     public CommonResponse<?> getCategoryList(
@@ -49,13 +50,23 @@ public class CategoryController {
         return CommonResponse.ok(attractionService.getCategoryList(themeCode.charAt(0)));
     }
 
-    @Operation(summary = "여행 지역 정보", description = "대한민국 행정 지역에 속한 시도를 조회한다.")
+    @Operation(summary = "대한민국 행정 구역 조회", description = "대한민국 행정 지역에 속한 시도를 조회한다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공"),
-            @ApiResponse(responseCode = "600", description = "로직 수행 중 실패"),
+            @ApiResponse(responseCode = "500", description = "로직 처리 실패"),
     })
     @GetMapping("/regions")
     public CommonResponse<?> getSidoList() throws SQLException {
         return CommonResponse.ok(attractionService.getSidoList());
+    }
+
+    @Operation(summary = "대한민국 행정 구역 상세 정보", description = "시도 코드, 이름, 이미지, 설명 전체 반환")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "500", description = "로직 처리 실패"),
+    })
+    @GetMapping("/regions/details")
+    public CommonResponse<?> getSidoInfoList() throws SQLException {
+        return CommonResponse.ok(attractionService.getSidoInfoList());
     }
 }

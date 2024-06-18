@@ -9,6 +9,7 @@ import com.ssafy.firskorea.attraction.dto.request.MemberContentDto;
 import com.ssafy.firskorea.attraction.dto.request.MemberPgnoDto;
 import com.ssafy.firskorea.attraction.dto.request.SidoPgnoDto;
 import com.ssafy.firskorea.attraction.dto.response.PaginatedAttractionsDto;
+import com.ssafy.firskorea.attraction.dto.response.category.SidoDetailDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,6 +59,11 @@ public class AttractionServiceImpl implements AttractionService {
     @Override
     public List<Category> getSidoList() throws SQLException {
         return attractionMapper.getSidoList();
+    }
+
+    @Override
+    public List<SidoDetailDto> getSidoInfoList() throws SQLException {
+        return attractionMapper.getSidoInfoList();
     }
 
     /**

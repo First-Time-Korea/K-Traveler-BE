@@ -1,7 +1,6 @@
 package com.ssafy.firskorea.controller;
 
 import java.io.File;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,25 +11,22 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.firskorea.plan.dto.PlanFileDto;
 import com.ssafy.firskorea.plan.dto.PlanMemoDto;
-import com.ssafy.firskorea.plan.dto.RegionDto;
 import com.ssafy.firskorea.plan.dto.request.PlanRequest;
 import com.ssafy.firskorea.plan.dto.response.PlanResponse;
 import com.ssafy.firskorea.plan.service.PlanService;
 import com.ssafy.firskorea.plan.service.PlanServiceImpl;
 
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/plan")
+@RequestMapping("/plans")
 @CrossOrigin(origins = "*")
 @Tag(name = "여행 계획 컨트롤러", description = "")
 @Slf4j
@@ -44,18 +40,6 @@ public class PlanController {
 	@Autowired
 	public PlanController(PlanServiceImpl planServiceImpl) {
 		this.planService = planServiceImpl;
-	}
-
-	//TODO: 카테고리 컨트롤러로 이동
-	@Operation(summary = "대한민국 행정 구역 전체 조회", description = "시도 코드, 이름, 이미지, 설명 전체 반환")
-	@GetMapping("/regions")
-	public ResponseEntity<Map<String, Object>> getRegionList() throws SQLException {
-		Map<String, Object> resultMap = new HashMap<>();
-		List<RegionDto> dto = planService.getRegionList();
-		HttpStatus status = HttpStatus.ACCEPTED;
-		resultMap.put("status", "success");
-		resultMap.put("data", dto);
-		return new ResponseEntity<>(resultMap, status);
 	}
 
 	@PostMapping() // 여행 계획 등록

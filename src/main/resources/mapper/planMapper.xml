@@ -18,12 +18,6 @@
 		<result column="save_file" property="saveFile"/>
 	</resultMap>
 
-	<select id="getRegionList" resultType="regionDto">
-		select sido_code,
-		sido_name, sido_description, sido_image
-		from sido;
-	</select>
-
 	<insert id="insertPlan" parameterType="map"
 		useGeneratedKeys="true" keyColumn="id" keyProperty="id">
 		insert into plan

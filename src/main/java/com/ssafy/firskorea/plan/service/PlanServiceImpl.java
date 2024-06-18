@@ -1,8 +1,5 @@
 package com.ssafy.firskorea.plan.service;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ssafy.firskorea.plan.dto.PlanFileDto;
 import com.ssafy.firskorea.plan.dto.PlanMemoDto;
-import com.ssafy.firskorea.plan.dto.RegionDto;
 import com.ssafy.firskorea.plan.dto.request.AttractionPerDate;
 import com.ssafy.firskorea.plan.dto.request.PlanRequest;
 import com.ssafy.firskorea.plan.dto.response.PlanInfoDto;
@@ -31,11 +27,6 @@ import com.ssafy.firskorea.util.SizeConstant;
 public class PlanServiceImpl implements PlanService {
 	@Autowired
 	private PlanMapper planMapper;
-
-	@Override
-	public List<RegionDto> getRegionList() throws SQLException {
-		return planMapper.getRegionList();
-	}
 
 	@Value("${planThumbFile.path.upload-images}")
 	private String uploadImagesPath;
@@ -93,19 +84,6 @@ public class PlanServiceImpl implements PlanService {
 		result.put("totalPageCount", totalPageCount);
 
 		return result;
-	}
-
-	@Override
-	public byte[] getPlanFile(String src) throws Exception {
-		try {
-			InputStream imgStream = new FileInputStream(uploadImagesPath + "/" + src);
-			byte[] img = imgStream.readAllBytes();
-			imgStream.close();
-
-			return img;
-		} catch (FileNotFoundException e) {
-			return null;
-		}
 	}
 
 	@Override

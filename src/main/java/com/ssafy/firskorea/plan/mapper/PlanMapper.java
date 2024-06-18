@@ -1,7 +1,6 @@
 package com.ssafy.firskorea.plan.mapper;
 
 import com.ssafy.firskorea.plan.dto.PlanFileDto;
-import com.ssafy.firskorea.plan.dto.RegionDto;
 import com.ssafy.firskorea.plan.dto.response.PlanInfoDto;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -15,7 +14,6 @@ import com.ssafy.firskorea.plan.dto.response.PlanAndAttractionDto;
 
 @Mapper
 public interface PlanMapper {
-	List<RegionDto> getRegionList() throws SQLException;
 
 	int insertPlan(Map<String, Object> plan) throws SQLException;
 
