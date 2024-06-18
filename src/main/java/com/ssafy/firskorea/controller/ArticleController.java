@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,12 +32,17 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Tag(name = "여행 후기 컨트롤러")
 @CrossOrigin(origins = "*")
 @RestController
+@Validated
 @RequestMapping("/articles")
 public class ArticleController {
 
@@ -51,7 +57,7 @@ public class ArticleController {
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "201", description = "여행 후기 작성 성공"),
 			@ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
-			@ApiResponse(responseCode = "401", description = "유효하지 않은 회원 아이디")
+			@ApiResponse(responseCode = "401", description = "회원 인증 실패")
 	})
 	@Parameters({
 		@Parameter(name = "userid", description = "사용자 아이디"),
@@ -60,15 +66,11 @@ public class ArticleController {
 		@Parameter(name = "file", description = "여행 후기 사진")
 	})
 	@PostMapping("")
-	public CommonResponse<?> writeArticle(@RequestParam("userid") String userId,
-			@RequestParam("tags") List<String> tags, @RequestParam(value = "content", required = false) String content,
-			@RequestParam("file") MultipartFile file) throws Exception {
+	public CommonResponse<?> writeArticle(@RequestParam("userid") @NotBlank String userId,
+			@RequestParam("tags") @NotEmpty List<String> tags,
+			@RequestParam(value = "content", required = false) String content,
+			@RequestParam("file") @NotNull MultipartFile file) throws Exception {
 		Map<String, Object> map = new HashMap<>();
-		
-		// 입력값 유효성 검사하기
-		if (userId.equals("") || tags.isEmpty() || file.isEmpty()) {
-			return CommonResponse.failure(RetConsts.ERR400, "입력값에 대한 유효성 검사를 실패했습니다.");
-		}
 		
 		map.put("userId", userId);
 		map.put("tags", tags);
@@ -108,10 +110,11 @@ public class ArticleController {
 	@Operation(summary = "여행 후기 조회")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "여행 후기 조회 성공"),
+			@ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패")
 	})
 	@Parameter(name = "articleid", description = "여행 후기 ID")
 	@GetMapping("/{articleid}")
-	public CommonResponse<?> getArticle(@PathVariable("articleid") int articleId) throws Exception {
+	public CommonResponse<?> getArticle(@PathVariable("articleid") @Positive int articleId) throws Exception {
 		ArticleAndCommentDto ac = articleService.getArticle(articleId);
 		
 		// 탈퇴한 여행 후기인 경우 작성자 처리
@@ -132,10 +135,13 @@ public class ArticleController {
 	@Operation(summary = "여행 후기 조회 for 수정")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "여행 후기 조회 for 수정 성공"),
+			@ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
+			@ApiResponse(responseCode = "401", description = "회원 인증 실패"),
+			@ApiResponse(responseCode = "403", description = "접근 권한 없음")
 	})
 	@Parameter(name = "articleid", description = "여행 후기 ID")
 	@GetMapping("/modify/{articleid}")
-	public CommonResponse<?> getArticleForModification(@PathVariable("articleid") int articleId) throws Exception {
+	public CommonResponse<?> getArticleForModification(@PathVariable("articleid") @Positive int articleId) throws Exception {
 		ArticleDto article = articleService.getArticleForModification(articleId);
 		
 		Map<String, Object> responseData = new HashMap<>();
@@ -148,6 +154,8 @@ public class ArticleController {
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "여행 후기 수정 성공"),
 			@ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
+			@ApiResponse(responseCode = "401", description = "회원 인증 실패"),
+			@ApiResponse(responseCode = "403", description = "접근 권한 없음")
 	})
 	@Parameters({
 		@Parameter(name = "articleid", description = "여행 후기 ID"),
@@ -156,15 +164,10 @@ public class ArticleController {
 		@Parameter(name = "file", description = "여행 후기 사진")
 	})
 	@PutMapping("/{articleid}")
-	public CommonResponse<?> modifyArticle(@PathVariable("articleid") int articleId,
-			@RequestParam("tags") List<String> tags, @RequestParam(value = "content", required = false) String content,
+	public CommonResponse<?> modifyArticle(@PathVariable("articleid") @Positive int articleId,
+			@RequestParam("tags") @NotEmpty List<String> tags, @RequestParam(value = "content", required = false) String content,
 			@RequestParam(value = "file", required = false) MultipartFile file) throws Exception {
 		Map<String, Object> map = new HashMap<>();
-		
-		// 입력값 유효성 검사하기
-		if (tags.isEmpty() || (file != null && file.isEmpty())) {
-			return CommonResponse.failure(RetConsts.ERR400, "입력값에 대한 유효성 검사를 실패했습니다.");
-		}
 		
 		map.put("articleId", articleId);
 		map.put("tags", tags);
@@ -185,10 +188,13 @@ public class ArticleController {
 	@Operation(summary = "여행 후기 삭제")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "여행 후기 삭제 성공"),
+			@ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
+			@ApiResponse(responseCode = "401", description = "회원 인증 실패"),
+			@ApiResponse(responseCode = "403", description = "접근 권한 없음")
 	})
 	@Parameter(name = "articleid", description = "여행 후기 ID")
 	@DeleteMapping("/{articleid}")
-	public CommonResponse<?> deleteArticle(@PathVariable("articleid") int articleId) throws Exception {
+	public CommonResponse<?> deleteArticle(@PathVariable("articleid") @Positive int articleId) throws Exception {
 		articleService.deleteArticle(articleId);
 		
 		return CommonResponse.ok();
