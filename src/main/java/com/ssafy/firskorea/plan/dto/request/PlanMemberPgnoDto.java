@@ -4,13 +4,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.*;
 
-@Getter
+@NoArgsConstructor
 @AllArgsConstructor
+@Setter
+@Getter
+@ToString
 @Schema(title = "MemberPgnoDto", description = "회원의 북마크된 관광지 목록을 조회할 때 페이지네이션")
-public class MemberPgnoDto {
+public class PlanMemberPgnoDto {
     @NotNull(message = "회원 아이디는 필수입니다.")
     @Size(min = 1, max = 20, message = "회원 ID는 최소 {min}자 이상, 최대 {max}자 이하이어야 합니다.")
     @Schema(required = true, description = "회원 아이디")

@@ -1,5 +1,6 @@
 package com.ssafy.firskorea.plan.dto.response;
 
+import com.ssafy.firskorea.plan.dto.PlanInfoDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import java.util.*;

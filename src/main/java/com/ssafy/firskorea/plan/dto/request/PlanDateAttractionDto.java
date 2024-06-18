@@ -11,7 +11,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class AttractionPerDate {
+public class PlanDateAttractionDto {
 	private LocalDateTime date;
 	private String[] contentId;
 }

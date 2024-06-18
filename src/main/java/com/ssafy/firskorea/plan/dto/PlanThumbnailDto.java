@@ -11,13 +11,13 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class PlanFileDto {
+public class PlanThumbnailDto {
 	private String planId;
 	private String saveFolder;
 	private String originFile;
 	private String saveFile;
 
-	public PlanFileDto(String saveFolder, String originFile, String saveFile) {
+	public PlanThumbnailDto(String saveFolder, String originFile, String saveFile) {
 		this.saveFile = saveFile;
 		this.saveFolder = saveFolder;
 		this.originFile = originFile;
