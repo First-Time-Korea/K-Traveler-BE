@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ssafy.firskorea.board.dto.ArticleDto;
 import com.ssafy.firskorea.board.dto.FileDto;
 import com.ssafy.firskorea.board.dto.TagDto;
+import com.ssafy.firskorea.board.dto.request.SearchDto;
 import com.ssafy.firskorea.board.dto.response.ArticleAndCommentDto;
 import com.ssafy.firskorea.board.dto.response.ArticleFileDto;
 import com.ssafy.firskorea.board.mapper.ArticleMapper;
@@ -41,6 +42,11 @@ public class ArticleServiceImpl implements ArticleService {
 	@Value("${articleFile.path.upload-images}")
 	private String uploadImagesPath;
 
+	/*
+	 * 사용자 ID, 태그, 내용 그리고 사진을 토대로 여행 후기를 생성한다.
+	 * 
+	 * @param map 태그, 내용 그리고 사진을 포함하는 전송 객체다.
+	 */
 	@Override
 	@Transactional
 	public void writeArticle(Map<String, Object> map) throws Exception {
@@ -102,16 +108,22 @@ public class ArticleServiceImpl implements ArticleService {
 		articleMapper.writeArticleFile(file);
 	}
 
+	/*
+	 * 태그 또는 작성자 기준으로 여행 후기를 조회한다.
+	 * 
+	 * @param 페이지네이션 및 여행 후기 검색을 위한 정보(태그, 작성자)를 포함하는 전송 객체다.
+	 * @return 페이징 처리된 조회 결과인 {@link ArticleDto} 객체의 리스트를 반환한다.
+	 */
 	@Override
 	@Transactional
-	public Map<String, Object> getArticles(Map<String, String> map) throws Exception {
+	public Map<String, Object> getArticles(SearchDto search) throws Exception {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		// 여행 후기 리스트 가져오기
 		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("key", map.get("key"));
-		param.put("word", map.get("word") == null ? "" : map.get("word"));
-		int pgNo = Integer.parseInt(map.get("pgno") == null ? "1" : map.get("pgno"));
+		param.put("key", search.getKey());
+		param.put("word", search.getWord() == null ? "" : search.getWord());
+		int pgNo = search.getPgNo() == 0 ? 1 : search.getPgNo();
 		int start = pgNo * SizeConstant.LIST_SIZE - SizeConstant.LIST_SIZE;
 		param.put("start", start);
 		param.put("listsize", SizeConstant.LIST_SIZE);
@@ -138,8 +150,8 @@ public class ArticleServiceImpl implements ArticleService {
 
 		result.put("articleFiles", articleFiles);
 
-		// 페이지네비게이션 계산하기
-		int currentPage = Integer.parseInt(map.get("pgno") == null ? "1" : map.get("pgno"));
+		// 페이지네이션 계산하기
+		int currentPage = pgNo;
 		int sizePerPage = SizeConstant.LIST_SIZE;
 		int totalArticleCount = articleMapper.getTotalArticleCount(param);
 		int totalPageCount = (totalArticleCount - 1) / sizePerPage + 1;
@@ -149,20 +161,25 @@ public class ArticleServiceImpl implements ArticleService {
 
 		return result;
 	}
-
+	
+	/*
+	 * 여행 후기 ID를 기준으로 특정 여행 후기의 상세 정보 및 해당 여행 후기의 댓글 리스트를 조회한다.
+	 * 
+	 * @param articleId 여행 후기의 식별자다.
+	 * @return {@link ArticleAndCommentDto} 객체를 반환한다.
+	 */
 	@Override
-	public byte[] getArticleFile(String src) throws Exception {
-		try {
-			InputStream imgStream = new FileInputStream(uploadImagesPath + "/" + src);
-			byte[] img = imgStream.readAllBytes();
-			imgStream.close();
-
-			return img;
-		} catch (FileNotFoundException e) {
-			return null;
-		}
+	@Transactional
+	public ArticleAndCommentDto getArticle(int articleId) throws Exception {
+		return articleMapper.getArticle(articleId);
 	}
 
+	/*
+	 * 여행 후기 ID를 기준으로 특정 여행 후기의 상세 정보를 조회한다.
+	 * 
+	 * @param articleId 여행 후기의 식별자다.
+	 * @return {@link ArticleDto} 객체를 반환한다.
+	 */
 	@Override
 	@Transactional
 	public ArticleDto getArticleForModification(int articleId) throws Exception {
@@ -176,6 +193,11 @@ public class ArticleServiceImpl implements ArticleService {
 		return article;
 	}
 
+	/*
+	 * 여행 후기 ID에 해당하는 여행 후기 상세 정보를 수정한다.
+	 * 
+	 * @param map 여행 후기 ID, 태그, 내용 그리고 사진을 포함하는 전송 객체다.
+	 */
 	@Override
 	@Transactional
 	public void modifyArticle(Map<String, Object> map) throws Exception {
@@ -202,9 +224,12 @@ public class ArticleServiceImpl implements ArticleService {
 		int articleId = (Integer) map.get("articleId");
 		Map<String, Object> articleMap = new HashMap<>();
 		articleMap.put("articleId", articleId);
-		articleMap.put("content", map.get("content"));
-
-		articleMapper.modifyArticle(articleMap);
+		
+		if (map.containsKey("content")) {
+			articleMap.put("content", map.get("content"));
+	
+			articleMapper.modifyArticle(articleMap);
+		}
 
 		// 여행 후기랑 태그 관계 삭제 및 형성하기
 		List<TagDto> registedTags = articleMapper.getTagsOfArticle(articleId);
@@ -246,38 +271,39 @@ public class ArticleServiceImpl implements ArticleService {
 		}
 
 		// 여행 후기 사진 서버 저장 후 DB에 정보 저장하기
-		MultipartFile mfile = (MultipartFile) map.get("file");
-		if (!mfile.isEmpty()) {
-			String today = new SimpleDateFormat("yyMMdd").format(new Date());
-			String saveFolder = uploadImagesPath + File.separator + today;
-
-			File folder = new File(saveFolder);
-			if (!folder.exists()) {
-				folder.mkdirs();
+		if (map.containsKey("file")) {
+			MultipartFile mfile = (MultipartFile) map.get("file");
+			if (!mfile.isEmpty()) {
+				String today = new SimpleDateFormat("yyMMdd").format(new Date());
+				String saveFolder = uploadImagesPath + File.separator + today;
+	
+				File folder = new File(saveFolder);
+				if (!folder.exists()) {
+					folder.mkdirs();
+				}
+	
+				FileDto file = new FileDto();
+				String originalFileName = mfile.getOriginalFilename();
+				if (!originalFileName.isEmpty()) {
+					String saveFileName = UUID.randomUUID().toString()
+							+ originalFileName.substring(originalFileName.lastIndexOf('.'));
+					file.setArticleId(articleId);
+					file.setSaveFolder(today);
+					file.setOriginFile(originalFileName);
+					file.setSaveFile(saveFileName);
+					mfile.transferTo(new File(folder, saveFileName));
+				}
+	
+				articleMapper.writeArticleFile(file);
 			}
-
-			FileDto file = new FileDto();
-			String originalFileName = mfile.getOriginalFilename();
-			if (!originalFileName.isEmpty()) {
-				String saveFileName = UUID.randomUUID().toString()
-						+ originalFileName.substring(originalFileName.lastIndexOf('.'));
-				file.setArticleId(articleId);
-				file.setSaveFolder(today);
-				file.setOriginFile(originalFileName);
-				file.setSaveFile(saveFileName);
-				mfile.transferTo(new File(folder, saveFileName));
-			}
-
-			articleMapper.writeArticleFile(file);
 		}
 	}
 
-	@Override
-	@Transactional
-	public ArticleAndCommentDto getArticle(int articleId) throws Exception {
-		return articleMapper.getArticle(articleId);
-	}
-
+	/*
+	 * 여행 후기 ID에 해당하는 여행 후기를 삭제한다.
+	 * 
+	 * @param articleId 여행 후기의 식별자다.
+	 */
 	@Override
 	@Transactional
 	public void deleteArticle(int articleId) throws Exception {
