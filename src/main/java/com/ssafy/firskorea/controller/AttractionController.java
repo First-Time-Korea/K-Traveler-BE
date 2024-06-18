@@ -7,6 +7,7 @@ import com.ssafy.firskorea.attraction.dto.request.MemberPgnoDto;
 import com.ssafy.firskorea.attraction.dto.request.SidoPgnoDto;
 import com.ssafy.firskorea.attraction.service.AttractionGptService;
 import com.ssafy.firskorea.common.dto.CommonResponse;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
@@ -40,8 +41,8 @@ public class AttractionController {
             @ApiResponse(responseCode = "400"),
             @ApiResponse(responseCode = "500"),
     })
-    @PostMapping("/search")
-    public CommonResponse<?> getAttractionsBySearch(@Valid @RequestBody SearchDto searchDto) throws SQLException {
+    @GetMapping("/search")
+    public CommonResponse<?> getAttractionsBySearch(@Valid @ModelAttribute SearchDto searchDto) throws SQLException {
         return CommonResponse.ok(attractionService.getAttractionsBySearch(searchDto));
     }
 
@@ -62,33 +63,18 @@ public class AttractionController {
             @ApiResponse(responseCode = "400"),
             @ApiResponse(responseCode = "500"),
     })
-    @PostMapping("/details")
-    public CommonResponse<?> getAttractionDetail(@Valid @RequestBody MemberContentDto memberContentDto) throws SQLException {
+    @GetMapping("/details")
+    public CommonResponse<?> getAttractionDetail(@Valid @ModelAttribute MemberContentDto memberContentDto) throws SQLException {
         return CommonResponse.ok(attractionService.getAttractionDetail(memberContentDto));
     }
 
-    @Operation(summary = "GPT를 사용, 여행지 단일 조회", description = "회원과 관광지 아이디를 기반으로 여행지를 조회 하되, GPT를 사용한다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200"),
-            @ApiResponse(responseCode = "400"),
-            @ApiResponse(responseCode = "500"),
-    })
+    @Operation(summary = "GPT를 사용, 여행지 단일 조회", description = "K-Culture DB화 시키기 전에 사용")
+    @Hidden
     @PostMapping("/details/ai/v1")
     public CommonResponse<?> getAttractionDetailWithAIV1(
             @Valid @RequestBody MemberContentDto memberContentDto)
             throws SQLException {
-
         return CommonResponse.ok(attractionGptService.getAttractionDetailWithGptApi(memberContentDto));
-    }
-
-    @PostMapping("/details/ai/v2")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200"),
-            @ApiResponse(responseCode = "400"),
-            @ApiResponse(responseCode = "500"),
-    })
-    public CommonResponse<?> getAttractionDetailWithAIV2(@Valid @RequestBody MemberContentDto memberContentDto) throws SQLException {
-        return CommonResponse.ok(attractionGptService.getAttractionDetailAtDB(memberContentDto));
     }
 
     @Operation(summary = "특정 지역의 관광지 조회(페이지네이션)", description = "시도코드에 해당하는 관광지를 페이지네이션 한다.")
@@ -97,8 +83,8 @@ public class AttractionController {
             @ApiResponse(responseCode = "400"),
             @ApiResponse(responseCode = "500"),
     })
-    @PostMapping("/regions/paginated")
-    public CommonResponse<?> getPaginatedAttractionsBySidoCode(@Valid @RequestBody SidoPgnoDto sidoPgnoDto) throws SQLException {
+    @GetMapping("/regions/paginated")
+    public CommonResponse<?> getPaginatedAttractionsBySidoCode(@Valid @ModelAttribute SidoPgnoDto sidoPgnoDto) throws SQLException {
         return CommonResponse.ok(attractionService.getPaginatedAttractionsBySidoCode(sidoPgnoDto));
     }
 
@@ -108,8 +94,8 @@ public class AttractionController {
             @ApiResponse(responseCode = "400"),
             @ApiResponse(responseCode = "500"),
     })
-    @PostMapping("/bookmarks/paginated")
-    public CommonResponse<?> getPaginatedAttractionsBookmarked(@Valid @RequestBody MemberPgnoDto memberPgnoDto) throws SQLException {
+    @GetMapping("/bookmarks/paginated")
+    public CommonResponse<?> getPaginatedAttractionsBookmarked(@Valid @ModelAttribute MemberPgnoDto memberPgnoDto) throws SQLException {
         return CommonResponse.ok(attractionService.getPaginatedAttractionsBookmarked(memberPgnoDto));
     }
 
