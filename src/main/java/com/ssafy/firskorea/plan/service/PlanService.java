@@ -5,14 +5,16 @@ import java.util.List;
 import java.util.Map;
 
 import com.ssafy.firskorea.plan.dto.PlanMemoDto;
+import com.ssafy.firskorea.plan.dto.request.MemberPgnoDto;
 import com.ssafy.firskorea.plan.dto.request.PlanRequest;
+import com.ssafy.firskorea.plan.dto.response.PaginatedPlansDto;
 import com.ssafy.firskorea.plan.dto.response.PlanResponse;
 
 public interface PlanService {
 
 	void registerPlanner(PlanRequest planRequest) throws SQLException;
-	
-	Map<String, Object> getPlanInfos(Map<String, String> map) throws Exception;
+
+	PaginatedPlansDto getPlanInfos(MemberPgnoDto memberPgnoDto) throws Exception;
 
 	PlanResponse getCompletePlanner(int planId) throws SQLException;
 

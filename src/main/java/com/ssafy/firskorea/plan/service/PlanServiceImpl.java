@@ -7,6 +7,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.ssafy.firskorea.attraction.dto.response.AttractionDto;
+import com.ssafy.firskorea.attraction.dto.response.PaginatedAttractionsDto;
+import com.ssafy.firskorea.plan.dto.request.MemberPgnoDto;
+import com.ssafy.firskorea.plan.dto.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,10 +20,6 @@ import com.ssafy.firskorea.plan.dto.PlanFileDto;
 import com.ssafy.firskorea.plan.dto.PlanMemoDto;
 import com.ssafy.firskorea.plan.dto.request.AttractionPerDate;
 import com.ssafy.firskorea.plan.dto.request.PlanRequest;
-import com.ssafy.firskorea.plan.dto.response.PlanInfoDto;
-import com.ssafy.firskorea.plan.dto.response.AttractionForPlan;
-import com.ssafy.firskorea.plan.dto.response.PlanAndAttractionDto;
-import com.ssafy.firskorea.plan.dto.response.PlanResponse;
 import com.ssafy.firskorea.plan.mapper.PlanMapper;
 import com.ssafy.firskorea.util.SizeConstant;
 
@@ -59,31 +59,22 @@ public class PlanServiceImpl implements PlanService {
 	}
 
 	@Override
-	public Map<String, Object> getPlanInfos(Map<String, String> map) throws Exception {
-		Map<String, Object> result = new HashMap<String, Object>();
-
-		// 여행 계획 정보 리스트 가져오기
-		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("memberId", map.get("memberId"));
-		int pgNo = Integer.parseInt(map.get("pgno") == null ? "1" : map.get("pgno"));
+	public PaginatedPlansDto getPlanInfos(MemberPgnoDto memberPgnoDto) throws Exception {
+		int pgNo = Integer.parseInt(memberPgnoDto.getPgno() == null ? "1" : memberPgnoDto.getPgno());
 		int start = pgNo * SizeConstant.LIST_SIZE - SizeConstant.LIST_SIZE;
-		param.put("start", start);
-		param.put("listsize", SizeConstant.LIST_SIZE);
 
-		List<PlanInfoDto> planInfos = planMapper.getPlanInfos(param);
+		String memberId = memberPgnoDto.getMemberId();
+		List<PlanInfoDto> planInfos = planMapper.getPlanInfos(Map.of(
+				"memberId", memberId,
+				"start", start,
+				"listsize", SizeConstant.LIST_SIZE
+		));
 
-		result.put("planInfos", planInfos);
-
-		// 페이지네비게이션 계산하기
-		int currentPage = Integer.parseInt(map.get("pgno") == null ? "1" : map.get("pgno"));
+		int currentPage = Integer.parseInt(memberPgnoDto.getPgno() == null ? "1" : memberPgnoDto.getPgno());
 		int sizePerPage = SizeConstant.LIST_SIZE;
-		int totalPlanCount = planMapper.getTotalPlanCount(map.get("memberId"));
-		int totalPageCount = (totalPlanCount - 1) / sizePerPage + 1;
-
-		result.put("currentPage", currentPage);
-		result.put("totalPageCount", totalPageCount);
-
-		return result;
+		int totalAttractions = planMapper.getTotalPlanCount(memberPgnoDto.getMemberId());
+		int totalPageCount = (totalAttractions - 1) / sizePerPage + 1;
+		return new PaginatedPlansDto(planInfos, currentPage, totalPageCount);
 	}
 
 	@Override
