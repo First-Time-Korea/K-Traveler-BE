@@ -6,13 +6,16 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.constraints.Pattern;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 
 @Slf4j
 @RestController
+@Validated
 @CrossOrigin(origins = "*")
 public class CategoryController {
 
@@ -41,8 +44,9 @@ public class CategoryController {
     @GetMapping("/themes/{themeCode}/categories")
     public CommonResponse<?> getCategoryList(
             @Parameter(description = "카테고리를 조회할 테마 코드", required = true)
-            @PathVariable Character themeCode) throws SQLException {
-        return CommonResponse.ok(attractionService.getCategoryList(themeCode));
+            @Pattern(regexp = "^[a-zA-Z]$", message = "테마 코드 형식이 올바르지 않습니다.")
+            @PathVariable String themeCode) throws SQLException {
+        return CommonResponse.ok(attractionService.getCategoryList(themeCode.charAt(0)));
     }
 
     @Operation(summary = "여행 지역 정보", description = "대한민국 행정 지역에 속한 시도를 조회한다.")
