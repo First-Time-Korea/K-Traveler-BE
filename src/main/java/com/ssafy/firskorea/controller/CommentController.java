@@ -43,7 +43,7 @@ public class CommentController {
 			@ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
 			@ApiResponse(responseCode = "401", description = "유효하지 않은 회원 아이디")
 	})
-	@PostMapping("/{articleid}/comments/write")
+	@PostMapping("/{articleid}/comments")
 	public CommonResponse<?> writeComment(@RequestBody CommentDto comment) throws Exception {
 		// 입력값 유효성 검사하기
 		if (comment.getArticleId() == 0 || comment.getMemberId() == null || comment.getMemberId().equals("")
@@ -64,7 +64,7 @@ public class CommentController {
 			@ApiResponse(responseCode = "200", description = "여행 후기 댓글 삭제 성공")
 	})
 	@Parameter(name = "commentid", description = "여행 후기 댓글 ID")
-	@DeleteMapping("/{articleid}/comments/delete/{commentid}")
+	@DeleteMapping("/{articleid}/comments/{commentid}")
 	public CommonResponse<?> deleteComment(@PathVariable("commentid") int commentId) throws Exception {
 		commentService.deleteComment(commentId);
 

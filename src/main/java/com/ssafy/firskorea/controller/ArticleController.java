@@ -59,7 +59,7 @@ public class ArticleController {
 		@Parameter(name = "content", description = "여행 후기 본문"),
 		@Parameter(name = "file", description = "여행 후기 사진")
 	})
-	@PostMapping("/write")
+	@PostMapping("")
 	public CommonResponse<?> writeArticle(@RequestParam("userid") String userId,
 			@RequestParam("tags") List<String> tags, @RequestParam(value = "content", required = false) String content,
 			@RequestParam("file") MultipartFile file) throws Exception {
@@ -110,7 +110,7 @@ public class ArticleController {
 			@ApiResponse(responseCode = "200", description = "여행 후기 조회 성공"),
 	})
 	@Parameter(name = "articleid", description = "여행 후기 ID")
-	@GetMapping("/detail/{articleid}")
+	@GetMapping("/{articleid}")
 	public CommonResponse<?> getArticle(@PathVariable("articleid") int articleId) throws Exception {
 		ArticleAndCommentDto ac = articleService.getArticle(articleId);
 		
@@ -155,8 +155,8 @@ public class ArticleController {
 		@Parameter(name = "content", description = "여행 후기 본문"),
 		@Parameter(name = "file", description = "여행 후기 사진")
 	})
-	@PutMapping("/modify")
-	public CommonResponse<?> modifyArticle(@RequestParam("articleid") int articleId,
+	@PutMapping("/{articleid}")
+	public CommonResponse<?> modifyArticle(@PathVariable("articleid") int articleId,
 			@RequestParam("tags") List<String> tags, @RequestParam(value = "content", required = false) String content,
 			@RequestParam(value = "file", required = false) MultipartFile file) throws Exception {
 		Map<String, Object> map = new HashMap<>();
@@ -187,7 +187,7 @@ public class ArticleController {
 			@ApiResponse(responseCode = "200", description = "여행 후기 삭제 성공"),
 	})
 	@Parameter(name = "articleid", description = "여행 후기 ID")
-	@DeleteMapping("/delete/{articleid}")
+	@DeleteMapping("/{articleid}")
 	public CommonResponse<?> deleteArticle(@PathVariable("articleid") int articleId) throws Exception {
 		articleService.deleteArticle(articleId);
 		
