@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,7 +22,6 @@ import com.ssafy.firskorea.board.dto.ArticleDto;
 import com.ssafy.firskorea.board.dto.request.SearchDto;
 import com.ssafy.firskorea.board.dto.response.ArticleAndCommentDto;
 import com.ssafy.firskorea.board.service.ArticleService;
-import com.ssafy.firskorea.common.consts.RetConsts;
 import com.ssafy.firskorea.common.dto.CommonResponse;
 import com.ssafy.firskorea.util.CommentStratify;
 
@@ -57,7 +56,8 @@ public class ArticleController {
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "201", description = "여행 후기 작성 성공"),
 			@ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
-			@ApiResponse(responseCode = "401", description = "회원 인증 실패")
+			@ApiResponse(responseCode = "401", description = "회원 인증 실패"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
 	})
 	@Parameters({
 		@Parameter(name = "userid", description = "사용자 아이디"),
@@ -66,7 +66,7 @@ public class ArticleController {
 		@Parameter(name = "file", description = "여행 후기 사진")
 	})
 	@PostMapping("")
-	public CommonResponse<?> writeArticle(@RequestParam("userid") @NotBlank String userId,
+	public ResponseEntity<CommonResponse<?>> writeArticle(@RequestParam("userid") @NotBlank String userId,
 			@RequestParam("tags") @NotEmpty List<String> tags,
 			@RequestParam(value = "content", required = false) String content,
 			@RequestParam("file") @NotNull MultipartFile file) throws Exception {
@@ -81,40 +81,46 @@ public class ArticleController {
 		} else {
 			map.put("content", content);
 		}
+		
+		articleService.writeArticle(map);
+		
+		CommonResponse<?> response = CommonResponse.okCreation();
 
-		try {
-			articleService.writeArticle(map);
-
-			return CommonResponse.okCreation();
-		} catch (DataIntegrityViolationException e) {  // 유효하지 않은 회원 아이디인 경우
-			return CommonResponse.failure(RetConsts.ERR401, "입력값에 대한 유효성 검사를 실패했습니다.");
-		}
+		ResponseEntity<CommonResponse<?>> responseEntity = ResponseEntity.status(201).body(response);
+		
+		return responseEntity;
 	}
 
 	@Operation(summary = "여행 후기 리스트 조회")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "여행 후기 리스트 조회 성공"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
 	})
 	@GetMapping("")
-	public CommonResponse<?> getArticles(@ModelAttribute SearchDto search) throws Exception {
+	public ResponseEntity<CommonResponse<?>> getArticles(@ModelAttribute SearchDto search) throws Exception {
 		Map<String, Object> result = articleService.getArticles(search);
 
 		Map<String, Object> responseData = new HashMap<>();
 		responseData.put("articles", result.get("articleFiles"));
 		responseData.put("currentPage", result.get("currentPage"));
 		responseData.put("totalPageCount", result.get("totalPageCount"));
+		
+		CommonResponse<?> response = CommonResponse.ok(responseData);
+		
+		ResponseEntity<CommonResponse<?>> responseEntity = ResponseEntity.status(200).body(response);
 
-		return CommonResponse.ok(responseData);
+		return responseEntity;
 	}
 	
 	@Operation(summary = "여행 후기 조회")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "여행 후기 조회 성공"),
-			@ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패")
+			@ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
 	})
 	@Parameter(name = "articleid", description = "여행 후기 ID")
 	@GetMapping("/{articleid}")
-	public CommonResponse<?> getArticle(@PathVariable("articleid") @Positive int articleId) throws Exception {
+	public ResponseEntity<CommonResponse<?>> getArticle(@PathVariable("articleid") @Positive int articleId) throws Exception {
 		ArticleAndCommentDto ac = articleService.getArticle(articleId);
 		
 		// 탈퇴한 여행 후기인 경우 작성자 처리
@@ -128,8 +134,12 @@ public class ArticleController {
 		
 		Map<String, Object> responseData = new HashMap<>();
 		responseData.put("article", ac);
+		
+		CommonResponse<?> response = CommonResponse.ok(responseData);
+		
+		ResponseEntity<CommonResponse<?>> responseEntity = ResponseEntity.status(200).body(response);
 
-		return CommonResponse.ok(responseData);
+		return responseEntity;
 	}
 	
 	@Operation(summary = "여행 후기 조회 for 수정")
@@ -137,17 +147,22 @@ public class ArticleController {
 			@ApiResponse(responseCode = "200", description = "여행 후기 조회 for 수정 성공"),
 			@ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
 			@ApiResponse(responseCode = "401", description = "회원 인증 실패"),
-			@ApiResponse(responseCode = "403", description = "접근 권한 없음")
+			@ApiResponse(responseCode = "403", description = "접근 권한 없음"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
 	})
 	@Parameter(name = "articleid", description = "여행 후기 ID")
 	@GetMapping("/modify/{articleid}")
-	public CommonResponse<?> getArticleForModification(@PathVariable("articleid") @Positive int articleId) throws Exception {
+	public ResponseEntity<CommonResponse<?>> getArticleForModification(@PathVariable("articleid") @Positive int articleId) throws Exception {
 		ArticleDto article = articleService.getArticleForModification(articleId);
 		
 		Map<String, Object> responseData = new HashMap<>();
 		responseData.put("article", article);
+		
+		CommonResponse<?> response = CommonResponse.ok(responseData);
+		
+		ResponseEntity<CommonResponse<?>> responseEntity = ResponseEntity.status(200).body(response);
 
-		return CommonResponse.ok(responseData);
+		return responseEntity;
 	}
 	
 	@Operation(summary = "여행 후기 수정")
@@ -155,7 +170,8 @@ public class ArticleController {
 			@ApiResponse(responseCode = "200", description = "여행 후기 수정 성공"),
 			@ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
 			@ApiResponse(responseCode = "401", description = "회원 인증 실패"),
-			@ApiResponse(responseCode = "403", description = "접근 권한 없음")
+			@ApiResponse(responseCode = "403", description = "접근 권한 없음"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
 	})
 	@Parameters({
 		@Parameter(name = "articleid", description = "여행 후기 ID"),
@@ -164,7 +180,7 @@ public class ArticleController {
 		@Parameter(name = "file", description = "여행 후기 사진")
 	})
 	@PutMapping("/{articleid}")
-	public CommonResponse<?> modifyArticle(@PathVariable("articleid") @Positive int articleId,
+	public ResponseEntity<CommonResponse<?>> modifyArticle(@PathVariable("articleid") @Positive int articleId,
 			@RequestParam("tags") @NotEmpty List<String> tags, @RequestParam(value = "content", required = false) String content,
 			@RequestParam(value = "file", required = false) MultipartFile file) throws Exception {
 		Map<String, Object> map = new HashMap<>();
@@ -181,8 +197,12 @@ public class ArticleController {
 		}
 		
 		articleService.modifyArticle(map);
+		
+		CommonResponse<?> response = CommonResponse.ok();
+		
+		ResponseEntity<CommonResponse<?>> responseEntity = ResponseEntity.status(200).body(response);
 
-		return CommonResponse.ok();
+		return responseEntity;
 	}
 	
 	@Operation(summary = "여행 후기 삭제")
@@ -190,14 +210,19 @@ public class ArticleController {
 			@ApiResponse(responseCode = "200", description = "여행 후기 삭제 성공"),
 			@ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
 			@ApiResponse(responseCode = "401", description = "회원 인증 실패"),
-			@ApiResponse(responseCode = "403", description = "접근 권한 없음")
+			@ApiResponse(responseCode = "403", description = "접근 권한 없음"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
 	})
 	@Parameter(name = "articleid", description = "여행 후기 ID")
 	@DeleteMapping("/{articleid}")
-	public CommonResponse<?> deleteArticle(@PathVariable("articleid") @Positive int articleId) throws Exception {
+	public ResponseEntity<CommonResponse<?>> deleteArticle(@PathVariable("articleid") @Positive int articleId) throws Exception {
 		articleService.deleteArticle(articleId);
 		
-		return CommonResponse.ok();
+		CommonResponse<?> response = CommonResponse.ok();
+		
+		ResponseEntity<CommonResponse<?>> responseEntity = ResponseEntity.status(200).body(response);
+
+		return responseEntity;
 	}
 
 }
