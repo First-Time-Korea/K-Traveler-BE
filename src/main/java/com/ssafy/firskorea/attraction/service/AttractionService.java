@@ -25,6 +25,8 @@ public interface AttractionService {
 
     List<AttractionDto> getAttractionsBySearch(SearchDto searchDto) throws SQLException;
 
+    PaginatedAttractionsDto getPaginatedAttractionsBySearch(SearchDto searchDto) throws SQLException;
+
     AttractionDto toggleAttractionBookmark(MemberContentDto memberContentDto) throws SQLException;
 
     AttractionDto getAttractionDetail(MemberContentDto memberContentDto) throws SQLException;

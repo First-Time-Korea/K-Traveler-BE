@@ -1,6 +1,7 @@
 package com.ssafy.firskorea.attraction.service;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale.Category;
 import java.util.Map;
@@ -61,6 +62,11 @@ public class AttractionServiceImpl implements AttractionService {
         return attractionMapper.getSidoList();
     }
 
+    /**
+     * 대한민국의 행정 지역에 대한 설명과 사진을 가져온다.
+     *
+     * @return {@link SidoDetailDto} 리스트를 반환한다.
+     */
     @Override
     public List<SidoDetailDto> getSidoInfoList() throws SQLException {
         return attractionMapper.getSidoInfoList();
@@ -75,6 +81,32 @@ public class AttractionServiceImpl implements AttractionService {
     @Override
     public List<AttractionDto> getAttractionsBySearch(SearchDto searchDto) throws SQLException {
         return attractionMapper.getAttractionBySearch(searchDto);
+    }
+
+    /**
+     * {@link SearchDto}에 포함된 다양한 검색 기준에 따라 검색을 수행하고, 페이지네이션해 반환한다.
+     *
+     * @param searchDto 검색 매개변수를 포함하는 데이터 전송 객체다.
+     * @return {@link PaginatedAttractionsDto} 리스트를 반환한다.
+     */
+    @Override
+    public PaginatedAttractionsDto getPaginatedAttractionsBySearch(SearchDto searchDto) throws SQLException {
+        int pgNo = Integer.parseInt(searchDto.getPgno() == null ? "1" : searchDto.getPgno());
+        Map<String, Integer> pagination = calculatePagination(pgNo, SizeConstant.LIST_SIZE);
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("memberId", searchDto.getMemberId());
+        params.put("keyword", searchDto.getKeyword());
+        params.put("sidoCode", searchDto.getSidoCode());
+        params.put("themeCode", searchDto.getThemeCode());
+        params.put("categoryCode", searchDto.getCategoryCode());
+        params.putAll(pagination);
+
+        List<AttractionDto> attractions = attractionMapper.getPaginatedAttractionsBySearch(params);
+        int totalAttractions = attractionMapper.getTotalAttractionsBookmarkedCount(searchDto.getMemberId());
+        int totalPageCount = (totalAttractions - 1) / SizeConstant.LIST_SIZE + 1;
+
+        return new PaginatedAttractionsDto(attractions, pgNo, totalPageCount);
     }
 
     /**
@@ -115,21 +147,19 @@ public class AttractionServiceImpl implements AttractionService {
     @Override
     public PaginatedAttractionsDto getPaginatedAttractionsBySidoCode(SidoPgnoDto sidoPgnoDto) throws SQLException {
         int pgNo = Integer.parseInt(sidoPgnoDto.getPgno() == null ? "1" : sidoPgnoDto.getPgno());
-        int start = (pgNo - 1) * SizeConstant.LIST_SIZE;
+        Map<String, Integer> pagination = calculatePagination(pgNo, SizeConstant.LIST_SIZE);
 
         int sidoCode = Integer.parseInt(sidoPgnoDto.getSidocode());
         List<AttractionDto> attractions = attractionMapper.getPaginatedAttractionsBySidoCode(Map.of(
                 "sidoCode", sidoCode,
-                "start", start,
-                "listsize", SizeConstant.LIST_SIZE
+                "start", pagination.get("start"),
+                "listsize", pagination.get("listSize")
         ));
 
-        int currentPage = Integer.parseInt(sidoPgnoDto.getPgno() == null ? "1" : sidoPgnoDto.getPgno());
-        int sizePerPage = SizeConstant.LIST_SIZE;
-        int totalAttractions = attractionMapper.getTotalAttractionsBySidoCodeCount(Integer.parseInt(sidoPgnoDto.getSidocode()));
-        int totalPageCount = (totalAttractions - 1) / sizePerPage + 1;
+        int totalAttractions = attractionMapper.getTotalAttractionsBySidoCodeCount(sidoCode);
+        int totalPageCount = (totalAttractions - 1) / SizeConstant.LIST_SIZE + 1;
 
-        return new PaginatedAttractionsDto(attractions, currentPage, totalPageCount);
+        return new PaginatedAttractionsDto(attractions, pgNo, totalPageCount);
     }
 
     /**
@@ -141,20 +171,19 @@ public class AttractionServiceImpl implements AttractionService {
     @Override
     public PaginatedAttractionsDto getPaginatedAttractionsBookmarked(MemberPgnoDto memberPgnoDto) throws SQLException {
         int pgNo = Integer.parseInt(memberPgnoDto.getPgno() == null ? "1" : memberPgnoDto.getPgno());
-        int start = pgNo * SizeConstant.LIST_SIZE - SizeConstant.LIST_SIZE;
+        Map<String, Integer> pagination = calculatePagination(pgNo, SizeConstant.LIST_SIZE);
 
         String memberId = memberPgnoDto.getMemberId();
         List<AttractionDto> attractions = attractionMapper.getPaginatedAttractionsBookmarked(Map.of(
                 "memberId", memberId,
-                "start", start,
-                "listsize", SizeConstant.LIST_SIZE
+                "start", pagination.get("start"),
+                "listsize", pagination.get("listSize")
         ));
 
-        int currentPage = Integer.parseInt(memberPgnoDto.getPgno() == null ? "1" : memberPgnoDto.getPgno());
-        int sizePerPage = SizeConstant.LIST_SIZE;
-        int totalAttractions = attractionMapper.getTotalAttractionsBookmarkedCount(memberPgnoDto.getMemberId());
-        int totalPageCount = (totalAttractions - 1) / sizePerPage + 1;
-        return new PaginatedAttractionsDto(attractions, currentPage, totalPageCount);
+        int totalAttractions = attractionMapper.getTotalAttractionsBookmarkedCount(memberId);
+        int totalPageCount = (totalAttractions - 1) / SizeConstant.LIST_SIZE + 1;
+
+        return new PaginatedAttractionsDto(attractions, pgNo, totalPageCount);
     }
 
     /**
@@ -166,6 +195,17 @@ public class AttractionServiceImpl implements AttractionService {
     @Override
     public List<AttractionDto> getAllAttractionsBookmarked(String memberId) throws SQLException {
         return attractionMapper.getAllAttractionsBookmarked(memberId);
+    }
+
+    /**
+     * 페이지네이션 유틸리티 메서드
+     */
+    private Map<String, Integer> calculatePagination(int pgNo, int listSize) {
+        int start = (pgNo - 1) * listSize;
+        Map<String, Integer> pagination = new HashMap<>();
+        pagination.put("start", start);
+        pagination.put("listSize", listSize);
+        return pagination;
     }
 
 }

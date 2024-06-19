@@ -40,21 +40,60 @@
 		book.member_id = #{memberId} AND
 		detail.content_id = book.content_id
 		WHERE
-		info.title LIKE CONCAT('%', #{keyword}, '%')
-		<if test="sidoCode != null and sidoCode !=''">
+		1=1
+		<if test='keyword != null and keyword != ""'>
+			AND info.title LIKE CONCAT('%', #{keyword}, '%')
+		</if>
+		<if test='sidoCode!=null and sidoCode!=""'>
 			AND info.sido_code = #{sidoCode}
 		</if>
-		<if test="themeCode != null and themeCode !=''">
+		<if test='themeCode!=null and themeCode!=""'>
 			AND detail.theme_code = #{themeCode}
 		</if>
-		<if test="categoryCode != null and categoryCode !=''">
+		<if test='categoryCode!=null and categoryCode!=""'>
 			AND detail.category_code = #{categoryCode}
 		</if>
-		<if test="contentId != null and contentId!='' ">
+		<if test='contentId!=null and contentId!=""'>
 			AND info.content_id = #{contentId}
 		</if>
 
 	</select>
+
+	<select id="getPaginatedAttractionsBySearch" resultType="AttractionDto" parameterType="map">
+        SELECT
+        info.content_id,
+        info.latitude,
+        info.longitude,
+        detail.theme_code
+        FROM
+        attraction_detail detail
+        LEFT JOIN attraction_info AS info ON
+        detail.content_id = info.content_id
+        LEFT JOIN bookmark AS book ON
+        book.member_id = #{memberId} AND
+        detail.content_id = book.content_id
+		WHERE
+		1=1
+		<if test='keyword != null and keyword != ""'>
+			AND info.title LIKE CONCAT('%', #{keyword}, '%')
+		</if>
+		<if test='sidoCode!=null and sidoCode!=""'>
+			AND info.sido_code = #{sidoCode}
+		</if>
+		<if test='themeCode!=null and themeCode!=""'>
+			AND detail.theme_code = #{themeCode}
+		</if>
+		<if test='categoryCode!=null and categoryCode!=""'>
+			AND detail.category_code = #{categoryCode}
+		</if>
+		<if test='contentId!=null and contentId!=""'>
+			AND info.content_id = #{contentId}
+		</if>
+        order by
+        content_id desc
+        limit #{start},
+        #{listsize}
+    </select>
 
 	<insert id="createAttractionBookmark" parameterType="map">
 		INSERT INTO bookmark
