@@ -10,6 +10,7 @@ public enum RetConsts {
 
     ERR400(RetStatus.AUTH, 400, "잘못된 요청"), //Bad Request
     ERR401(RetStatus.AUTH, 401, "권한 없음"), //Unauthorized
+    ERR404(RetStatus.AUTH, 404, "경로 없음"),
 
     ERR410(RetStatus.VALIDATION, 410, "잘못된 포맷으로 요청"),
 
