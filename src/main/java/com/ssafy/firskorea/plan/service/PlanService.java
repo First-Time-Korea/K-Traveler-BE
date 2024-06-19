@@ -3,7 +3,7 @@ package com.ssafy.firskorea.plan.service;
 import java.sql.SQLException;
 import java.util.List;
 
-import com.ssafy.firskorea.plan.dto.PlanMemoDto;
+import com.ssafy.firskorea.plan.dto.request.PlanMemoDto;
 import com.ssafy.firskorea.plan.dto.request.PlanMemberPgnoDto;
 import com.ssafy.firskorea.plan.dto.request.PlanCreationDto;
 import com.ssafy.firskorea.plan.dto.response.PaginatedPlansDto;

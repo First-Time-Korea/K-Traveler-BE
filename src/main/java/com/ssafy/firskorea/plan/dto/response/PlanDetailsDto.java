@@ -3,7 +3,6 @@ package com.ssafy.firskorea.plan.dto.response;
 import java.util.List;
 import java.util.Map;
 
-import com.ssafy.firskorea.plan.dto.PlanAttractionDetailsDto;
 import lombok.*;
 
 @Getter

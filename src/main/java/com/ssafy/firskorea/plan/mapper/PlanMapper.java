@@ -1,7 +1,7 @@
 package com.ssafy.firskorea.plan.mapper;
 
-import com.ssafy.firskorea.plan.dto.PlanThumbnailDto;
-import com.ssafy.firskorea.plan.dto.PlanInfoDto;
+import com.ssafy.firskorea.plan.dto.request.PlanThumbnailDto;
+import com.ssafy.firskorea.plan.dto.response.PlanInfoDto;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -9,9 +9,9 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import com.ssafy.firskorea.plan.dto.PlanMemoDto;
-import com.ssafy.firskorea.plan.dto.PlanAttractionDetailsDto;
-import com.ssafy.firskorea.plan.dto.PlanAndAttractionDto;
+import com.ssafy.firskorea.plan.dto.request.PlanMemoDto;
+import com.ssafy.firskorea.plan.dto.response.PlanAttractionDetailsDto;
+import com.ssafy.firskorea.plan.dto.response.PlanAndAttractionDto;
 
 @Mapper
 public interface PlanMapper {

@@ -1,5 +1,6 @@
-package com.ssafy.firskorea.plan.dto;
+package com.ssafy.firskorea.plan.dto.response;
 
+import com.ssafy.firskorea.plan.dto.request.PlanThumbnailDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

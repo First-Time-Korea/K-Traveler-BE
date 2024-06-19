@@ -8,7 +8,6 @@ import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Setter
 @Getter
 @ToString
 @Schema(title = "MemberPgnoDto", description = "회원의 북마크된 관광지 목록을 조회할 때 페이지네이션")
