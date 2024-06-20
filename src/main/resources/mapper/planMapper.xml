@@ -3,26 +3,6 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.ssafy.firskorea.plan.mapper.PlanMapper">
-	
-	<resultMap type="planInfoDto" id="planInfo">
-		<result column="id" property="id"/>
-		<result column="title" property="title"/>
-		<result column="start_date" property="startDate"/>
-		<result column="end_date" property="endDate"/>
-		<association property="file" resultMap="file" />
-	</resultMap>
-	
-	<resultMap type="planFileDto" id="file">
-		<result column="save_folder" property="saveFolder"/>
-		<result column="origin_file" property="originFile"/>
-		<result column="save_file" property="saveFile"/>
-	</resultMap>
-
-	<select id="getRegionList" resultType="regionDto">
-		select sido_code,
-		sido_name, sido_description, sido_image
-		from sido;
-	</select>
 
 	<insert id="insertPlan" parameterType="map"
 		useGeneratedKeys="true" keyColumn="id" keyProperty="id">
@@ -38,7 +18,7 @@
 		(#{planId},#{contentId},#{date});
 	</insert>
 
-	<insert id="insertPlanFile" parameterType="PlanFileDto">
+	<insert id="insertPlanThumbnail" parameterType="PlanThumbnailDto">
 		insert into plan_file
 		(save_folder, origin_file, save_file, plan_id)
 		values
@@ -54,7 +34,7 @@
 		where p.id=#{planId};
 	</select>
 
-	<select id="getAttractionForPlan" resultType="AttractionForPlan"
+	<select id="planAttractionDetails" resultType="PlanAttractionDetailsDto"
 		parameterType="PlanAndAttractionDto">
 		select paa.plan_id, paa.id paa_id, paa.date, ai.title
 		contentTitle, ai.content_id, ai.addr1, ai.first_image, ai.longitude,
@@ -71,7 +51,7 @@
 		where paa.id=#{paaId} and paa.content_id=#{contentId};
 	</select>
 	
-	<update id="updateMemo" parameterType="PlanMemoDto">
+	<update id="updatePlanMemo" parameterType="PlanMemoDto">
 	INSERT INTO plan_memo (plan_and_attraction_id, text)
 	VALUES (#{planAndAttractionId},#{text})
 	ON DUPLICATE KEY UPDATE
@@ -79,7 +59,7 @@
 	</update>
 	
 	<!-- 나의 여행 계획 리스트 조회하기 -->
-	<select id="getPlanInfos" parameterType="map" resultMap="planInfo">
+	<select id="retrievePaginatedPlans" parameterType="map" resultType="planInfoDto">
 		select p.id, p.title, a.start_date, a.end_date, f.save_folder, f.origin_file, f.save_file
 		from (
 			select id, title

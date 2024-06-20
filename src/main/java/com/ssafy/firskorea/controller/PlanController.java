@@ -1,138 +1,158 @@
 package com.ssafy.firskorea.controller;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.ssafy.firskorea.common.dto.CommonResponse;
+import com.ssafy.firskorea.plan.dto.request.PlanMemberPgnoDto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.ssafy.firskorea.plan.dto.PlanFileDto;
-import com.ssafy.firskorea.plan.dto.PlanMemoDto;
-import com.ssafy.firskorea.plan.dto.RegionDto;
-import com.ssafy.firskorea.plan.dto.request.PlanRequest;
-import com.ssafy.firskorea.plan.dto.response.PlanResponse;
+import com.ssafy.firskorea.plan.dto.request.PlanThumbnailDto;
+import com.ssafy.firskorea.plan.dto.request.PlanMemoDto;
+import com.ssafy.firskorea.plan.dto.request.PlanCreationDto;
 import com.ssafy.firskorea.plan.service.PlanService;
 import com.ssafy.firskorea.plan.service.PlanServiceImpl;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 
-@RestController
-@RequestMapping("/plan")
-@CrossOrigin(origins = "*")
-@Tag(name = "여행 계획 컨트롤러", description = "")
 @Slf4j
+@RestController
+@Validated
+@RequestMapping("/plans")
+@CrossOrigin(origins = "*")
 public class PlanController {
 
-	@Value("${planThumbFile.path.upload-images}")
-	private String UPLOAD_PATH;
+    @Value("${planThumbFile.path.upload-images}")
+    private String UPLOAD_PATH;
 
-	private PlanService planService;
+    private final PlanService planService;
 
-	@Autowired
-	public PlanController(PlanServiceImpl planServiceImpl) {
-		this.planService = planServiceImpl;
-	}
+    @Autowired
+    public PlanController(PlanServiceImpl planServiceImpl) {
+        this.planService = planServiceImpl;
+    }
 
-	//TODO: 카테고리 컨트롤러로 이동
-	@Operation(summary = "대한민국 행정 구역 전체 조회", description = "시도 코드, 이름, 이미지, 설명 전체 반환")
-	@GetMapping("/regions")
-	public ResponseEntity<Map<String, Object>> getRegionList() throws SQLException {
-		Map<String, Object> resultMap = new HashMap<>();
-		List<RegionDto> dto = planService.getRegionList();
-		HttpStatus status = HttpStatus.ACCEPTED;
-		resultMap.put("status", "success");
-		resultMap.put("data", dto);
-		return new ResponseEntity<>(resultMap, status);
-	}
+    @Operation(summary = "여행 계획 등록", description = "여행 계획을 등록한다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "여행 계획 등록 성공"),
+            @ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
+            @ApiResponse(responseCode = "401", description = "회원 인증 실패"),
+            @ApiResponse(responseCode = "500", description = "로직 처리 실패"),
+    })
+    @PostMapping() // 여행 계획 등록
+    public ResponseEntity<CommonResponse<?>> createPlan(
+            @Valid @RequestPart("planRequest") PlanCreationDto planCreationDto,
+            @RequestPart("file") MultipartFile file) throws SQLException, IOException {
+        if (!file.isEmpty()) {
+            initializePlanRequest(planCreationDto, file);
+        }
+        planService.createPlan(planCreationDto);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(CommonResponse.okCreation());
+    }
 
-	@PostMapping() // 여행 계획 등록
-	private ResponseEntity<?> insertPlanner(@RequestPart("planRequest") PlanRequest planRequest,
-			@RequestPart("file") MultipartFile file) throws Exception {
-		Map<String, Object> res = new HashMap<>();
-		if (!file.isEmpty()) {
-			String today = new SimpleDateFormat("yyMMdd").format(new Date());
-			String saveFolder = UPLOAD_PATH + File.separator + today;
-			File folder = new File(saveFolder);
-			if (!folder.exists()) {
-				folder.mkdirs();
-			}
-			String originalFileName = file.getOriginalFilename();
-			String saveFileName = UUID.randomUUID() + originalFileName.substring(originalFileName.lastIndexOf('.')); // 확장자
-																														// 제거
-			PlanFileDto fileInfoDto = new PlanFileDto(today, originalFileName, saveFileName);
-			file.transferTo(new File(folder, saveFileName)); // 실제 파일을 저장한다.
-			planRequest.setPlanFileDto(fileInfoDto);
-		}
-		planService.registerPlanner(planRequest);
-		res.put("status", "success");
-		res.put("message", "여행 계획 등록 성공");
-		res.put("data", "null");
-		return new ResponseEntity<>(res, HttpStatus.OK);
-	}
-	
-	// 나의 여행 계획 리스트 조회하기
-	@GetMapping("/list")
-	public ResponseEntity<Map<String, Object>> getPlanInfos(@RequestParam Map<String, String> map) throws Exception {
-		Map<String, Object> result = planService.getPlanInfos(map);
+    @Operation(summary = "나의 여행 계획 목록을 조회한다.", description = "나의 여행 계획을 페이징 하여 조회한다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "여행 계획 전체 조회 성공"),
+            @ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
+            @ApiResponse(responseCode = "401", description = "회원 인증 실패"),
+            @ApiResponse(responseCode = "500", description = "로직 처리 실패"),
+    })
+    @GetMapping("/paginated")
+    public ResponseEntity<CommonResponse<?>> getPaginatedPlans(
+            @Valid @ModelAttribute PlanMemberPgnoDto planMemberPgnoDto) throws SQLException {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(CommonResponse.ok(planService.getPaginatedPlans(planMemberPgnoDto)));
+    }
 
-		Map<String, Object> response = new HashMap<>();
-		response.put("message", "여행 계획 리스트 조회 성공");
-		response.put("planInfos", result.get("planInfos"));
-		response.put("currentPage", result.get("currentPage"));
-		response.put("totalPageCount", result.get("totalPageCount"));
+    @Operation(summary = "여행 계획 상세 조회", description = "여행 계획 번호로 계획을 상세 조회한다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "여행 계획 상세 조회 성공"),
+            @ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
+            @ApiResponse(responseCode = "401", description = "회원 인증 실패"),
+            @ApiResponse(responseCode = "500", description = "로직 처리 실패"),
+    })
+    @GetMapping("/{planId}") // 계획 상세 조회
+    public ResponseEntity<CommonResponse<?>> getPlanDetails(
+            @Parameter(description = "여행 계획 번호", required = true)
+            @Pattern(regexp = "^\\d+$")
+            @PathVariable String planId) throws SQLException {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(CommonResponse.ok(planService.getPlanDetails(Integer.parseInt(planId))));
+    }
 
-		ResponseEntity<Map<String, Object>> responseEntity = ResponseEntity.status(200).body(response);
+    @Operation(summary = "여행 계획 메모", description = "여행 계획 내부 특정 날짜의 특정 관광지에 대한 메모를 등록한다.(또는 업데이트")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "메모 업데이트 성공"),
+            @ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
+            @ApiResponse(responseCode = "401", description = "회원 인증 실패"),
+            @ApiResponse(responseCode = "500", description = "로직 처리 실패"),
+    })
+    @PutMapping("/{planId}/memos")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<CommonResponse<?>> updatePlanMemos(
+            @Parameter(description = "여행 계획 번호", required = true)
+            @Pattern(regexp = "^\\d+$")
+            @PathVariable String planId,
+            @Valid @RequestBody Map<String, List<PlanMemoDto>> memoMap) throws SQLException {
 
-		return responseEntity;
-	}
+        planService.updatePlanMemos(memoMap.get("memos"));
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(CommonResponse.okCreation());
+    }
 
-	@GetMapping("/info") // 계획 상세 조회
-	private ResponseEntity<?> viewPlannerInfo(@RequestParam("planId") String planId) throws Exception {
-		Map<String, Object> res = new HashMap<>();
-		PlanResponse planInfo = planService.getCompletePlanner(Integer.parseInt(planId));
-		if (planInfo != null) {
-			res.put("status", "success");
-			res.put("message", "여행 계획 상세 조회 성공");
-			res.put("data", planInfo);
-			return new ResponseEntity<>(res, HttpStatus.OK);
-		}
-		res.put("status", "fail");
-		res.put("message", "로그인 안되어 있음");
-		res.put("data", "null");
-		return new ResponseEntity<>(res, HttpStatus.UNAUTHORIZED);
-	}
+    @Operation(summary = "여행 계획 삭제", description = "여행 계획 번호로 여행 계획을 삭제한다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "여행 계획 삭제 성공"),
+            @ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
+            @ApiResponse(responseCode = "401", description = "회원 인증 실패"),
+            @ApiResponse(responseCode = "500", description = "로직 처리 실패"),
+    })
+    @DeleteMapping("/{planId}")
+    public ResponseEntity<CommonResponse<?>> deletePlan(
+            @Parameter(description = "여행 계획 번호", required = true)
+            @Pattern(regexp = "^\\d+$")
+            @PathVariable String planId) throws SQLException {
+        planService.deletePlan(planId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(CommonResponse.ok());
+    }
 
-	@PutMapping("/memo")
-	public ResponseEntity<?> viewPlannerInfo(@RequestBody Map<String, List<PlanMemoDto>> memoMap) throws Exception {
-		Map<String, Object> res = new HashMap<>();
-		res.put("status", "success");
-		res.put("message", "메모 수정 성공");
-		res.put("data", "null");
-		System.out.println(memoMap);
-		planService.updateMemo((List<PlanMemoDto>) memoMap.get("memos"));
-		return new ResponseEntity<>(res, HttpStatus.OK);
-	}
+    private void initializePlanRequest(PlanCreationDto planCreationDto, MultipartFile file) throws IOException, NullPointerException {
+        String today = new SimpleDateFormat("yyMMdd").format(new Date());
+        String saveFolder = UPLOAD_PATH + File.separator + today;
+        File folder = new File(saveFolder);
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        String originalFileName = file.getOriginalFilename();
+        String saveFileName = UUID.randomUUID() + originalFileName.substring(originalFileName.lastIndexOf('.')); // 확장자
+        PlanThumbnailDto fileInfoDto = new PlanThumbnailDto(today, originalFileName, saveFileName);
+        file.transferTo(new File(folder, saveFileName)); //실제 파일 저장
+        planCreationDto.setPlanThumbnailDto(fileInfoDto);
+    }
 
-	@DeleteMapping()
-	public ResponseEntity<?> deletePlan(@RequestParam String planId) throws Exception {
-		Map<String, Object> res = new HashMap<>();
-		res.put("status", "success");
-		res.put("message", "여행 삭제 성공");
-		res.put("data", "null");
-		planService.deletePlan(planId);
-		return new ResponseEntity<>(res, HttpStatus.OK);
-	}
 }

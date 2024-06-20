@@ -4,16 +4,12 @@ import java.time.LocalDateTime;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @ToString
-public class AttractionForPlan {
-	// plan이랑 PlanAndAttraction 이랑 조인해서 가져옴
-	// 필요한 정보들
+public class PlanAttractionDetailsDto {
 	private int paaId;
 	private LocalDateTime date;
 	private String contentTitle;

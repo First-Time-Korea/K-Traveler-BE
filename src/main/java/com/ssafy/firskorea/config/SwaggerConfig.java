@@ -35,6 +35,12 @@ public class SwaggerConfig {
     }
 
     @Bean
+    public GroupedOpenApi planApi() {
+        return GroupedOpenApi.builder().group("여행 계획 관리").pathsToMatch("/plans/**").build();
+    }
+
+
+    @Bean
     public GroupedOpenApi categoryApi(){
         return GroupedOpenApi.builder()
                 .group("테마 및 지역 정보")

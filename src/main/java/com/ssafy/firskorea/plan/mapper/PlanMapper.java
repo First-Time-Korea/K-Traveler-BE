@@ -1,37 +1,36 @@
 package com.ssafy.firskorea.plan.mapper;
 
-import com.ssafy.firskorea.plan.dto.PlanFileDto;
-import com.ssafy.firskorea.plan.dto.RegionDto;
+import com.ssafy.firskorea.plan.dto.request.PlanThumbnailDto;
 import com.ssafy.firskorea.plan.dto.response.PlanInfoDto;
 
 import org.apache.ibatis.annotations.Mapper;
+
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import com.ssafy.firskorea.plan.dto.PlanMemoDto;
-import com.ssafy.firskorea.plan.dto.response.AttractionForPlan;
+import com.ssafy.firskorea.plan.dto.request.PlanMemoDto;
+import com.ssafy.firskorea.plan.dto.response.PlanAttractionDetailsDto;
 import com.ssafy.firskorea.plan.dto.response.PlanAndAttractionDto;
 
 @Mapper
 public interface PlanMapper {
-	List<RegionDto> getRegionList() throws SQLException;
 
-	int insertPlan(Map<String, Object> plan) throws SQLException;
+    int insertPlan(Map<String, Object> plan) throws SQLException;
 
-	int insertPlanAndAttraction(Map<String, Object> planAndAttraction) throws SQLException;
+    int insertPlanAndAttraction(Map<String, Object> planAndAttraction) throws SQLException;
 
-	void insertPlanFile(PlanFileDto dto) throws SQLException;
+    void insertPlanThumbnail(PlanThumbnailDto dto) throws SQLException;
 
-	List<PlanInfoDto> getPlanInfos(Map<String, Object> map) throws Exception;
+    List<PlanAndAttractionDto> getPlanAndAttractions(int planId) throws SQLException;
 
-	int getTotalPlanCount(String memberId) throws Exception;
+    PlanAttractionDetailsDto planAttractionDetails(PlanAndAttractionDto dto) throws SQLException;
 
-	List<PlanAndAttractionDto> getPlanAndAttractions(int planId) throws SQLException;
+    void updatePlanMemo(PlanMemoDto memoDto) throws SQLException;
 
-	AttractionForPlan getAttractionForPlan(PlanAndAttractionDto dto) throws SQLException;
+    List<PlanInfoDto> retrievePaginatedPlans(Map<String, Object> map) throws SQLException;
 
-	void updateMemo(PlanMemoDto memoDto) throws SQLException;
+    int getTotalPlanCount(String memberId) throws SQLException;
 
     void deletePlan(String planId) throws SQLException;
 }

@@ -10,6 +10,7 @@ import com.ssafy.firskorea.attraction.dto.request.SearchDto;
 import com.ssafy.firskorea.attraction.dto.request.SidoPgnoDto;
 import com.ssafy.firskorea.attraction.dto.response.AttractionDto;
 import com.ssafy.firskorea.attraction.dto.response.PaginatedAttractionsDto;
+import com.ssafy.firskorea.attraction.dto.response.category.SidoDetailDto;
 import com.ssafy.firskorea.attraction.dto.response.category.ThemeDto;
 
 public interface AttractionService {
@@ -20,7 +21,11 @@ public interface AttractionService {
 
     List<Category> getSidoList() throws SQLException;
 
+    List<SidoDetailDto> getSidoInfoList() throws SQLException;
+
     List<AttractionDto> getAttractionsBySearch(SearchDto searchDto) throws SQLException;
+
+    PaginatedAttractionsDto getPaginatedAttractionsBySearch(SearchDto searchDto) throws SQLException;
 
     AttractionDto toggleAttractionBookmark(MemberContentDto memberContentDto) throws SQLException;
 

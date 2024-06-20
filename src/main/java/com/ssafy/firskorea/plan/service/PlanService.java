@@ -2,25 +2,22 @@ package com.ssafy.firskorea.plan.service;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 
-import com.ssafy.firskorea.plan.dto.PlanMemoDto;
-import com.ssafy.firskorea.plan.dto.RegionDto;
-import com.ssafy.firskorea.plan.dto.request.PlanRequest;
-import com.ssafy.firskorea.plan.dto.response.PlanResponse;
+import com.ssafy.firskorea.plan.dto.request.PlanMemoDto;
+import com.ssafy.firskorea.plan.dto.request.PlanMemberPgnoDto;
+import com.ssafy.firskorea.plan.dto.request.PlanCreationDto;
+import com.ssafy.firskorea.plan.dto.response.PaginatedPlansDto;
+import com.ssafy.firskorea.plan.dto.response.PlanDetailsDto;
 
 public interface PlanService {
-	List<RegionDto> getRegionList() throws SQLException;
 
-	void registerPlanner(PlanRequest planRequest) throws SQLException;
-	
-	Map<String, Object> getPlanInfos(Map<String, String> map) throws Exception;
-	
-	byte[] getPlanFile(String src) throws Exception;
+	void createPlan(PlanCreationDto planCreationDto) throws SQLException;
 
-	PlanResponse getCompletePlanner(int planId) throws SQLException;
+	PaginatedPlansDto getPaginatedPlans(PlanMemberPgnoDto planMemberPgnoDto) throws SQLException;
 
-	void updateMemo(List<PlanMemoDto> memoList) throws SQLException;
+	PlanDetailsDto getPlanDetails(int planId) throws SQLException;
+
+	void updatePlanMemos(List<PlanMemoDto> memoList) throws SQLException;
 
 	void deletePlan(String planId) throws SQLException;
 }

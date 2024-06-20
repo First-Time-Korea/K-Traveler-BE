@@ -6,6 +6,7 @@ import java.util.Locale.Category;
 import java.util.Map;
 
 import com.ssafy.firskorea.attraction.dto.request.MemberContentDto;
+import com.ssafy.firskorea.attraction.dto.response.category.SidoDetailDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.ssafy.firskorea.attraction.dto.request.SearchDto;
@@ -15,35 +16,39 @@ import com.ssafy.firskorea.attraction.dto.response.category.ThemeDto;
 @Mapper
 public interface AttractionMapper {
 
-	List<ThemeDto> getThemeList() throws SQLException;
+    List<ThemeDto> getThemeList() throws SQLException;
 
-	List<Category> getCategoryList(Character code) throws SQLException;
+    List<Category> getCategoryList(Character code) throws SQLException;
 
-	List<AttractionDto> getAttractionBySearch(SearchDto searchDto) throws SQLException;
+    List<AttractionDto> getAttractionBySearch(SearchDto searchDto) throws SQLException;
 
-	void createAttractionBookmark(MemberContentDto memberContentDto) throws SQLException;
+    List<SidoDetailDto> getSidoInfoList() throws SQLException;
 
-	AttractionDto getAttractionByContentId(MemberContentDto memberContentDto) throws SQLException;
+    void createAttractionBookmark(MemberContentDto memberContentDto) throws SQLException;
 
-	void deleteAttractionBookmark(MemberContentDto memberContentDto) throws SQLException;
+    AttractionDto getAttractionByContentId(MemberContentDto memberContentDto) throws SQLException;
 
-	List<AttractionDto> getAllAttractionsBookmarked(String memberId) throws SQLException;
+    void deleteAttractionBookmark(MemberContentDto memberContentDto) throws SQLException;
 
-	List<AttractionDto> getPaginatedAttractionsBySidoCode(Map<String, Object> map) throws SQLException;
-	
-	int getTotalAttractionsBySidoCodeCount(int sidoCode) throws SQLException;
+    List<AttractionDto> getAllAttractionsBookmarked(String memberId) throws SQLException;
 
-	List<Category> getSidoList() throws SQLException;
+    List<AttractionDto> getPaginatedAttractionsBySidoCode(Map<String, Object> map) throws SQLException;
 
-	List<AttractionDto> getPaginatedAttractionsBookmarked(Map<String, Object> map) throws SQLException;
+    int getTotalAttractionsBySidoCodeCount(int sidoCode) throws SQLException;
 
-	int getTotalAttractionsBookmarkedCount(String memberId) throws SQLException;
+    List<Category> getSidoList() throws SQLException;
 
-	AttractionDto getKCurtureAttractionByContentId(MemberContentDto memberContentDto) throws SQLException;
+    List<AttractionDto> getPaginatedAttractionsBookmarked(Map<String, Object> map) throws SQLException;
 
-	void insertKCurtureAttractionInfoEnglish(AttractionDto attractionDto) throws SQLException;
+    int getTotalAttractionsBookmarkedCount(String memberId) throws SQLException;
 
-	void insertKCurtureAttractionDetailEnglish(AttractionDto attractionDto) throws SQLException;
+    AttractionDto getKCurtureAttractionByContentId(MemberContentDto memberContentDto) throws SQLException;
 
-	void insertKCurtureAttractionDescriptionEnglish(AttractionDto attractionDto) throws SQLException;
+    void insertKCurtureAttractionInfoEnglish(AttractionDto attractionDto) throws SQLException;
+
+    void insertKCurtureAttractionDetailEnglish(AttractionDto attractionDto) throws SQLException;
+
+    void insertKCurtureAttractionDescriptionEnglish(AttractionDto attractionDto) throws SQLException;
+
+    List<AttractionDto> getPaginatedAttractionsBySearch(Map<String, Object> map);
 }
