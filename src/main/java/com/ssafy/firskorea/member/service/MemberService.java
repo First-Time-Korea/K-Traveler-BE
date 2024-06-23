@@ -3,17 +3,19 @@ package com.ssafy.firskorea.member.service;
 import com.ssafy.firskorea.member.dto.MemberDto;
 
 public interface MemberService {
-	MemberDto login(MemberDto memberDto) throws Exception;
 
-	public MemberDto userInfo(String userId) throws Exception;
+	void signUp(MemberDto member) throws Exception;
 
-	void saveRefreshToken(String id, String refreshToken) throws Exception;
+	boolean checkDuplicationUserId(String userId) throws Exception;
 
-	Object getRefreshToken(String id) throws Exception;
+	MemberDto login(MemberDto member) throws Exception;
 
-	void deleRefreshToken(String id) throws Exception;
+	void saveRefreshToken(String userId, String refreshToken) throws Exception;
 
-	void signUp(MemberDto memberDto) throws Exception;
+	void deleRefreshToken(String userId) throws Exception;
 
-    boolean idCheck(String id) throws Exception;
+	public MemberDto getUserInfo(String userId) throws Exception;
+
+	String getRefreshToken(String userID) throws Exception;
+
 }

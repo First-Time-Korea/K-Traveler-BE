@@ -9,17 +9,19 @@ import com.ssafy.firskorea.member.dto.MemberDto;
 
 @Mapper
 public interface MemberMapper {
-	MemberDto login(MemberDto memberDto) throws SQLException;
 
-	MemberDto userInfo(String id) throws SQLException;
+	void signUp(MemberDto memberDto) throws SQLException;
+
+	int checkDuplicationUserId(String userId) throws SQLException;
+
+	MemberDto login(MemberDto member) throws SQLException;
 
 	void saveRefreshToken(Map<String, String> map) throws SQLException;
 
-	Object getRefreshToken(String id) throws SQLException;
-
 	void deleteRefreshToken(Map<String, String> map) throws SQLException;
 
-	void signUp(MemberDto memberDto)  throws SQLException;
+	MemberDto getUserInfo(String userId) throws SQLException;
 
-	int idCheck(String id) throws SQLException;
+	String getRefreshToken(String userId) throws SQLException;
+
 }

@@ -2,55 +2,54 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper
-	namespace="com.ssafy.firskorea.member.mapper.MemberMapper">
+<mapper namespace="com.ssafy.firskorea.member.mapper.MemberMapper">
 
-	<select id="login" parameterType="memberDto"
-		resultType="memberDto">
-		select id, name, token
-		from member
-		where id = #{id} and
-		password = #{password}
+	<!-- 회원 가입하기 -->
+	<insert id="signUp" parameterType="memberDto">
+		insert into member (id, name, password, email_id, email_domain, status, join_date)
+		values (#{id}, #{name}, #{password}, #{emailId}, #{emailDomain}, 1 ,now());
+	</insert>
+	
+	<!-- 회원 ID 중복성 체크하기 -->
+	<select id="checkDuplicationUserId" parameterType="string" resultType="int">
+		select count(*) from member
+		where id = #{userId}
 	</select>
 
+	<!-- 로그인하기 -->
+	<select id="login" parameterType="memberDto" resultType="memberDto">
+		select id, name, token
+		from member
+		where id = #{id}
+		and password = #{password}
+	</select>
+
+	<!-- refresh token 저장하기 -->
 	<update id="saveRefreshToken" parameterType="map">
 		update member
 		set token = #{token}
-		where id=#{id}
+		where id = #{userId}
 	</update>
-
-	<select id="userInfo" parameterType="string"
-		resultType="memberDto">
-		select name, id, email_id, email_domain, join_date
-		from
-		member
-		where id = #{id}
-	</select>
-
-	<select id="getRefreshToken" parameterType="string"
-		resultType="string">
-		select token
-		from member
-		where id = #{id}
-	</select>
-
+	
+	<!-- refresh token 삭제하기 -->
 	<update id="deleteRefreshToken" parameterType="map">
 		update member
-		set
-		token = #{token, jdbcType=VARCHAR}
-		where id = #{id}
+		set token = #{token, jdbcType=VARCHAR}
+		where id = #{userId}
 	</update>
 
-	<insert id="signUp" parameterType="memberDto">
-		insert into member
-		(id, name, password, email_id, email_domain, status, join_date)
-		values 
-		(#{id}, #{name}, #{password}, #{emailId}, #{emailDomain}, 1 ,now()); 
-	</insert>
+	<!-- 회원 정보 조회하기 -->
+	<select id="getUserInfo" parameterType="string" resultType="memberDto">
+		select name, id, email_id, email_domain, join_date
+		from member
+		where id = #{userId}
+	</select>
 
-	<select id="idCheck" parameterType="string" resultType="int">
-		select count(*) from member
-		where id=#{id}
+	<!-- refresh token 조회하기 -->
+	<select id="getRefreshToken" parameterType="string" resultType="string">
+		select token
+		from member
+		where id = #{userId}
 	</select>
 
 </mapper>

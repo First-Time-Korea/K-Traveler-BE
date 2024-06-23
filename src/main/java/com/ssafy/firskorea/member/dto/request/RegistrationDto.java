@@ -2,20 +2,38 @@ package com.ssafy.firskorea.member.dto.request;
 
 import com.ssafy.firskorea.member.dto.MemberDto;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-@Getter
+import lombok.Setter;
+import lombok.ToString;
+
 @NoArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
+@ToString
 @Schema(title = "RegistrationDto : 회원 가입 정보", description = "회원 가입을 위한 정보")
 public class RegistrationDto extends MemberDto {
-    @Schema(required = true, description = "회원 아이디")
+	
+    @Schema(description = "회원 아이디")
+    @NotBlank
     private String id;
-    @Schema(required = true, description = "회원 이름")
+    
+    @Schema(description = "회원 이름")
+    @NotBlank
     private String name;
-    @Schema(required = true, description = "회원 비밀번호")
+    
+    @Schema(description = "회원 비밀번호")
+    @NotBlank
     private String password;
-    @Schema(required = true, description = "이메일 아이디")
+    
+    @Schema(description = "이메일 아이디")
+    @NotBlank
     private String emailId;
-    @Schema(required = true, description = "이메일 도메인")
+    
+    @Schema(description = "이메일 도메인")
+    @NotBlank
     private String emailDomain;
 }
