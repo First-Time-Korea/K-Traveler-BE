@@ -18,10 +18,12 @@ public interface MemberMapper {
 
 	void saveRefreshToken(Map<String, String> map) throws SQLException;
 
-	void deleteRefreshToken(Map<String, String> map) throws SQLException;
+	void deleteRefreshToken(String userId) throws SQLException;
 
 	MemberDto getUserInfo(String userId) throws SQLException;
 
 	String getRefreshToken(String userId) throws SQLException;
+	
+	void deleteUser(String userId) throws SQLException;
 
 }

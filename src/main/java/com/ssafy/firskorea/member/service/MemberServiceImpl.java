@@ -76,11 +76,7 @@ public class MemberServiceImpl implements MemberService {
 	 */
 	@Override
 	public void deleRefreshToken(String userId) throws Exception {
-		Map<String, String> map = new HashMap<String, String>();
-		map.put("userId", userId);
-		map.put("token", null);
-
-		memberMapper.deleteRefreshToken(map);
+		memberMapper.deleteRefreshToken(userId);
 	}
 
 	/**
@@ -103,6 +99,16 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public String getRefreshToken(String userId) throws Exception {
 		return memberMapper.getRefreshToken(userId);
+	}
+
+	/**
+	 * 회원 ID에 대응하는 회원을 삭제한다.
+	 * 
+	 * @param userId 회원 ID이다.
+	 */
+	@Override
+	public void deleteUser(String userId) throws Exception {
+		memberMapper.deleteUser(userId);
 	}
 
 }

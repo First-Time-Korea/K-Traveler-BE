@@ -15,8 +15,12 @@ public class MemberDto {
     private String password;
     private String emailId;
     private String emailDomain;
-    private String status;
+    private boolean existedOfMember;
     private String joinDate;
     private String refreshToken;
+	
+	public boolean getExistedOfMember() {
+		return existedOfMember;
+	}
 
 }

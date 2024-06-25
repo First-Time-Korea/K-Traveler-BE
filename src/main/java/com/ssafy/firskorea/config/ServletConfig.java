@@ -54,6 +54,10 @@ public class ServletConfig implements WebMvcConfigurer {
 			.addPathPatterns("/users/logout/**")
 			.addPathPatterns("/users/info/**")
 			.addPathPatterns("/users/refresh/**")
+			.addPathPatterns("/users/*")
+			.excludePathPatterns("/users/signup")
+			.excludePathPatterns("/users/check-id")
+			.excludePathPatterns("/users/login")
 			.addPathPatterns("/articles")
 			.addPathPatterns("/articles/*")
 			.addPathPatterns("/articles/modify/**");

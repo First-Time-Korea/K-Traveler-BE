@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -111,6 +112,12 @@ public class MemberController {
         	ResponseEntity<CommonResponse<?>> responseEntity = ResponseEntity.status(401).body(response);
         	
         	return responseEntity;
+        } else if (!loginUser.getExistedOfMember()) {
+        	CommonResponse<?> response = CommonResponse.failure(RetConsts.ERR601, "이미 탈퇴한 회원입니다.");
+        	
+        	ResponseEntity<CommonResponse<?>> responseEntity = ResponseEntity.status(403).body(response);
+        	
+        	return responseEntity;
         }
         
         // 로그인한 회원 정보를 토대로 access/refresh token 발급받기
@@ -197,6 +204,25 @@ public class MemberController {
         map.put("access-token", accessToken);
         
         CommonResponse<?> response = CommonResponse.ok(map);
+        
+        ResponseEntity<CommonResponse<?>> responseEntity = ResponseEntity.status(200).body(response);
+        
+        return responseEntity;
+    }
+    
+    @Operation(summary = "회원 탈퇴")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "회원 탈퇴 성공"),
+			@ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
+            @ApiResponse(responseCode = "401", description = "회원 인증 실패"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    @Parameter(name = "userid", description = "회원 ID")
+    @DeleteMapping("/{userid}")
+    public ResponseEntity<CommonResponse<?>> deleteUser(@PathVariable("userid") @NotBlank String userId) throws Exception {
+    	memberService.deleteUser(userId);
+    	
+    	CommonResponse<?> response = CommonResponse.ok();
         
         ResponseEntity<CommonResponse<?>> responseEntity = ResponseEntity.status(200).body(response);
         
