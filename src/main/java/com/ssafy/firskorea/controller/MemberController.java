@@ -134,6 +134,7 @@ public class MemberController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그아웃 성공"),
 			@ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
+            @ApiResponse(responseCode = "401", description = "회원 인증 실패"),
 			@ApiResponse(responseCode = "500", description = "서버 오류")
     })
     @Parameter(name = "userid", description = "회원 ID")
@@ -158,15 +159,7 @@ public class MemberController {
     })
     @Parameter(name = "userid", description = "회원 ID")
     @GetMapping("/info/{userId}")
-    public ResponseEntity<CommonResponse<?>> getUserInfo(@PathVariable @NotNull String userId, HttpServletRequest request) throws Exception {
-        if (!jwtUtil.checkToken(request.getHeader("Authorization"))) {
-        	CommonResponse<?> response = CommonResponse.failure(RetConsts.ERR401, "해당 토큰은 사용 불가능합니다.");
-        	
-        	ResponseEntity<CommonResponse<?>> responseEntity = ResponseEntity.status(401).body(response);
-        	
-        	return responseEntity;
-        }
-        
+    public ResponseEntity<CommonResponse<?>> getUserInfo(@PathVariable @NotNull String userId) throws Exception {
         MemberDto member = memberService.getUserInfo(userId);
         
         Map<String, Object> map = new HashMap<>();

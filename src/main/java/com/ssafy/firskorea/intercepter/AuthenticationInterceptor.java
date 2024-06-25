@@ -1,28 +1,47 @@
 package com.ssafy.firskorea.intercepter;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
+
+import com.ssafy.firskorea.util.JWTUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
+@Component
+@Slf4j
 public class AuthenticationInterceptor implements HandlerInterceptor {
+	
+	@Autowired
+	private JWTUtil jwtUtil; 
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		// 세션에서 "loginedUser" 속성 확인
-		Object loginedUser = request.getSession().getAttribute("loginedUser");
+		// 회원 인증 제외
+		String servletPath = request.getServletPath();
+		String board = "/articles";
+		if (servletPath.startsWith(board)) {
+			String type = servletPath.substring(board.length());
+			String method = request.getMethod();
 
-		// "loginedUser"가 null이 아닌 경우에만 요청 허용
-		if (loginedUser != null) {
-			return true;
-		} else {
-			// 로그인되지 않은 사용자의 요청이므로 처리할 수 없음을 클라이언트에게 알림
-			response.getWriter().write("Unauthorized access!");
+			if (type.equals("") && "GET".equalsIgnoreCase(method)) {  // 여행 후기 리스트 조회(/articles)
+				return true;
+			} else if (type.matches("/\\d+$") && "GET".equalsIgnoreCase(method)) {  // 여행 후기 조회(/articles/{articleid})
+				return true;
+			}
+		}
+		
+		String accessToken = request.getHeader("Authorization");
+
+		if (accessToken == null || !jwtUtil.checkToken(accessToken)) {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			response.sendRedirect(request.getContextPath() + "/user/login");
 			return false;
 		}
+		
+		return true;
 	}
 
 }
