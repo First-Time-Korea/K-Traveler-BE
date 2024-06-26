@@ -18,7 +18,7 @@ public class CommentServiceImpl implements CommentService {
 		this.commentMapper = commentMapper;
 	}
 
-	/*
+	/**
 	 * 여행 후기 ID, 사용자 ID, 상위 댓글 ID 그리고 내용을 토대로 여행 후기를 생성한다.
 	 * 
 	 * @param {@link CommentDto} 객체로 여행 후기 댓글 작성을 위한 정보를 포함하는 전송 객체다.
@@ -32,7 +32,7 @@ public class CommentServiceImpl implements CommentService {
 		return commentMapper.getComments(comment.getArticleId());
 	}
 
-	/*
+	/**
 	 * 여행 후기 댓글 ID에 해당하는 여행 후기 댓글을 삭제한다.
 	 * 
 	 * @param commentId 여행 후기 댓글의 식별자다.

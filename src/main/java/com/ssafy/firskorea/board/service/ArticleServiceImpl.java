@@ -42,7 +42,7 @@ public class ArticleServiceImpl implements ArticleService {
 	@Value("${articleFile.path.upload-images}")
 	private String uploadImagesPath;
 
-	/*
+	/**
 	 * 사용자 ID, 태그, 내용 그리고 사진을 토대로 여행 후기를 생성한다.
 	 * 
 	 * @param map 태그, 내용 그리고 사진을 포함하는 전송 객체다.
@@ -108,7 +108,7 @@ public class ArticleServiceImpl implements ArticleService {
 		articleMapper.writeArticleFile(file);
 	}
 
-	/*
+	/**
 	 * 태그 또는 작성자 기준으로 여행 후기를 조회한다.
 	 * 
 	 * @param 페이지네이션 및 여행 후기 검색을 위한 정보(태그, 작성자)를 포함하는 전송 객체다.
@@ -162,7 +162,7 @@ public class ArticleServiceImpl implements ArticleService {
 		return result;
 	}
 	
-	/*
+	/**
 	 * 여행 후기 ID를 기준으로 특정 여행 후기의 상세 정보 및 해당 여행 후기의 댓글 리스트를 조회한다.
 	 * 
 	 * @param articleId 여행 후기의 식별자다.
@@ -174,7 +174,7 @@ public class ArticleServiceImpl implements ArticleService {
 		return articleMapper.getArticle(articleId);
 	}
 
-	/*
+	/**
 	 * 여행 후기 ID를 기준으로 특정 여행 후기의 상세 정보를 조회한다.
 	 * 
 	 * @param articleId 여행 후기의 식별자다.
@@ -193,7 +193,7 @@ public class ArticleServiceImpl implements ArticleService {
 		return article;
 	}
 
-	/*
+	/**
 	 * 여행 후기 ID에 해당하는 여행 후기 상세 정보를 수정한다.
 	 * 
 	 * @param map 여행 후기 ID, 태그, 내용 그리고 사진을 포함하는 전송 객체다.
@@ -299,7 +299,7 @@ public class ArticleServiceImpl implements ArticleService {
 		}
 	}
 
-	/*
+	/**
 	 * 여행 후기 ID에 해당하는 여행 후기를 삭제한다.
 	 * 
 	 * @param articleId 여행 후기의 식별자다.

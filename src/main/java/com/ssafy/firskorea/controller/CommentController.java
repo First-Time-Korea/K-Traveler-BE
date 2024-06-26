@@ -2,6 +2,7 @@ package com.ssafy.firskorea.controller;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -45,16 +46,21 @@ public class CommentController {
 			@ApiResponse(responseCode = "201", description = "여행 후기 댓글 작성 성공"),
 			@ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
 			@ApiResponse(responseCode = "401", description = "회원 인증 실패"),
-			@ApiResponse(responseCode = "403", description = "접근 권한 없음")
+			@ApiResponse(responseCode = "403", description = "접근 권한 없음"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
 	})
 	@PostMapping("/{articleid}/comments")
-	public CommonResponse<?> writeComment(@RequestBody @Valid CommentDto comment) throws Exception {
+	public ResponseEntity<CommonResponse<?>> writeComment(@RequestBody @Valid CommentDto comment) throws Exception {
 		List<CommentDto> comments = commentService.writeComment(comment);
 		if (comments != null) {
 			CommentStratify.stratify(comments);
 		}
+		
+		CommonResponse<?> response = CommonResponse.okCreation(comments);
+		
+		ResponseEntity<CommonResponse<?>> responseEntity = ResponseEntity.status(201).body(response);
 
-		return CommonResponse.okCreation(comments);
+		return responseEntity;
 	}
 
 	@Operation(summary = "여행 후기 댓글 삭제")
@@ -62,14 +68,19 @@ public class CommentController {
 			@ApiResponse(responseCode = "200", description = "여행 후기 댓글 삭제 성공"),
 			@ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
 			@ApiResponse(responseCode = "401", description = "회원 인증 실패"),
-			@ApiResponse(responseCode = "403", description = "접근 권한 없음")
+			@ApiResponse(responseCode = "403", description = "접근 권한 없음"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
 	})
 	@Parameter(name = "commentid", description = "여행 후기 댓글 ID")
 	@DeleteMapping("/{articleid}/comments/{commentid}")
-	public CommonResponse<?> deleteComment(@PathVariable("commentid") @Positive int commentId) throws Exception {
+	public ResponseEntity<CommonResponse<?>> deleteComment(@PathVariable("commentid") @Positive int commentId) throws Exception {
 		commentService.deleteComment(commentId);
+		
+		CommonResponse<?> response = CommonResponse.ok();
+		
+		ResponseEntity<CommonResponse<?>> responseEntity = ResponseEntity.status(200).body(response);
 
-		return CommonResponse.ok();
+		return responseEntity;
 	}
 
 }
