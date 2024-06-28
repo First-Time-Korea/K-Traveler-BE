@@ -79,10 +79,10 @@ public class MemberController {
 			@ApiResponse(responseCode = "409", description = "중복된 아이디"),
 			@ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    @Parameter(name = "userid", description = "회원 ID")
+    @Parameter(name = "memberid", description = "회원 ID")
     @GetMapping("/check-id")
-    public ResponseEntity<CommonResponse<?>> checkDuplicationUserId(@RequestParam("userid") @NotBlank String userId) throws Exception {
-        if (!memberService.checkDuplicationUserId(userId)) {
+    public ResponseEntity<CommonResponse<?>> checkDuplicationMemberId(@RequestParam("memberid") @NotBlank String memberId) throws Exception {
+        if (!memberService.checkDuplicationMemberId(memberId)) {
         	throw new DuplicationMemberIdException();
         }
         
@@ -135,10 +135,10 @@ public class MemberController {
             @ApiResponse(responseCode = "401", description = "회원 인증 실패"),
 			@ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    @Parameter(name = "userid", description = "회원 ID")
-    @GetMapping("/logout/{userid}")
-    public ResponseEntity<CommonResponse<?>> logout(@PathVariable("userid") @NotBlank String userId) throws Exception {
-        memberService.deleRefreshToken(userId);
+    @Parameter(name = "memberid", description = "회원 ID")
+    @GetMapping("/logout/{memberid}")
+    public ResponseEntity<CommonResponse<?>> logout(@PathVariable("memberid") @NotBlank String memberId) throws Exception {
+        memberService.deleRefreshToken(memberId);
         
         CommonResponse<?> response = CommonResponse.ok();
         
@@ -155,10 +155,10 @@ public class MemberController {
             @ApiResponse(responseCode = "401", description = "회원 인증 실패"),
 			@ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    @Parameter(name = "userid", description = "회원 ID")
-    @GetMapping("/info/{userId}")
-    public ResponseEntity<CommonResponse<?>> getUserInfo(@PathVariable @NotNull String userId) throws Exception {
-        MemberDto member = memberService.getUserInfo(userId);
+    @Parameter(name = "memberid", description = "회원 ID")
+    @GetMapping("/info/{memberid}")
+    public ResponseEntity<CommonResponse<?>> getUserInfo(@PathVariable("memberid") @NotNull String memberId) throws Exception {
+        MemberDto member = memberService.getUserInfo(memberId);
         
         Map<String, Object> map = new HashMap<>();
         map.put("user", member);
@@ -178,18 +178,19 @@ public class MemberController {
             @ApiResponse(responseCode = "401", description = "회원 인증 실패"),
 			@ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    @Parameter(name = "userid", description = "회원 ID")
-    @PostMapping("/refresh/{userid}")
-    public ResponseEntity<CommonResponse<?>> reissueAccessToken(@PathVariable("userid") @NotBlank String userId, HttpServletRequest request) throws Exception {
+    @Parameter(name = "memberid", description = "회원 ID")
+    @PostMapping("/refresh/{memberid}")
+    public ResponseEntity<CommonResponse<?>> reissueAccessToken(@PathVariable("memberid") @NotBlank String memberId, HttpServletRequest request) throws Exception {
         String headerRefreshToken = request.getHeader("refreshToken");
-        if (!jwtUtil.checkToken(headerRefreshToken) || (headerRefreshToken.equals(memberService.getRefreshToken(userId)))) {
+        log.debug("refreshToken: " + headerRefreshToken);
+        if (!jwtUtil.checkToken(headerRefreshToken) || (headerRefreshToken.equals(memberService.getRefreshToken(memberId)))) {
         	CommonResponse<?> response = CommonResponse.failure(RetConsts.ERR401, "해당 토큰은 사용 불가능합니다.");
         	
         	ResponseEntity<CommonResponse<?>> responseEntity = ResponseEntity.status(401).body(response);
         	
         	return responseEntity;
         }
-        String accessToken = jwtUtil.createAccessToken(userId);
+        String accessToken = jwtUtil.createAccessToken(memberId);
 
         Map<String, Object> map = new HashMap<>();
         map.put("access-token", accessToken);
@@ -208,10 +209,10 @@ public class MemberController {
             @ApiResponse(responseCode = "401", description = "회원 인증 실패"),
 			@ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    @Parameter(name = "userid", description = "회원 ID")
-    @DeleteMapping("/{userid}")
-    public ResponseEntity<CommonResponse<?>> deleteUser(@PathVariable("userid") @NotBlank String userId) throws Exception {
-    	memberService.deleteUser(userId);
+    @Parameter(name = "memberid", description = "회원 ID")
+    @DeleteMapping("/{memberid}")
+    public ResponseEntity<CommonResponse<?>> deleteUser(@PathVariable("memberid") @NotBlank String memberId) throws Exception {
+    	memberService.deleteUser(memberId);
     	
     	CommonResponse<?> response = CommonResponse.ok();
         

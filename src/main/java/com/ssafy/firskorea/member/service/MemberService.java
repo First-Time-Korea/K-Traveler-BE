@@ -6,18 +6,18 @@ public interface MemberService {
 
 	void signUp(MemberDto member) throws Exception;
 
-	boolean checkDuplicationUserId(String userId) throws Exception;
+	boolean checkDuplicationMemberId(String memberId) throws Exception;
 
 	MemberDto login(MemberDto member) throws Exception;
 
-	void saveRefreshToken(String userId, String refreshToken) throws Exception;
+	void saveRefreshToken(String memberId, String refreshToken) throws Exception;
 
-	void deleRefreshToken(String userId) throws Exception;
+	void deleRefreshToken(String memberId) throws Exception;
 
-	public MemberDto getUserInfo(String userId) throws Exception;
+	public MemberDto getUserInfo(String memberId) throws Exception;
 
-	String getRefreshToken(String userId) throws Exception;
+	String getRefreshToken(String memberId) throws Exception;
 	
-	void deleteUser(String userId) throws Exception;
+	void deleteUser(String memberId) throws Exception;
 
 }

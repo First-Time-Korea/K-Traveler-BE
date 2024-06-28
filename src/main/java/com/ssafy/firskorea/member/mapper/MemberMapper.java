@@ -12,18 +12,18 @@ public interface MemberMapper {
 
 	void signUp(MemberDto memberDto) throws SQLException;
 
-	int checkDuplicationUserId(String userId) throws SQLException;
+	int checkDuplicationMemberId(String memberId) throws SQLException;
 
 	MemberDto login(MemberDto member) throws SQLException;
 
 	void saveRefreshToken(Map<String, String> map) throws SQLException;
 
-	void deleteRefreshToken(String userId) throws SQLException;
+	void deleteRefreshToken(String memberId) throws SQLException;
 
-	MemberDto getUserInfo(String userId) throws SQLException;
+	MemberDto getUserInfo(String memberId) throws SQLException;
 
-	String getRefreshToken(String userId) throws SQLException;
+	String getRefreshToken(String memberId) throws SQLException;
 	
-	void deleteUser(String userId) throws SQLException;
+	void deleteUser(String memberId) throws SQLException;
 
 }

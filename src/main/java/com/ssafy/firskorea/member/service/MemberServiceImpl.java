@@ -31,12 +31,12 @@ public class MemberServiceImpl implements MemberService {
 	/**
 	 * 회원 ID 중복성을 체크한다.
 	 * 
-	 * @param userId 회원 ID이다.
+	 * @param memberId 회원 ID이다.
 	 * @boolean 회원 ID 중복성 여부로, true면 중복되지 않은 것이고 false면 중복된 것이다.
 	 */
 	@Override
-	public boolean checkDuplicationUserId(String userId) throws Exception {
-		if (memberMapper.checkDuplicationUserId(userId) >= 1) {
+	public boolean checkDuplicationMemberId(String memberId) throws Exception {
+		if (memberMapper.checkDuplicationMemberId(memberId) >= 1) {
 			return false;
 		}
 
@@ -57,13 +57,13 @@ public class MemberServiceImpl implements MemberService {
 	/**
 	 * 회원 ID에 해당하는 회원 정보에 JWT refresh token을 저장한다.
 	 * 
-	 * @param userId       회원 ID이다.
+	 * @param memberId       회원 ID이다.
 	 * @param refreshToken JWT refresh token이다.
 	 */
 	@Override
-	public void saveRefreshToken(String userId, String refreshToken) throws Exception {
+	public void saveRefreshToken(String memberId, String refreshToken) throws Exception {
 		Map<String, String> map = new HashMap<String, String>();
-		map.put("userId", userId);
+		map.put("memberId", memberId);
 		map.put("token", refreshToken);
 
 		memberMapper.saveRefreshToken(map);
@@ -72,43 +72,43 @@ public class MemberServiceImpl implements MemberService {
 	/**
 	 * 회원 ID에 대응하는 JWT refresh token을 삭제한다.
 	 * 
-	 * @param userId 회원 ID이다.
+	 * @param memberId 회원 ID이다.
 	 */
 	@Override
-	public void deleRefreshToken(String userId) throws Exception {
-		memberMapper.deleteRefreshToken(userId);
+	public void deleRefreshToken(String memberId) throws Exception {
+		memberMapper.deleteRefreshToken(memberId);
 	}
 
 	/**
 	 * 회원 ID에 대응하는 회원 정보를 조회한다.
 	 * 
-	 * @param userId 회원 ID이다.
+	 * @param memberId 회원 ID이다.
 	 * @return 조회한 회원 정보가 담긴 {@link MemberDto} 객체를 반환한다.
 	 */
 	@Override
-	public MemberDto getUserInfo(String userId) throws Exception {
-		return memberMapper.getUserInfo(userId);
+	public MemberDto getUserInfo(String memberId) throws Exception {
+		return memberMapper.getUserInfo(memberId);
 	}
 
 	/**
 	 * 회원 ID에 대응하는 refresh token을 조회한다.
 	 * 
-	 * @param userId 회원 ID이다.
+	 * @param memberId 회원 ID이다.
 	 * @return 조회한 refresh token이다.
 	 */
 	@Override
-	public String getRefreshToken(String userId) throws Exception {
-		return memberMapper.getRefreshToken(userId);
+	public String getRefreshToken(String memberId) throws Exception {
+		return memberMapper.getRefreshToken(memberId);
 	}
 
 	/**
 	 * 회원 ID에 대응하는 회원을 삭제한다.
 	 * 
-	 * @param userId 회원 ID이다.
+	 * @param memberId 회원 ID이다.
 	 */
 	@Override
-	public void deleteUser(String userId) throws Exception {
-		memberMapper.deleteUser(userId);
+	public void deleteUser(String memberId) throws Exception {
+		memberMapper.deleteUser(memberId);
 	}
 
 }

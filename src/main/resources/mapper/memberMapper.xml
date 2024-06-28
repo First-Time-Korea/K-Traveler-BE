@@ -11,9 +11,9 @@
 	</insert>
 	
 	<!-- 회원 ID 중복성 체크하기 -->
-	<select id="checkDuplicationUserId" parameterType="string" resultType="int">
+	<select id="checkDuplicationMemberId" parameterType="string" resultType="int">
 		select count(*) from member
-		where id = #{userId}
+		where id = #{memberId}
 	</select>
 
 	<!-- 로그인하기 -->
@@ -28,35 +28,35 @@
 	<update id="saveRefreshToken" parameterType="map">
 		update member
 		set token = #{token}
-		where id = #{userId}
+		where id = #{memberId}
 	</update>
 	
 	<!-- refresh token 삭제하기 -->
 	<update id="deleteRefreshToken" parameterType="string">
 		update member
 		set token = null
-		where id = #{userId}
+		where id = #{memberId}
 	</update>
 
 	<!-- 회원 정보 조회하기 -->
 	<select id="getUserInfo" parameterType="string" resultType="memberDto">
 		select name, id, email_id, email_domain, join_date
 		from member
-		where id = #{userId}
+		where id = #{memberId}
 	</select>
 
 	<!-- refresh token 조회하기 -->
 	<select id="getRefreshToken" parameterType="string" resultType="string">
 		select token
 		from member
-		where id = #{userId}
+		where id = #{memberId}
 	</select>
 	
 	<!-- 회원 탈퇴하기 -->
 	<update id="deleteUser" parameterType="string">
 		update member
 		set status = 0, token = null
-		where id = #{userId}
+		where id = #{memberId}
 	</update>
 
 </mapper>
