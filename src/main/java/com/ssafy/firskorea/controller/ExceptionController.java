@@ -2,6 +2,8 @@ package com.ssafy.firskorea.controller;
 
 import com.ssafy.firskorea.common.consts.RetConsts;
 import com.ssafy.firskorea.common.dto.CommonResponse;
+import com.ssafy.firskorea.common.exception.DuplicationMemberIdException;
+
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -56,6 +58,14 @@ public class ExceptionController {
                 .status(HttpStatus.NOT_FOUND)
                 .body(CommonResponse.failure(RetConsts.ERR404, "잘못된 경로로 접근"));
     }
+    
+   @ExceptionHandler(DuplicationMemberIdException.class)
+   @ResponseBody
+   public ResponseEntity<CommonResponse<?>> handleDuplicationMemberIdExceptions(DuplicationMemberIdException e) {
+	   return ResponseEntity
+			   .status(HttpStatus.CONFLICT)
+			   .body(CommonResponse.failure(RetConsts.ERR603, e.getMessage()));
+   }
 
     @ExceptionHandler(Exception.class)
     @ResponseBody

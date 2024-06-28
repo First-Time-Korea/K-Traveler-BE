@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.firskorea.common.consts.RetConsts;
 import com.ssafy.firskorea.common.dto.CommonResponse;
+import com.ssafy.firskorea.common.exception.DuplicationMemberIdException;
 import com.ssafy.firskorea.member.dto.MemberDto;
 import com.ssafy.firskorea.member.dto.request.LoginDto;
 import com.ssafy.firskorea.member.dto.request.RegistrationDto;
@@ -80,11 +81,7 @@ public class MemberController {
     @GetMapping("/check-id")
     public ResponseEntity<CommonResponse<?>> checkDuplicationUserId(@RequestParam("userid") @NotBlank String userId) throws Exception {
         if (!memberService.checkDuplicationUserId(userId)) {
-        	CommonResponse<?> response = CommonResponse.failure(RetConsts.ERR603, "중복된 아이디가 존재합니다.");
-        	
-        	ResponseEntity<CommonResponse<?>> responseEntity = ResponseEntity.status(409).body(response);
-        	
-        	return responseEntity;
+        	throw new DuplicationMemberIdException();
         }
         
         CommonResponse<?> response = CommonResponse.ok();
