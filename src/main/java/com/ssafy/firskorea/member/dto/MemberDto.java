@@ -18,9 +18,5 @@ public class MemberDto {
     private boolean existedOfMember;
     private String joinDate;
     private String refreshToken;
-	
-	public boolean getExistedOfMember() {
-		return existedOfMember;
-	}
 
 }

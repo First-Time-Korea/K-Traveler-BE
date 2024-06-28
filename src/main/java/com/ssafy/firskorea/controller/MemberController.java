@@ -107,7 +107,7 @@ public class MemberController {
         
         if (loginUser == null) {
         	throw new IncorrectMemberException();
-        } else if (!loginUser.getExistedOfMember()) {
+        } else if (!loginUser.isExistedOfMember()) {
         	throw new MemberAlreadyWithdrawnException();
         }
         
