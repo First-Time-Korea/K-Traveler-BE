@@ -3,15 +3,11 @@ package com.ssafy.firskorea.board.dto.request;
 import org.apache.ibatis.type.Alias;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 @NoArgsConstructor
-@AllArgsConstructor
-@Setter
 @Getter
 @ToString
 @Alias("BoardSearch")

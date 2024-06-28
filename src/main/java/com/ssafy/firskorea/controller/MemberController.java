@@ -1,39 +1,55 @@
 package com.ssafy.firskorea.controller;
 
+import java.util.HashMap;
 import java.util.Map;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.firskorea.common.consts.RetConsts;
 import com.ssafy.firskorea.common.dto.CommonResponse;
+import com.ssafy.firskorea.common.exception.DuplicationMemberIdException;
+import com.ssafy.firskorea.common.exception.IncorrectMemberException;
+import com.ssafy.firskorea.common.exception.InvalidRefreshTokenException;
+import com.ssafy.firskorea.common.exception.MemberAlreadyWithdrawnException;
+import com.ssafy.firskorea.member.dto.MemberDto;
 import com.ssafy.firskorea.member.dto.request.LoginDto;
 import com.ssafy.firskorea.member.dto.request.RegistrationDto;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import com.ssafy.firskorea.member.dto.MemberDto;
 import com.ssafy.firskorea.member.service.MemberServiceImpl;
 import com.ssafy.firskorea.util.JWTUtil;
 
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 
-@RestController
-@RequestMapping("/user")
-@CrossOrigin(origins = "*")
-@Tag(name = "회원 컨트롤러")
 @Slf4j
+@Tag(name = "회원 컨트롤러")
+@CrossOrigin(origins = "*")
+@RestController
+@Validated
+@RequestMapping("/users")
 public class MemberController {
+	
     private final MemberServiceImpl memberService;
     private final JWTUtil jwtUtil;
 
-    @Autowired
     public MemberController(MemberServiceImpl memberService, JWTUtil jwtUtil) {
         super();
         this.memberService = memberService;
@@ -42,112 +58,164 @@ public class MemberController {
 
     @Operation(summary = "회원 가입")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "회원 가입 성공"),
-            @ApiResponse(responseCode = "600", description = "회원 가입 실패"),
+            @ApiResponse(responseCode = "201", description = "회원 가입 성공"),
+			@ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
     })
     @PostMapping("/signup")
-    public CommonResponse<?> signup(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "등록할 회원 정보",
-                    required = true,
-                    content = @Content(schema = @Schema(implementation = RegistrationDto.class)))
-            @org.springframework.web.bind.annotation.RequestBody RegistrationDto memberDto) throws Exception {
-        memberService.signUp(memberDto);
-        return CommonResponse.ok();
+    public ResponseEntity<CommonResponse<?>> signup(@RequestBody @Valid RegistrationDto member) throws Exception {
+        memberService.signUp(member);
+        
+        CommonResponse<?> response = CommonResponse.okCreation();
+        
+        ResponseEntity<CommonResponse<?>> responseEntity = ResponseEntity.status(201).body(response);
+        
+        return responseEntity;
     }
 
     @Operation(summary = "아이디 중복 체크")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "아이디 중복 검사 완료"),
-            @ApiResponse(responseCode = "603", description = "중복 아이디 존재"),
-            @ApiResponse(responseCode = "600", description = "중복 검사 중 오류 발생"),
+            @ApiResponse(responseCode = "200", description = "아이디 중복 검사 성공"),
+			@ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
+			@ApiResponse(responseCode = "409", description = "중복된 아이디"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
     })
+    @Parameter(name = "memberid", description = "회원 ID")
     @GetMapping("/check-id")
-    public CommonResponse<?> idDuplicationCheck(
-            @Parameter(description = "중복 검사할 아이디.", required = true)
-            @RequestParam String id) throws Exception {
-        if (!memberService.idCheck(id)) {
-            return CommonResponse.failure(RetConsts.ERR603, "중복된 아이디가 존재합니다.");
+    public ResponseEntity<CommonResponse<?>> checkDuplicationMemberId(@RequestParam("memberid") @NotBlank String memberId) throws Exception {
+        if (!memberService.checkDuplicationMemberId(memberId)) {
+        	throw new DuplicationMemberIdException();
         }
-        return CommonResponse.ok();
+        
+        CommonResponse<?> response = CommonResponse.ok();
+    	
+    	ResponseEntity<CommonResponse<?>> responseEntity = ResponseEntity.status(200).body(response);
+        
+        return responseEntity;
     }
 
     @Operation(summary = "로그인")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공"),
-            @ApiResponse(responseCode = "602", description = "회원 정보 불일치"),
-            @ApiResponse(responseCode = "600", description = "로그인 중 오류 발생"),
+			@ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
+			@ApiResponse(responseCode = "401", description = "회원 인증 실패"),
+			@ApiResponse(responseCode = "403", description = "탈퇴한 회원"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
     })
     @PostMapping("/login")
-    public CommonResponse<?> login(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "로그인 정보",
-                    required = true,
-                    content = @Content(schema = @Schema(implementation = LoginDto.class)))
-            @org.springframework.web.bind.annotation.RequestBody LoginDto memberDto) throws Exception {
-
-        MemberDto loginUser = memberService.login(memberDto);
+    public ResponseEntity<CommonResponse<?>> login(@RequestBody @Valid LoginDto member) throws Exception {
+        MemberDto loginUser = memberService.login(member);
+        
         if (loginUser == null) {
-            return CommonResponse.failure(RetConsts.ERR602, "아이디 또는 패스워드를 확인해 주세요.");
+        	throw new IncorrectMemberException();
+        } else if (!loginUser.isExistedOfMember()) {
+        	throw new MemberAlreadyWithdrawnException();
         }
+        
+        // 로그인한 회원 정보를 토대로 access/refresh token 발급받기
         String accessToken = jwtUtil.createAccessToken(loginUser.getId());
         String refreshToken = jwtUtil.createRefreshToken(loginUser.getId());
-        memberService.saveRefreshToken(loginUser.getId(), refreshToken); //	발급받은 refresh token 을 DB에 저장.
-        return CommonResponse.ok(Map.of(
-                "access-token", accessToken,
-                "refresh-token", refreshToken
-        ));
+        
+        memberService.saveRefreshToken(loginUser.getId(), refreshToken); //	발급받은 refresh token 을 DB에 저장
+        
+        Map<String, Object> map = new HashMap<>();
+        map.put("access-token", accessToken);
+        map.put("refresh-token", refreshToken);
+        
+        CommonResponse<?> response = CommonResponse.ok(map);
+        
+        ResponseEntity<CommonResponse<?>> responseEntity = ResponseEntity.status(200).body(response);
+        
+		return responseEntity;
     }
 
     @Operation(summary = "로그아웃", description = "회원 정보를 담은 Token 을 제거한다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그아웃 성공"),
-            @ApiResponse(responseCode = "600", description = "로그아웃 실패"),
+			@ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
+            @ApiResponse(responseCode = "401", description = "회원 인증 실패"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    @GetMapping("/logout/{userId}")
-    public CommonResponse<?> removeToken(
-            @Parameter(description = "로그아웃 할 회원의 아이디.", required = true)
-            @PathVariable String userId) throws Exception {
-        memberService.deleRefreshToken(userId);
-        return CommonResponse.ok();
+    @Parameter(name = "memberid", description = "회원 ID")
+    @GetMapping("/logout/{memberid}")
+    public ResponseEntity<CommonResponse<?>> logout(@PathVariable("memberid") @NotBlank String memberId) throws Exception {
+        memberService.deleRefreshToken(memberId);
+        
+        CommonResponse<?> response = CommonResponse.ok();
+        
+        ResponseEntity<CommonResponse<?>> responseEntity = ResponseEntity.status(200).body(response);
+        
+        return responseEntity;
     }
 
+    @Hidden
     @Operation(summary = "회원 인증", description = "access token으로 유효한 회원인지 인증한다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "회원 인증 성공"),
-            @ApiResponse(responseCode = "401", description = "토큰 사용 불가"),
-            @ApiResponse(responseCode = "600", description = "회원 인증 실패"),
+			@ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
+            @ApiResponse(responseCode = "401", description = "회원 인증 실패"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    @Hidden
-    @GetMapping("/info/{userId}")
-    public CommonResponse<?> getInfo(
-            @Parameter(description = "인증할 회원의 아이디.", required = true)
-            @PathVariable String userId,
-            HttpServletRequest request) throws Exception {
-        if (!jwtUtil.checkToken(request.getHeader("Authorization"))) {
-            return CommonResponse.failure(RetConsts.ERR401, "토큰 사용 불가");
-        }
-        return CommonResponse.ok(memberService.userInfo(userId));
+    @Parameter(name = "memberid", description = "회원 ID")
+    @GetMapping("/info/{memberid}")
+    public ResponseEntity<CommonResponse<?>> getUserInfo(@PathVariable("memberid") @NotNull String memberId) throws Exception {
+        MemberDto member = memberService.getUserInfo(memberId);
+        
+        Map<String, Object> map = new HashMap<>();
+        map.put("user", member);
+        
+        CommonResponse<?> response = CommonResponse.ok(map);
+        
+        ResponseEntity<CommonResponse<?>> responseEntity = ResponseEntity.status(200).body(response);
+        
+        return responseEntity;
     }
 
+    @Hidden
     @Operation(summary = "Access Token 재발급", description = "refresh token으로 만료된 access token 을 재발급 받는다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "토큰 재발급 성공"),
-            @ApiResponse(responseCode = "401", description = "토큰 사용 불가"),
-            @ApiResponse(responseCode = "600", description = "토큰 재발급 실패"),
+			@ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
+            @ApiResponse(responseCode = "401", description = "회원 인증 실패"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    @Hidden
-    @PostMapping("/refresh/{userId}")
-    public CommonResponse<?> refreshToken(
-            @Parameter(description = "재발급 받을 아이디.", required = true)
-            @PathVariable String userId,
-            HttpServletRequest request) throws Exception {
+    @Parameter(name = "memberid", description = "회원 ID")
+    @PostMapping("/refresh/{memberid}")
+    public ResponseEntity<CommonResponse<?>> reissueAccessToken(@PathVariable("memberid") @NotBlank String memberId, HttpServletRequest request) throws Exception {
         String headerRefreshToken = request.getHeader("refreshToken");
-        if (!jwtUtil.checkToken(headerRefreshToken) || (headerRefreshToken.equals(memberService.getRefreshToken(userId)))) {
-            return CommonResponse.failure(RetConsts.ERR401, "토큰 사용 불가");
+        log.debug("refreshToken: " + headerRefreshToken);
+        if (!jwtUtil.checkToken(headerRefreshToken) || !headerRefreshToken.equals(memberService.getRefreshToken(memberId))) {
+        	throw new InvalidRefreshTokenException();
         }
-        String accessToken = jwtUtil.createAccessToken(userId);
-        return CommonResponse.ok(accessToken);
+        String accessToken = jwtUtil.createAccessToken(memberId);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("access-token", accessToken);
+        
+        CommonResponse<?> response = CommonResponse.ok(map);
+        
+        ResponseEntity<CommonResponse<?>> responseEntity = ResponseEntity.status(200).body(response);
+        
+        return responseEntity;
+    }
+    
+    @Operation(summary = "회원 탈퇴")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "회원 탈퇴 성공"),
+			@ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
+            @ApiResponse(responseCode = "401", description = "회원 인증 실패"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    @Parameter(name = "memberid", description = "회원 ID")
+    @DeleteMapping("/{memberid}")
+    public ResponseEntity<CommonResponse<?>> deleteUser(@PathVariable("memberid") @NotBlank String memberId) throws Exception {
+    	memberService.deleteUser(memberId);
+    	
+    	CommonResponse<?> response = CommonResponse.ok();
+        
+        ResponseEntity<CommonResponse<?>> responseEntity = ResponseEntity.status(200).body(response);
+        
+        return responseEntity;
     }
 
 }
