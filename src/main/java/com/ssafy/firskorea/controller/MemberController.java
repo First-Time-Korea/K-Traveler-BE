@@ -19,6 +19,7 @@ import com.ssafy.firskorea.common.consts.RetConsts;
 import com.ssafy.firskorea.common.dto.CommonResponse;
 import com.ssafy.firskorea.common.exception.DuplicationMemberIdException;
 import com.ssafy.firskorea.common.exception.IncorrectMemberException;
+import com.ssafy.firskorea.common.exception.InvalidRefreshTokenException;
 import com.ssafy.firskorea.common.exception.MemberAlreadyWithdrawnException;
 import com.ssafy.firskorea.member.dto.MemberDto;
 import com.ssafy.firskorea.member.dto.request.LoginDto;
@@ -183,12 +184,8 @@ public class MemberController {
     public ResponseEntity<CommonResponse<?>> reissueAccessToken(@PathVariable("memberid") @NotBlank String memberId, HttpServletRequest request) throws Exception {
         String headerRefreshToken = request.getHeader("refreshToken");
         log.debug("refreshToken: " + headerRefreshToken);
-        if (!jwtUtil.checkToken(headerRefreshToken) || (headerRefreshToken.equals(memberService.getRefreshToken(memberId)))) {
-        	CommonResponse<?> response = CommonResponse.failure(RetConsts.ERR401, "해당 토큰은 사용 불가능합니다.");
-        	
-        	ResponseEntity<CommonResponse<?>> responseEntity = ResponseEntity.status(401).body(response);
-        	
-        	return responseEntity;
+        if (!jwtUtil.checkToken(headerRefreshToken) || !headerRefreshToken.equals(memberService.getRefreshToken(memberId))) {
+        	throw new InvalidRefreshTokenException();
         }
         String accessToken = jwtUtil.createAccessToken(memberId);
 
