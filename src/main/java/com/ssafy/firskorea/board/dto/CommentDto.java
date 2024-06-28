@@ -4,14 +4,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Setter
 @Getter
 @ToString
@@ -49,13 +47,5 @@ public class CommentDto {
 
 	@Schema(hidden = true)
 	private boolean existedOfMember;
-	
-	public boolean getExisted() {
-		return existed;
-	}
-	
-	public boolean getExistedOfMember() {
-		return existedOfMember;
-	}
 	
 }
