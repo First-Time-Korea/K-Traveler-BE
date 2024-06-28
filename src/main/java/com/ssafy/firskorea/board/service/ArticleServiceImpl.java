@@ -68,7 +68,7 @@ public class ArticleServiceImpl implements ArticleService {
 
 		// 여행 후기 생성하기
 		ArticleDto article = new ArticleDto();
-		article.setMemberId((String) map.get("userId"));
+		article.setMemberId((String) map.get("memberId"));
 		article.setContent((String) map.get("content"));
 
 		articleMapper.writeArticle(article);

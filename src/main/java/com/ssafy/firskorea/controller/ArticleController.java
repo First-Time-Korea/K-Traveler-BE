@@ -60,19 +60,19 @@ public class ArticleController {
 			@ApiResponse(responseCode = "500", description = "서버 오류")
 	})
 	@Parameters({
-		@Parameter(name = "userid", description = "사용자 아이디"),
+		@Parameter(name = "memberid", description = "사용자 아이디"),
 		@Parameter(name = "tags", description = "여행 후기 태그"),
 		@Parameter(name = "content", description = "여행 후기 본문"),
 		@Parameter(name = "file", description = "여행 후기 사진")
 	})
 	@PostMapping("")
-	public ResponseEntity<CommonResponse<?>> writeArticle(@RequestParam("userid") @NotBlank String userId,
+	public ResponseEntity<CommonResponse<?>> writeArticle(@RequestParam("memberid") @NotBlank String memberId,
 			@RequestParam("tags") @NotEmpty List<String> tags,
 			@RequestParam(value = "content", required = false) String content,
 			@RequestParam("file") @NotNull MultipartFile file) throws Exception {
 		Map<String, Object> map = new HashMap<>();
 		
-		map.put("userId", userId);
+		map.put("memberId", memberId);
 		map.put("tags", tags);
 		map.put("file", file);
 		
