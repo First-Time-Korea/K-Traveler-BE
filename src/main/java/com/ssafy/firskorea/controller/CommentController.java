@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ssafy.firskorea.board.dto.CommentDto;
-import com.ssafy.firskorea.board.service.CommentService;
+import com.ssafy.firskorea.domain.board.dto.CommentDto;
+import com.ssafy.firskorea.domain.board.service.CommentService;
 import com.ssafy.firskorea.common.dto.CommonResponse;
 import com.ssafy.firskorea.util.CommentStratify;
 

@@ -4,8 +4,8 @@ import java.util.Map;
 
 import com.ssafy.firskorea.common.consts.RetConsts;
 import com.ssafy.firskorea.common.dto.CommonResponse;
-import com.ssafy.firskorea.member.dto.request.LoginDto;
-import com.ssafy.firskorea.member.dto.request.RegistrationDto;
+import com.ssafy.firskorea.domain.member.dto.request.LoginDto;
+import com.ssafy.firskorea.domain.member.dto.request.RegistrationDto;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -13,8 +13,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import com.ssafy.firskorea.member.dto.MemberDto;
-import com.ssafy.firskorea.member.service.MemberServiceImpl;
+import com.ssafy.firskorea.domain.member.dto.MemberDto;
+import com.ssafy.firskorea.domain.member.service.MemberServiceImpl;
 import com.ssafy.firskorea.util.JWTUtil;
 
 import io.swagger.v3.oas.annotations.Hidden;

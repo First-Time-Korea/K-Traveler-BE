@@ -1,8 +1,8 @@
 package com.ssafy.firstkorea;
 
 import com.ssafy.firskorea.FirstTimeInKoreaApplication;
-import com.ssafy.firskorea.attraction.dto.request.MemberContentDto;
-import com.ssafy.firskorea.attraction.service.AttractionGptServiceImpl;
+import com.ssafy.firskorea.domain.attraction.dto.request.MemberContentDto;
+import com.ssafy.firskorea.domain.attraction.service.AttractionGptServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;

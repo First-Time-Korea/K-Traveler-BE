@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.ssafy.firskorea.common.dto.CommonResponse;
-import com.ssafy.firskorea.plan.dto.request.PlanMemberPgnoDto;
+import com.ssafy.firskorea.domain.plan.dto.request.PlanMemberPgnoDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -25,11 +25,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.ssafy.firskorea.plan.dto.request.PlanThumbnailDto;
-import com.ssafy.firskorea.plan.dto.request.PlanMemoDto;
-import com.ssafy.firskorea.plan.dto.request.PlanCreationDto;
-import com.ssafy.firskorea.plan.service.PlanService;
-import com.ssafy.firskorea.plan.service.PlanServiceImpl;
+import com.ssafy.firskorea.domain.plan.dto.request.PlanThumbnailDto;
+import com.ssafy.firskorea.domain.plan.dto.request.PlanMemoDto;
+import com.ssafy.firskorea.domain.plan.dto.request.PlanCreationDto;
+import com.ssafy.firskorea.domain.plan.service.PlanService;
+import com.ssafy.firskorea.domain.plan.service.PlanServiceImpl;
 
 import lombok.extern.slf4j.Slf4j;
 
