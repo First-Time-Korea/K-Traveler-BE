@@ -3,6 +3,8 @@ package com.ssafy.firskorea.controller;
 import com.ssafy.firskorea.common.consts.RetConsts;
 import com.ssafy.firskorea.common.dto.CommonResponse;
 import com.ssafy.firskorea.common.exception.DuplicationMemberIdException;
+import com.ssafy.firskorea.common.exception.IncorrectMemberException;
+import com.ssafy.firskorea.common.exception.MemberAlreadyWithdrawnException;
 
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -65,6 +67,22 @@ public class ExceptionController {
 	   return ResponseEntity
 			   .status(HttpStatus.CONFLICT)
 			   .body(CommonResponse.failure(RetConsts.ERR603, e.getMessage()));
+   }
+   
+   @ExceptionHandler(IncorrectMemberException.class)
+   @ResponseBody
+   public ResponseEntity<CommonResponse<?>> handleIncorrectMemberExceptions(IncorrectMemberException e) {
+	   return ResponseEntity
+			   .status(HttpStatus.UNAUTHORIZED)
+			   .body(CommonResponse.failure(RetConsts.ERR602, e.getMessage()));
+   }
+   
+   @ExceptionHandler(MemberAlreadyWithdrawnException.class)
+   @ResponseBody
+   public ResponseEntity<CommonResponse<?>> handleMemberAlreadyWithdrawnExceptions(MemberAlreadyWithdrawnException e) {
+	   return ResponseEntity
+			   .status(HttpStatus.FORBIDDEN)
+			   .body(CommonResponse.failure(RetConsts.ERR601, e.getMessage()));
    }
 
     @ExceptionHandler(Exception.class)

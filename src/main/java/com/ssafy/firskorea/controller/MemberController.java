@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ssafy.firskorea.common.consts.RetConsts;
 import com.ssafy.firskorea.common.dto.CommonResponse;
 import com.ssafy.firskorea.common.exception.DuplicationMemberIdException;
+import com.ssafy.firskorea.common.exception.IncorrectMemberException;
+import com.ssafy.firskorea.common.exception.MemberAlreadyWithdrawnException;
 import com.ssafy.firskorea.member.dto.MemberDto;
 import com.ssafy.firskorea.member.dto.request.LoginDto;
 import com.ssafy.firskorea.member.dto.request.RegistrationDto;
@@ -104,17 +106,9 @@ public class MemberController {
         MemberDto loginUser = memberService.login(member);
         
         if (loginUser == null) {
-        	CommonResponse<?> response = CommonResponse.failure(RetConsts.ERR602, "아이디 또는 패스워드를 확인해주세요.");
-        	
-        	ResponseEntity<CommonResponse<?>> responseEntity = ResponseEntity.status(401).body(response);
-        	
-        	return responseEntity;
+        	throw new IncorrectMemberException();
         } else if (!loginUser.getExistedOfMember()) {
-        	CommonResponse<?> response = CommonResponse.failure(RetConsts.ERR601, "이미 탈퇴한 회원입니다.");
-        	
-        	ResponseEntity<CommonResponse<?>> responseEntity = ResponseEntity.status(403).body(response);
-        	
-        	return responseEntity;
+        	throw new MemberAlreadyWithdrawnException();
         }
         
         // 로그인한 회원 정보를 토대로 access/refresh token 발급받기
