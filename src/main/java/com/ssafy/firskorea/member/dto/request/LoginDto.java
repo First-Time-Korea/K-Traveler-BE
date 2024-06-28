@@ -10,8 +10,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 @NoArgsConstructor
-@AllArgsConstructor
-@Setter
 @Getter
 @ToString
 @Schema(title = "LoginDto : 로그인 정보", description = "로그인을 위한 정보")
