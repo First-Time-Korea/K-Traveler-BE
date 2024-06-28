@@ -124,7 +124,7 @@ public class ArticleController {
 		ArticleAndCommentDto ac = articleService.getArticle(articleId);
 		
 		// 탈퇴한 여행 후기인 경우 작성자 처리
-		if (!ac.getExistedOfMember()) {
+		if (!ac.isExistedOfMember()) {
 			ac.setMemberId("(withdrawn member)");
 		}
 		

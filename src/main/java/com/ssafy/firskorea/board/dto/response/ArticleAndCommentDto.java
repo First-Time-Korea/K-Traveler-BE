@@ -5,14 +5,12 @@ import java.util.List;
 import com.ssafy.firskorea.board.dto.CommentDto;
 import com.ssafy.firskorea.board.dto.FileDto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Setter
 @Getter
 @ToString
@@ -27,9 +25,5 @@ public class ArticleAndCommentDto {
 	private String modifiedTime;
 	private FileDto file;
 	private List<CommentDto> comments;
-	
-	public boolean getExistedOfMember() {
-		return existedOfMember;
-	}
 
 }
