@@ -4,6 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.ssafy.firskorea.domain.board.dto.ArticleDto;
+import com.ssafy.firskorea.domain.board.dto.request.SearchDto;
+import com.ssafy.firskorea.domain.board.dto.response.ArticleAndCommentDto;
+import com.ssafy.firskorea.domain.board.service.ArticleService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,13 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-<<<<<<< HEAD
-import com.ssafy.firskorea.board.dto.ArticleDto;
-import com.ssafy.firskorea.board.dto.request.SearchDto;
-import com.ssafy.firskorea.board.dto.response.ArticleAndCommentDto;
-import com.ssafy.firskorea.board.service.ArticleService;
-=======
->>>>>>> f4c0c53374281df1649e97304c6b66c405f70406
 import com.ssafy.firskorea.common.dto.CommonResponse;
 import com.ssafy.firskorea.util.CommentStratify;
 

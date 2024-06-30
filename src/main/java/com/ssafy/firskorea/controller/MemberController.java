@@ -3,6 +3,16 @@ package com.ssafy.firskorea.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.ssafy.firskorea.common.exception.DuplicationMemberIdException;
+import com.ssafy.firskorea.common.exception.IncorrectMemberException;
+import com.ssafy.firskorea.common.exception.InvalidRefreshTokenException;
+import com.ssafy.firskorea.common.exception.MemberAlreadyWithdrawnException;
+import com.ssafy.firskorea.domain.member.dto.MemberDto;
+import com.ssafy.firskorea.domain.member.dto.request.LoginDto;
+import com.ssafy.firskorea.domain.member.dto.request.RegistrationDto;
+import com.ssafy.firskorea.domain.member.service.MemberServiceImpl;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -16,20 +26,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.firskorea.common.dto.CommonResponse;
-<<<<<<< HEAD
-import com.ssafy.firskorea.member.dto.request.LoginDto;
-import com.ssafy.firskorea.member.dto.request.RegistrationDto;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-
-import com.ssafy.firskorea.member.dto.MemberDto;
-import com.ssafy.firskorea.member.service.MemberServiceImpl;
-=======
-import com.ssafy.firskorea.common.exception.DuplicationMemberIdException;
-import com.ssafy.firskorea.common.exception.IncorrectMemberException;
-import com.ssafy.firskorea.common.exception.InvalidRefreshTokenException;
-import com.ssafy.firskorea.common.exception.MemberAlreadyWithdrawnException;
->>>>>>> f4c0c53374281df1649e97304c6b66c405f70406
 import com.ssafy.firskorea.util.JWTUtil;
 
 import io.swagger.v3.oas.annotations.Hidden;

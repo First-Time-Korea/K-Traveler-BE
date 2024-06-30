@@ -4,9 +4,9 @@
 
 <<<<<<< HEAD
 <mapper
-	namespace="com.ssafy.firskorea.member.mapper.MemberMapper">
+	namespace="com.ssafy.firskorea.domain.member.mapper.MemberMapper">
 =======
-<mapper namespace="com.ssafy.firskorea.member.mapper.MemberMapper">
+<mapper namespace="com.ssafy.firskorea.domain.member.mapper.MemberMapper">
 >>>>>>> f4c0c53374281df1649e97304c6b66c405f70406
 
 	<!-- 회원 가입하기 -->
