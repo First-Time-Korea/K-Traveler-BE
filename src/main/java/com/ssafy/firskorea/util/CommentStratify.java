@@ -3,7 +3,7 @@ package com.ssafy.firskorea.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ssafy.firskorea.domain.board.dto.CommentDto;
+import com.ssafy.firskorea.board.dto.CommentDto;
 
 public class CommentStratify {
 	
@@ -44,12 +44,12 @@ public class CommentStratify {
 			commentIds[i] = comment.getId();
 			
 			// 삭제한 댓글인 경우 내용 처리
-			if (!comment.getExisted()) {
+			if (!comment.isExisted()) {
 				comment.setContent("This comment has already been deleted.");
 			}
 			
 			// 탈퇴한 회원의 댓글인 경우 작성자 처리
-			if (!comment.getExistedOfMember()) {
+			if (!comment.isExistedOfMember()) {
 				comment.setMemberId("(withdrawn member)");
 			}
 		}

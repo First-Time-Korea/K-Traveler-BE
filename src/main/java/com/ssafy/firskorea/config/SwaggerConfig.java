@@ -21,7 +21,7 @@ public class SwaggerConfig {
 
     @Bean
     public GroupedOpenApi userApi() {
-        return GroupedOpenApi.builder().group("회원 관리").pathsToMatch("/user/**").build();
+        return GroupedOpenApi.builder().group("회원 관리").pathsToMatch("/users/**").build();
     }
 
     @Bean

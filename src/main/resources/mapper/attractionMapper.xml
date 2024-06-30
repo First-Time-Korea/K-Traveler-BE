@@ -3,7 +3,7 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper
-	namespace="com.ssafy.firskorea.domain.attraction.mapper.AttractionMapper">
+	namespace="com.ssafy.firskorea.attraction.mapper.AttractionMapper">
 
 	<select id="getThemeList" resultType="themeDto">
 		select * from theme;

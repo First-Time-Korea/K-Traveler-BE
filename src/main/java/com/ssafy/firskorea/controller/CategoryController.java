@@ -1,6 +1,6 @@
 package com.ssafy.firskorea.controller;
 
-import com.ssafy.firskorea.domain.attraction.service.AttractionService;
+import com.ssafy.firskorea.attraction.service.AttractionService;
 import com.ssafy.firskorea.common.dto.CommonResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

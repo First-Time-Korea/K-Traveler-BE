@@ -1,5 +1,6 @@
 package com.ssafy.firskorea.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,8 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.BeanNameViewResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
+
+import com.ssafy.firskorea.intercepter.AuthenticationInterceptor;
 
 @Configuration
 public class ServletConfig implements WebMvcConfigurer {
@@ -22,6 +25,9 @@ public class ServletConfig implements WebMvcConfigurer {
 	
 	@Value("${articleFile.path.upload-images}")
 	private String ARTICLE_IMG_PATH;
+	
+	@Autowired
+	private AuthenticationInterceptor authenticationInterceptor;
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -44,8 +50,17 @@ public class ServletConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-//		 registry.addInterceptor(new AuthenticationInterceptor())
-//       .addPathPatterns("/board");	
+		registry.addInterceptor(authenticationInterceptor)
+			.addPathPatterns("/users/logout/**")
+			.addPathPatterns("/users/info/**")
+			.addPathPatterns("/users/refresh/**")
+			.addPathPatterns("/users/*")
+			.excludePathPatterns("/users/signup")
+			.excludePathPatterns("/users/check-id")
+			.excludePathPatterns("/users/login")
+			.addPathPatterns("/articles")
+			.addPathPatterns("/articles/*")
+			.addPathPatterns("/articles/modify/**");
 	}
 
 	@Bean

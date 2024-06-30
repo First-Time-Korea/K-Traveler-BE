@@ -2,10 +2,10 @@ package com.ssafy.firskorea.controller;
 
 import java.sql.SQLException;
 
-import com.ssafy.firskorea.domain.attraction.dto.request.MemberContentDto;
-import com.ssafy.firskorea.domain.attraction.dto.request.MemberPgnoDto;
-import com.ssafy.firskorea.domain.attraction.dto.request.SidoPgnoDto;
-import com.ssafy.firskorea.domain.attraction.service.AttractionGptService;
+import com.ssafy.firskorea.attraction.dto.request.MemberContentDto;
+import com.ssafy.firskorea.attraction.dto.request.MemberPgnoDto;
+import com.ssafy.firskorea.attraction.dto.request.SidoPgnoDto;
+import com.ssafy.firskorea.attraction.service.AttractionGptService;
 import com.ssafy.firskorea.common.dto.CommonResponse;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -15,8 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.ssafy.firskorea.domain.attraction.dto.request.SearchDto;
-import com.ssafy.firskorea.domain.attraction.service.AttractionService;
+import com.ssafy.firskorea.attraction.dto.request.SearchDto;
+import com.ssafy.firskorea.attraction.service.AttractionService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
