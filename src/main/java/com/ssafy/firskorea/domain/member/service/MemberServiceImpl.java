@@ -1,14 +1,11 @@
 package com.ssafy.firskorea.domain.member.service;
 
-import java.util.HashMap;
-import java.util.Map;
-
-<<<<<<< HEAD:src/main/java/com/ssafy/firskorea/domain/member/service/MemberServiceImpl.java
 import com.ssafy.firskorea.domain.member.dto.MemberDto;
 import com.ssafy.firskorea.domain.member.mapper.MemberMapper;
-=======
->>>>>>> f4c0c53374281df1649e97304c6b66c405f70406:src/main/java/com/ssafy/firskorea/member/service/MemberServiceImpl.java
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class MemberServiceImpl implements MemberService {

@@ -327,4 +327,13 @@
 		VALUES (#{contentId}, #{overView});
 	</insert>
 
+	<select id="existMedia" parameterType="string" resultType="string">
+		SELECT overview
+		FROM attraction_description
+		WHERE overview LIKE CONCAT('%', #{media}, '%')
+			LIMIT 1
+	</select>
+
+
+
 </mapper>

@@ -29,7 +29,6 @@ class AttractionGptServiceTest {
     void simpleTest() throws SQLException {
 
         //kcurture의 contentId를 5000000 ~ 5015034까지 본다.
-        // 2972 이전에는 이상한 번역이 많아서 확인해보기
         for (int idx = 5000001; idx < MAX_CONTENT_ID; idx++) {
             try {
                 attractionGptService.getAttractionDetailWithGptApi(new MemberContentDto("qwer", String.valueOf(idx)));

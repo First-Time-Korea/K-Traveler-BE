@@ -70,7 +70,7 @@ public class AttractionGptServiceImpl implements AttractionGptService {
 
         //K Culture에 있는 값 파싱
         String[] mediaAndDescription = attractionDto.getOverView().split(">");
-        String media = mediaAndDescription[0].replace("<", "");
+        String media = parseMedia(mediaAndDescription);
         String description = mediaAndDescription[1];
         String addr = attractionDto.getAddr1();
         String title = attractionDto.getTitle();
@@ -107,7 +107,7 @@ public class AttractionGptServiceImpl implements AttractionGptService {
                         (float) 0)));
     }
 
-    private AttractionDto handleApiResponse(AttractionDto attractionDto, String media, ResponseEntity<String> response) {
+    private AttractionDto handleApiResponse(AttractionDto attractionDto, String media, ResponseEntity<String> response) throws SQLException {
         Map<String, Object> parsed1 = deserialize(response.getBody());
         ArrayList list = (ArrayList) parsed1.get("choices");
         LinkedHashMap parsed2 = (LinkedHashMap) list.get(0);
@@ -121,10 +121,18 @@ public class AttractionGptServiceImpl implements AttractionGptService {
         return parseApiResponse(attractionDto, media, englishItem);
     }
 
-    private AttractionDto parseApiResponse(AttractionDto attractionDto, String media, String[] englishItem) {
+    private AttractionDto parseApiResponse(AttractionDto attractionDto, String media, String[] englishItem) throws SQLException {
         String englishTitle = englishItem[0];
         String englishAddr = englishItem[1];
-        String englishOverView = "<" + englishItem[2] + "(" + media + ")>" + englishItem[3];
+
+        String existMedia = attractionMapper.existMedia(media);
+        String englishOverView = "<";
+        if (existMedia != null) {
+            englishOverView += parseMedia(existMedia.split(">")) + ">";//미디어 이름만 기존 걸로 가져온다.
+        } else {
+            englishOverView += englishItem[2] + "(" + media + ")>";
+        }
+        englishOverView += englishItem[3];
 
         if (!GptApiValidator.isValidTitle(englishTitle)
                 || !GptApiValidator.isValidAddr(englishAddr)
@@ -137,6 +145,10 @@ public class AttractionGptServiceImpl implements AttractionGptService {
         attractionDto.setAddr1(englishAddr);
 
         return attractionDto;
+    }
+
+    private String parseMedia(String[] mediaAndDescription) {
+        return mediaAndDescription[0].replace("<", "");
     }
 
     private void storeAttractionData(AttractionDto attractionDto) throws SQLException {

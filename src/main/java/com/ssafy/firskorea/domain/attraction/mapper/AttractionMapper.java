@@ -51,4 +51,6 @@ public interface AttractionMapper {
     void insertKCurtureAttractionDescriptionEnglish(AttractionDto attractionDto) throws SQLException;
 
     List<AttractionDto> getPaginatedAttractionsBySearch(Map<String, Object> map);
+
+    String existMedia(String media) throws SQLException;
 }
