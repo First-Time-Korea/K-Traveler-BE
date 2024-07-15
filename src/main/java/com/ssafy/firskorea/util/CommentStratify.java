@@ -3,7 +3,7 @@ package com.ssafy.firskorea.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ssafy.firskorea.board.dto.CommentDto;
+import com.ssafy.firskorea.domain.board.dto.CommentDto;
 
 public class CommentStratify {
 	

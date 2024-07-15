@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.ssafy.firskorea.common.dto.CommonResponse;
-import com.ssafy.firskorea.plan.dto.request.PlanMemberPgnoDto;
+import com.ssafy.firskorea.domain.plan.dto.request.PlanMemberPgnoDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -25,11 +25,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.ssafy.firskorea.plan.dto.request.PlanThumbnailDto;
-import com.ssafy.firskorea.plan.dto.request.PlanMemoDto;
-import com.ssafy.firskorea.plan.dto.request.PlanCreationDto;
-import com.ssafy.firskorea.plan.service.PlanService;
-import com.ssafy.firskorea.plan.service.PlanServiceImpl;
+import com.ssafy.firskorea.domain.plan.dto.request.PlanThumbnailDto;
+import com.ssafy.firskorea.domain.plan.dto.request.PlanMemoDto;
+import com.ssafy.firskorea.domain.plan.dto.request.PlanCreationDto;
+import com.ssafy.firskorea.domain.plan.service.PlanService;
+import com.ssafy.firskorea.domain.plan.service.PlanServiceImpl;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -57,14 +57,36 @@ public class PlanController {
             @ApiResponse(responseCode = "401", description = "회원 인증 실패"),
             @ApiResponse(responseCode = "500", description = "로직 처리 실패"),
     })
-    @PostMapping() // 여행 계획 등록
+    @PostMapping()
     public ResponseEntity<CommonResponse<?>> createPlan(
-            @Valid @RequestPart("planRequest") PlanCreationDto planCreationDto,
+            @RequestPart("PlanCreationDto") PlanCreationDto planCreationDto,
             @RequestPart("file") MultipartFile file) throws SQLException, IOException {
+        System.out.println(planCreationDto);
+        System.out.println(file);
         if (!file.isEmpty()) {
             initializePlanRequest(planCreationDto, file);
         }
         planService.createPlan(planCreationDto);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(CommonResponse.okCreation());
+    }
+
+    @Operation(summary = "여행 계획 등록(프로시저 사용)", description = "여행 계획을 등록한다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "여행 계획 등록 성공"),
+            @ApiResponse(responseCode = "400", description = "입력값 유효성 검사 실패"),
+            @ApiResponse(responseCode = "401", description = "회원 인증 실패"),
+            @ApiResponse(responseCode = "500", description = "로직 처리 실패"),
+    })
+    @PostMapping("/v2")
+    public ResponseEntity<CommonResponse<?>> createPlanV2(
+            @Valid @RequestPart("PlanCreationDto") PlanCreationDto planCreationDto,
+            @RequestPart("file") MultipartFile file) throws SQLException, IOException {
+        if (!file.isEmpty()) {
+            initializePlanRequest(planCreationDto, file);
+        }
+        planService.createPlanV2(planCreationDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(CommonResponse.okCreation());

@@ -35,9 +35,9 @@ public class ServletConfig implements WebMvcConfigurer {
 		registry.addResourceHandler("/img/**").addResourceLocations("/WEB-INF/assets/img/");
 		registry.addResourceHandler("/css/**").addResourceLocations("/WEB-INF/assets/css/");
 		registry.addResourceHandler("/js/**").addResourceLocations("/WEB-INF/assets/js/");
-		registry.addResourceHandler("/plan/img/**").addResourceLocations("file:///" + PLAN_FILE_PATH);
-		registry.addResourceHandler("/attraction/kculture/img/**").addResourceLocations("file:///" + K_ATTRACTION_IMG_PATH);
-		registry.addResourceHandler("/article/img/**").addResourceLocations("file:///" + ARTICLE_IMG_PATH);
+		registry.addResourceHandler("/plans/img/**").addResourceLocations("file:///" + PLAN_FILE_PATH);
+		registry.addResourceHandler("/attractions/kculture/img/**").addResourceLocations("file:///" + K_ATTRACTION_IMG_PATH);
+		registry.addResourceHandler("/articles/img/**").addResourceLocations("file:///" + ARTICLE_IMG_PATH);
 	}
 
 	@Bean
