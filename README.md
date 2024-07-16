@@ -112,6 +112,8 @@
 
 [스토어드 프로시저 적용기](https://seminss.tistory.com/15)
 
+[여행 후기 게시판 관련 CRUD API 구현](https://jione-i.tistory.com/8)
+
 ---
 
 # 아키텍처
